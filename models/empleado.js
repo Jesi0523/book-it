@@ -5,7 +5,7 @@ const empleadoSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    email: {
+    correo: {
         type: String,
         required: true,
         unique: true,
@@ -28,7 +28,7 @@ const empleadoSchema = new mongoose.Schema({
     },
 
     servicios: [
-        // es opcional porque el Admin puede crear al empleado y luego editarlo para agregarle los servicios
+        // es opcional porque el Admin puede crear al empleado y luego editarlo para agregarle los servicios, o almenos para el seeding lol
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "servicio",

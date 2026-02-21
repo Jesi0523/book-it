@@ -20,10 +20,10 @@ const servicioSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    tiempoEstimado: {
+    /* tiempoEstimado: {
         type: Number,
-        required: true,
-    },
+        default: 60,
+    }, */
     foto: {
         type: String,
         required: true,

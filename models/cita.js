@@ -1,13 +1,15 @@
+const mongoose = require("mongoose");
+
 const citaSchema = new mongoose.Schema(
     {
         usuarioId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Usuario",
+            ref: "usuario",
         }, // viene del front, el ID del cliente que tiene la sesión iniciada
 
         empleadoId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Empleado",
+            ref: "empleado",
         }, // ID del empleado que el cliente seleccionó
 
         fecha: {
@@ -21,13 +23,14 @@ const citaSchema = new mongoose.Schema(
         },
 
         // SE CALCULA EN EL BACK
+        // ** QUIZA NO HACE FALTA GUARDARLO, PERO PUEDE QUE SEA MAS FACIL EN EL FRONT YA TENERLO **
         // la duración total de todos los servicios seleccionados.
         horaFin: {
             type: String,
             required: true,
         },
 
-        // SE ARMA EN EL BACK
+        // SE ARMA EN EL BACK ** nota para aylin
         // El Front manda el ID del servicio, y haces un findById(), sacas estos datos y los pegas aquí para congelar el precio y duración
         servicioAgendado: {
             servicioId: {
@@ -43,10 +46,10 @@ const citaSchema = new mongoose.Schema(
                 type: Number,
                 required: true,
             },
-            duracionSnapshot: {
+            /* duracionSnapshot: {
                 type: Number,
                 required: true,
-            }, // en minutos
+            }, // en minutos */
         },
 
         total: {
@@ -66,7 +69,7 @@ const citaSchema = new mongoose.Schema(
             edad: { type: Number },
             sexo: { type: String },
             telefono: { type: String },
-            email: { type: String },
+            correo: { type: String },
         },
     },
     { timestamps: true }, // Crea 'createdAt' y 'updatedAt' solitos

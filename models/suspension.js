@@ -1,8 +1,10 @@
+const mongoose = require("mongoose");
+
 const suspensionSchema = new mongoose.Schema({
     empleadoId: {
         // si no tiene id, es para todos los empleados
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Empleado",
+        ref: "empleado",
         default: null,
     },
     fecha: {

@@ -2,16 +2,34 @@
 
 ## Backend & Base de Datos
 
-### Instalar las dependencias
+### Configuración del Entorno
 
-Abre la terminal en la raíz del backend y ejecuta:
-npm install express mongoose dotenv cors
+1. **Entra a la carpeta del backend**
+    ```bash
+    cd backend
+    ```
 
-### Si se quiere utilizar el seeder
+2. **Instala las dependencias**
+    ```bash
+    npm install express mongoose dotenv cors
+    ```
 
-npm install @faker-js/faker --save-dev
-En root, ejecutar node seeder/seeder.js
+3. **Instalar el seeder (si se quiere usar)**
+    ```bash
+    npm install @faker-js/faker --save-dev
+    ```
 
-### Configurar las Variables de Entorno
+4. **Configura las Variables de Entorno**
 
-Crea un archivo llamado `.env` en la raíz del proyecto.
+   Crea un archivo `.env` dentro de la carpeta **backend** (pueden usar `.envEjemplo` como base).
+
+### Ejecución Local
+   
+   1. Si instalaste el seeder y lo quieres usar, abre otra terminal, entra en la carpeta de **backend** y ejecuta:
+   ```bash
+    node seeder/seeder.js
+   ```
+
+
+
+## Frontend

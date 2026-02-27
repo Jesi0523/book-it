@@ -33,3 +33,24 @@
 
 
 ## Frontend
+
+### Configuración del Entorno
+
+1. **Entra a la carpeta del frontend**
+    ```bash
+    cd frontend
+    ```
+
+2. **Instala las dependencias**
+    ```bash
+    npm install react-router-dom react-hot-toast @mui/material @emotion/react @emotion/styled @mui/icons-material axios react-hook-form zod @hookform/resolvers jwt-decode
+    ```
+
+### Ejecución Local
+   
+   1. Entra en la carpeta de **frontend** y ejecuta:
+   ```bash
+    npm run dev
+   ```
+   - Dale Ctrl + Click al que dice **http://localhost:5173/**
+   - Si quieres terminar la ejecución dale Ctrl + C

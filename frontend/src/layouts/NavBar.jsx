@@ -1,115 +1,94 @@
 import * as React from 'react';
-import {AppBar, Link} from '@mui/material';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import {AppBar, Link, Box, Toolbar, IconButton, Typography, Menu, Container, MenuItem} from '@mui/material';
+
+// ************** componentes propios :3 **************
+// |  navigation
+import NavOptions from '@/components/navigation/NavOptions';
 
 // ************** imagenes **************
 import logo from '@/assets/Logo1.png';
 
 // ************** iconos **************
+import MenuIcon from '@mui/icons-material/Menu';
 import CalendarIcon from '@mui/icons-material/CalendarMonth';
 import UserIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 
-
-// const pages = [{icon: CalendarIcon, text: 'Mis citas'}, {icon: UserIcon, text: 'Ver perfil'}];
-const icons = [CalendarIcon, 'Ver perfil', 'Cerrar sesión'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 function NavBar() 
 {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
   const handleOpenNavMenu = (event) => { setAnchorElNav(event.currentTarget);};
-  const handleOpenUserMenu = (event) => { setAnchorElUser(event.currentTarget);};
-
   const handleCloseNavMenu = () => { setAnchorElNav(null);};
 
-  const handleCloseUserMenu = () => { setAnchorElUser(null);};
-
   return (
-    <AppBar position="static">
+    <AppBar position="static" 
+        sx={{ background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)'}}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
             <Link href="/main">
-                <img src={logo} alt="Logo"  style= {{margin:"5px", width:"35px", cursor: "pointer", border: "2px solid #fff"}}/>
+                <img src={logo} alt="Logo"  style= {{margin:"5px", width:"35px", cursor: "pointer"}}/>
             </Link>
 
             {/* ****** Display de las opciones *****  */}
              {/* C E L U L A R, T A B L E T S, E T C  */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, border: "2px solid #fff" }}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }}}>
                 <IconButton
-                size="large"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
+                    size="large"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleOpenNavMenu}
                 >
-                    <MenuIcon />
+                    <MenuIcon sx={{color:'text.secondary'}}/>
                 </IconButton>
                 <Menu
                     id="menu-appbar"
                     anchorEl={anchorElNav}
-                    anchorOrigin=
-                    {{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'left'}}
                     keepMounted
-                    transformOrigin=
-                    {{
-                        vertical: 'top',
-                        horizontal: 'left',
-                    }}
+                    transformOrigin={{vertical: 'top', horizontal: 'left'}}
                     open={Boolean(anchorElNav)}
                     onClose={handleCloseNavMenu}
-                    sx={{ display: { xs: 'block', md: 'none' } }}
+                    sx={{ 
+                        display: { xs: 'block', md: 'none' },
+                        '.MuiMenu-paper': { background: 'linear-gradient(180deg, #1b1c37 100%, #272951 0%)'},
+                        '.MuiMenuItem-root': 
+                        { 
+                            display: "flex", 
+                            alignItems: "center", 
+                            gap: 1,
+                            py: 0.5 
+                        },
+                        '.MuiTypography-root, svg': 
+                        {
+                            fontSize: "0.6rem",
+                            fontFamily: "'Montserrat', sans-serif"
+                        }
+                    }}
                 >
                     <MenuItem onClick={handleCloseNavMenu}>
-                        <Typography sx={{ textAlign: 'center' }}><CalendarIcon></CalendarIcon> Mis citas</Typography>
+                        <Typography><CalendarIcon/> Mis citas</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleCloseNavMenu}>
-                        <Typography sx={{ textAlign: 'center' }}><UserIcon></UserIcon> Ver perfil</Typography>
+                        <Typography><UserIcon/> Ver perfil</Typography>
                     </MenuItem>
                 </Menu>
             </Box>
 
             {/* LAPTOPS, MONITORES GRANDES, TELES xd */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "end",  border: "2px solid #fff" }}>
-                <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                ><CalendarIcon></CalendarIcon> Mis citas</Button>
-
-                 <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                ><UserIcon></UserIcon> Ver perfil</Button>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "end"}}>
+                <NavOptions onClick={handleCloseNavMenu} icon={<CalendarIcon/>} text="Mis citas"></NavOptions>
+                <NavOptions onClick={handleCloseNavMenu} icon={<UserIcon/>} text="Ver perfil"></NavOptions>
             </Box>
 
-            <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, flexDirection: 'column',  border: "2px solid #fff" }}>
-                <Typography>Nombre</Typography>
-                <Typography>Correo</Typography>
+            <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, flexDirection: 'column', width: '150px', maxWidth: '300px', px: 2}}>
+                <Typography sx={{fontFamily: "'Montserrat', sans-serif", fontSize: '0.8rem', color: 'primary.main', textAlign: 'right'}}>Nombre(s)</Typography>
+                <Typography sx={{fontFamily: "'Montserrat', sans-serif", fontSize: '0.6rem', color: 'text.primary', textAlign: 'right'}}>Correo</Typography>
             </Box>
-
             
             {/* TODO: Desplegar modal de confirmación */}
-            <Box sx={{ flexGrow: 0, border: "2px solid #fff" }}>
-                <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                ><LogoutIcon sx={{ p: 0 }}/> Cerrar sesión</Button>
+            <Box sx={{ flexGrow: 0}}>
+                <NavOptions icon={<LogoutIcon/>} text="Cerrar Sesión"></NavOptions>
             </Box>
         </Toolbar>
       </Container>

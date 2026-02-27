@@ -8,8 +8,6 @@ const AuthLayout = ({ children }) => {
       sx={{
         position: "relative",
         minHeight: "100vh",
-        // USAMOS 100% EN LUGAR DE 100VW: 
-        // 100% se ajusta al contenedor padre y descuenta el ancho de la scrollbar vertical.
         width: "100%", 
 
         display: "grid",
@@ -26,12 +24,10 @@ const AuthLayout = ({ children }) => {
         backgroundColor: "rgba(0, 0, 0, 0.4)",
         backgroundBlendMode: "darken",
 
-        // Consolidamos el padding para evitar que empuje el layout hacia afuera
         p: { xs: 2, md: 4 }, 
-        boxSizing: "border-box", // Asegura que el padding no sume al ancho total
+        boxSizing: "border-box", 
       }}
     >
-      {/* Logo: Solo visible de MD en adelante */}
       <Box
         component="img"
         src={logo}
@@ -43,7 +39,6 @@ const AuthLayout = ({ children }) => {
           width: { xs: "80px", md: "120px" },
           height: "auto",
           zIndex: 10,
-          // Lógica responsiva: oculto en xs, bloque en md
           display: { xs: "none", md: "block" }, 
         }}
       />

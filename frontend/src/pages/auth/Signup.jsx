@@ -21,7 +21,6 @@ function Signup() {
   const navigate = useNavigate();
 
   const handleContinue = () => {
-    // Aquí puedes agregar validaciones de los campos más adelante
     navigate("/");
   };
 

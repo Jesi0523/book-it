@@ -34,7 +34,9 @@ function Login() {
         />
         <PasswordInput />
 
-        <MainButton size={20}>Iniciar sesión</MainButton>
+        <MainButton size={20} href="/main" >
+            Iniciar sesión
+        </MainButton>
 
         <Text align="center">
           ¿No tienes una cuenta?{" "}

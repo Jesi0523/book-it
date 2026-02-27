@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "@/pages/auth/Login.jsx"; 
 import Signup from "@/pages/auth/Signup.jsx";
+import MainPage  from "@/pages/auth/MainPage";
 
 const AppRoutes = () => {
   return (
@@ -11,7 +12,7 @@ const AppRoutes = () => {
       <Route path="/signup" element={<Signup />} />
 
       {/* Usuario */}
-
+      <Route path="/main" element ={<MainPage />} />
 
       {/* Admin */}
 

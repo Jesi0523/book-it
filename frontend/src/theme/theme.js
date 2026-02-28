@@ -26,6 +26,7 @@ const theme = createTheme({
     h2: { fontFamily: "'Syncopate', sans-serif", fontWeight: 700 },
     h3: { fontFamily: "'Syncopate', sans-serif", fontWeight: 700 },
     h4: { fontFamily: "'Syncopate', sans-serif", fontWeight: 700 },
+    h5: { fontFamily: "'Syncopate', sans-serif", fontWeight: 700 },
   },
   shape: {
     borderRadius: 12,

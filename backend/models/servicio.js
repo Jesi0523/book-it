@@ -28,6 +28,10 @@ const servicioSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    activo: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 module.exports = mongoose.model("servicio", servicioSchema);

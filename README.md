@@ -54,3 +54,7 @@
    ```
    - Dale Ctrl + Click al que dice **http://localhost:5173/**
    - Si quieres terminar la ejecución dale Ctrl + C
+
+## ACT: Librería para carusel
+    Ejecuten este comando desde el front para instalar el carrusel que se usa para las fotos del main:
+    npm install swiper

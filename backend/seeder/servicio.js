@@ -17,6 +17,7 @@ const generarServiciosFalsos = () => {
                 fakerES_MX.commerce.price({ min: 150, max: 1200 }),
             ),
             foto: fakerES_MX.image.faker.image.url(),
+            activo: true,
         };
     });
 };

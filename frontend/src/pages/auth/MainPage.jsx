@@ -1,25 +1,30 @@
 import{Grid, Typography, Box} from '@mui/material'
-import NavBar from '@/layouts/NavBar'
-import mainPhoto from '@/assets/dummy/main-1.png'
-import MainButton from '@/components/common/MainButton'
-import CalendarIcon from '@mui/icons-material/CalendarMonth';
-import LocationIcon from '@mui/icons-material/LocationOnRounded';
-import TextWIcon from '@/components/common/TextWIcon';
-import PhoneIcon from '@mui/icons-material/PhoneRounded';
-import EmailIcon from '@mui/icons-material/EmailRounded';
-import CardServices from '@/components/main/CardServices';
-import photoExample1 from '@/assets/dummy/main-2.png';
-import photoExample2 from '@/assets/dummy/main-3.png';
-import photoExample3 from '@/assets/dummy/main-4.png';
-import ArrowBackIcon from '@mui/icons-material/ArrowBackIosRounded';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIosRounded';
-
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
+import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+// ************** componentes propios :3 **************
+// |  layout
+import NavBar from '@/layouts/NavBar'
+// |  common
+import MainButton from '@/components/common/MainButton'
+import TextWIcon from '@/components/common/TextWIcon';
+// |  main
+import CardServices from '@/components/main/CardServices';
+// ************** media dummy **************
+// |  Imagenes
+import mainPhoto from '@/assets/dummy/main-1.png'
+import photoExample1 from '@/assets/dummy/main-2.png';
+import photoExample2 from '@/assets/dummy/main-3.png';
+import photoExample3 from '@/assets/dummy/main-4.png';
+// ************** iconos **************
+import CalendarIcon from '@mui/icons-material/CalendarMonth';
+import LocationIcon from '@mui/icons-material/LocationOnRounded';
+import PhoneIcon from '@mui/icons-material/PhoneRounded';
+import EmailIcon from '@mui/icons-material/EmailRounded';
+
 
 //NOTA: Datos de ejemplo, eliminar después
 const serviciesInfoDummy = 
@@ -50,12 +55,10 @@ const serviciesInfoDummy =
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna." 
     }
 ];
-
 const imageDummy = 
 [
     { id: '1', image: photoExample1}, {id: '2',image: photoExample2}, { id: '3',image: photoExample3}
 ];
-
 // ***********************************
 
 function MainPage()
@@ -108,24 +111,18 @@ function MainPage()
 
             {/* Swiper de los servicios */}
             <Box sx=
-            {{ 
-                width: '100%', 
-                px: { xs: 2, md: 6 },
-    
+            {{ width: '100%', px: { xs: 2, md: 6 },
                 '.swiper-button-next, .swiper-button-prev': 
                 {
                     color: 'text.secondary', transition: '0.2s ease-in-out',
-                    '&:hover': 
-                    {
-                        color: 'text.primary',
-                        transform: 'scale(1.1)'
-                    }
+                    '&:hover': { color: 'text.primary', transform: 'scale(1.1)'}
                 }
             }}>
                 <Swiper
                     modules={[Navigation]}
                     spaceBetween={0} 
                     navigation={true}
+                    // lo de abajo es para el responsivee
                     breakpoints=
                     {{
                         0: {slidesPerView: 1},

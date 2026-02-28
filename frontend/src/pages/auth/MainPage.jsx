@@ -22,40 +22,48 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 //NOTA: Datos de ejemplo, eliminar después
-const listaServicios = 
+const serviciesInfoDummy = 
 [
     { 
         id: 1, 
         image: photoExample1, 
         name: "Servicio 1", 
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit." 
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna." 
     },
     { 
         id: 2, 
         image: photoExample2,
         name: "Servicio 2", 
-        description: "Nulla mollis, risus at pellentesque efficitur, quam nisl." 
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna." 
     },
     { 
         id: 3, 
         image: photoExample3, 
         name: "Servicio 3", 
-        description: "Tristique enim, et malesuada ex sapien et urna." 
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna." 
+    },
+    
+    { 
+        id: 4, 
+        image: mainPhoto, 
+        name: "Servicio 4", 
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna." 
     }
 ];
 
-const imageExamples = 
+const imageDummy = 
 [
     { id: '1', image: photoExample1}, {id: '2',image: photoExample2}, { id: '3',image: photoExample3}
 ];
 
+// ***********************************
+
 function MainPage()
 {
-    console.log("Mis imágenes:", imageExamples);
     return(
         <>
             <NavBar></NavBar>
-
+            {/* Slider principal de las imagenes -> está en modo automatico */}
             <Box sx={{position: 'relative'}}>
                 <Box sx=
                 {{
@@ -79,7 +87,7 @@ function MainPage()
                     effect="fade"
                     loop={true}
                 >
-                    {imageExamples.map((item) => 
+                    {imageDummy.map((item) => 
                     (
                         <SwiperSlide key={item.id}>
                             <img src={item.image} alt={`Slide ${item.id}`} style={{ height: '400px', width: '100%', objectFit: 'cover' }}/>
@@ -88,27 +96,55 @@ function MainPage()
                 </Swiper>
             </Box>
 
-            <Grid container spacing={10} sx={{justifyContent: 'center', p: 15}}>
-                <Grid size={{xs: 12, md: 4}}>
-                    <img src={mainPhoto} style={{height: '220px', padding: '2%'}}></img>
+            {/* Info central */}
+            <Grid container spacing={{xs: 5, md:10}} sx={{ p: {xs: 5 ,md:15 }}}>
+                <Grid size={{xs: 12, md: 4}} sx={{display: 'flex', justifyContent: 'center'}} >
+                    <Box component='img' src={mainPhoto} sx={{height: { xs:'180px', md:'220px'}, padding: '2%'}}/>
                 </Grid>
-                <Grid size={{xs: 12, md:8}}>
-                    <Typography sx={{textAlign: 'justify'}}> Somos una empresa que se dedica a ofrecer servicios de administración. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</Typography>
+                <Grid size={{xs: 12, md:8}} sx={{display: 'flex', alignItems: 'center'}}>
+                    <Typography sx={{textAlign: 'justify', fontSize: 15}}> Somos una empresa que se dedica a ofrecer servicios de administración. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</Typography>
                 </Grid>
             </Grid> 
 
-            <Grid container>
-                <Grid size={2} sx={{border: '2px solid #fff', display: 'flex',   justifyContent: 'center', alignItems: 'center' }} >
-                    <ArrowBackIcon sx={{cursor: 'pointer', transition: '0.2s ease-in-out', '&:hover':{transform: 'scale(1.1)'} }} ></ArrowBackIcon>
-                </Grid>
-                <Grid size={8}  sx={{border: '2px solid #fff'}}>
-                    <CardServices image={photoExample1} name="Servicio 1" description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna. "></CardServices>
-                </Grid>
-                <Grid size={2}  sx={{border: '2px solid #fff', display: 'flex',   justifyContent: 'center', alignItems: 'center'}}>
-                    <ArrowForwardIcon sx={{cursor: 'pointer', transition: '0.2s ease-in-out', '&:hover':{transform: 'scale(1.1)'} }}></ArrowForwardIcon>
-                </Grid>
-            </Grid>
+            {/* Swiper de los servicios */}
+            <Box sx=
+            {{ 
+                width: '100%', 
+                px: { xs: 2, md: 6 },
+    
+                '.swiper-button-next, .swiper-button-prev': 
+                {
+                    color: 'text.secondary', transition: '0.2s ease-in-out',
+                    '&:hover': 
+                    {
+                        color: 'text.primary',
+                        transform: 'scale(1.1)'
+                    }
+                }
+            }}>
+                <Swiper
+                    modules={[Navigation]}
+                    spaceBetween={0} 
+                    navigation={true}
+                    breakpoints=
+                    {{
+                        0: {slidesPerView: 1},
+                        600: {slidesPerView: 2},
+                        900: {slidesPerView: 3}
+                    }}
+                >
+                    {serviciesInfoDummy.map((item) => 
+                    (
+                        <SwiperSlide key={item.id}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+                                <CardServices image={item.image} name={item.name} description={item.description}/>
+                            </Box>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </Box>
 
+            {/* Botón para agendar */}
             <Box sx={{display:'flex',justifyContent: 'center', m:5 }}>
                 <MainButton>Agenda tu cita <CalendarIcon/></MainButton>    
             </Box>            

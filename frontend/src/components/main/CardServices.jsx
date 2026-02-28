@@ -6,14 +6,18 @@ import Typography from '@mui/material/Typography';
 const CardServices = ({image, name, description}) =>
 {
   return (
-    <Card sx={{ maxWidth: 275, background: 'none', border:'0px', display: 'flex', flexDirection: 'column',  justifyContent: 'center' }}>
+    <Card elevation={0} sx=
+    {{  maxWidth: 275, display: 'flex', flexDirection: 'column', 
+        justifyContent: 'center', alignItems: 'center', textAlign: 'center',
+        background: 'none',
+     }}>
       <CardMedia
         sx={{ width: 140, height: 140,  borderRadius: '100%'}}
         image={image}
         title={name}
       />
       <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
+        <Typography gutterBottom variant="h6" component="div">
             {name}
         </Typography>
         <Typography variant="body2" sx={{ color: 'primary.main', fontSize: 12, textAlign: 'justify' }}>

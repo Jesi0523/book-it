@@ -13,7 +13,7 @@
 2.  **Instala las dependencias**
 
     ```bash
-    npm install express mongoose dotenv cors express-validator jsonwebtoken bcrypt body-parser
+    npm install express mongoose dotenv cors express-validator jsonwebtoken bcryptjs body-parser
 
     npm install -D nodemon concurrently
     ```

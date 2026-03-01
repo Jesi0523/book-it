@@ -9,7 +9,7 @@ const generarUsuariosFalsos = (cantidad) => {
         nombre: "Administrador BookIT",
         correo: "admin@bookit.com",
         password: "admin123",
-        sexo: "Otro",
+        sexo: "femenino",
         telefono: "8100000000",
         fechaNacimiento: new Date("1990-01-01"),
         rol: "ADMIN",
@@ -21,7 +21,7 @@ const generarUsuariosFalsos = (cantidad) => {
             nombre: fakerES_MX.person.fullName(),
             correo: fakerES_MX.internet.email(),
             password: fakerES_MX.internet.password(10), // NO ESTÁ ENCRIPTADA, SOLO PARA PRUEBAS
-            sexo: fakerES_MX.helpers.arrayElement(["Hombre", "Mujer", "Otro"]),
+            sexo: fakerES_MX.helpers.arrayElement(["masculino", "femenino"]),
             telefono: fakerES_MX.phone.number(),
             fechaNacimiento: fakerES_MX.date.birthdate({
                 min: 18,

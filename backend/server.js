@@ -4,15 +4,15 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 // importar rutas
-/* const usuarioRoutes = require("./routes/usuario");
- */
+const usuarioRoutes = require("./routes/usuarioRoutes");
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 // Rutas
-/* app.use("/api/usuarios", usuarioRoutes);
- */
+app.use("/api/usuarios", usuarioRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 // Conectar la base de datos

@@ -25,6 +25,7 @@ const usuarioSchema = new mongoose.Schema(
         },
         sexo: {
             type: String,
+            enum: ["masculino", "femenino"],
             required: true,
         },
         telefono: {

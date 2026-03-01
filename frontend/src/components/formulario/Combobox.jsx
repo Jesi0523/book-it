@@ -69,7 +69,7 @@ const Combobox = ({ name, size = '16px', array, hasImage = false}) =>
             {{ 
                 background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)',
                 '& .MuiSelect-select': { backgroundColor: 'transparent !important', color: 'text.primary', fontSize: size },
-                '.MuiSvgIcon-root': { fill: 'gold !important' },
+                '.MuiSvgIcon-root': { fill: 'orange !important' },
                 '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' }
             }}
         >

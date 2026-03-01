@@ -1,9 +1,10 @@
 import Button from '@mui/material/Button';
 
-const NavOptions = ({icon, text, textSize = "0.6rem", textDirection = "column"}) => 
+const NavOptions = ({icon, text, textSize = "0.6rem", textDirection = "column", link}) => 
 {
     return(
         <Button
+            href= {link} 
             sx={{ 
                 display: 'flex',
                 flexDirection: textDirection,

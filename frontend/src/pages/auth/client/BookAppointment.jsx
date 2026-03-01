@@ -32,7 +32,7 @@ function BookAppointment()
             <NavBar/>
             <Box sx={{p:{xs: 2, md:7}}}>
                 <Box sx={{px: 3}}>
-                    <Title color='text.primary' align="{xs: 'center', md: 'start'}">Agenda tu cita</Title>
+                    <Title children='Agenda tu cita' color='text.primary' align="{xs: 'center', md: 'start'}"/>
                 </Box>
 
                 {/* Agendar cita */}
@@ -43,10 +43,10 @@ function BookAppointment()
 
                     <Grid size={{xs: 12, md: 8}} sx={{p:{xs:0.5 ,md:5}, display: 'flex', flexDirection: 'column', gap: {xs:1, md:5}}}>
                         <Grid container spacing={2} sx={{display: 'flex'}}>
-                            <Grid size={8}>
+                            <Grid size={{xs:8, md:10}}>
                                 <Combobox name='Selecciona un servicio' array={servicesDummy}/>
                             </Grid>
-                            <Grid size={4}>
+                            <Grid size={{xs:4, md: 2}}>
                                 <Box sx={{display: 'flex', alignItems: 'center', flexDirection: 'column', color: 'primary.main', justifyContent: 'center'}}>
                                     <Text children= 'Costo' color= 'primary.main' />
                                     <Box sx={{background: linearDegraded, py:1, px:2, borderRadius: '25%' }}>

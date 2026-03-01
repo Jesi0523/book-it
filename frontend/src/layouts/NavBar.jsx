@@ -66,7 +66,7 @@ function NavBar()
                         }
                     }}
                 >
-                    <MenuItem onClick={handleCloseNavMenu}>
+                    <MenuItem component="a" href="/clientSchedule">
                         <Typography><CalendarIcon/> Mis citas</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleCloseNavMenu}>
@@ -77,7 +77,7 @@ function NavBar()
 
             {/* LAPTOPS, MONITORES GRANDES, TELES xd */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "end"}}>
-                <NavOptions onClick={handleCloseNavMenu} icon={<CalendarIcon/>} text="Mis citas"></NavOptions>
+                <NavOptions icon={<CalendarIcon/>} link='/clientSchedule' text="Mis citas"></NavOptions>
                 <NavOptions onClick={handleCloseNavMenu} icon={<UserIcon/>} text="Ver perfil"></NavOptions>
             </Box>
 

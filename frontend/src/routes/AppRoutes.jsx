@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 
-import Login from "@/pages/auth/Login.jsx"; 
-import Signup from "@/pages/auth/Signup.jsx";
-import MainPage  from "@/pages/auth/MainPage";
-import BookAppointment from "@/pages/auth/BookAppointment";
+import Login from "@/pages/auth/client/Login.jsx"; 
+import Signup from "@/pages/auth/client/Signup.jsx";
+import MainPage  from "@/pages/auth/client/MainPage";
+import BookAppointment from "@/pages/auth/client/BookAppointment";
+import ClientSchedule from "@/pages/auth/client/mySchedule";
 
 const AppRoutes = () => {
   return (
@@ -15,7 +16,7 @@ const AppRoutes = () => {
       {/* Usuario */}
       <Route path="/main" element ={<MainPage />} />
       <Route path="/bookAppointment" element ={<BookAppointment />} />
-
+      <Route path="/clientSchedule" element ={<ClientSchedule />} />
       {/* Admin */}
 
 

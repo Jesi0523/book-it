@@ -1,6 +1,13 @@
 import { Button } from "@mui/material";
 
 const MainButton = ({ children, onClick, type = "button", fullWidth = false, size = 18, ...props }) => {
+  const responsiveFontSize = typeof size === 'object' 
+  ? { ...size } 
+  : {  
+      xs: `${Number(size) * 0.7}px`,
+      sm: `${Number(size) * 0.85}px`,
+      md: `${size}px`
+    };
   return (
     <Button
       type={type}
@@ -18,10 +25,7 @@ const MainButton = ({ children, onClick, type = "button", fullWidth = false, siz
         
         fontFamily: "'Montserrat', sans-serif",
         fontWeight: 'bold',
-        fontSize: {
-          xs: `${size * 0.7}px`,
-          sm: `${size * 0.85}px`
-        },
+        fontSize: responsiveFontSize,
         textTransform: 'none',
         
         '&:hover': {

@@ -5,4 +5,8 @@ body {
   font-family: "Montserrat", sans-serif;
   -webkit-font-smoothing: antialiased;
   background: #060511 !important;
+  .css-r3es4g-MuiAccordionDetails-root 
+  {
+    padding: 12;
+  }
 }

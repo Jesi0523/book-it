@@ -1,32 +1,45 @@
-import {Box, Grid, Avatar} from '@mui/material'
+import {Box, Grid} from '@mui/material'
+// ************** componentes propios :3 **************
+// |  layout
 import NavBar from '@/layouts/NavBar'
+// |  common
 import Title from '@/components/common/Title'
-import Text from '@/components/common/Text'
-import Combobox from '@/components/formulario/Combobox';
 import Collapsable from '@/components/common/Collapsable'
-import MainButton from '@/components/common/MainButton';
+// |  formulario
+import Combobox from '@/components/formulario/Combobox';
+// |  collapsable
+import AppointmentHeader from '@/components/collapsable/Header/AppointmentHeader';
+import AppointmentBody from '@/components/collapsable/Body/AppointmentBody';
 
-import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
-
+// |  iconos para los estatus
 import ClockIcon from '@mui/icons-material/QueryBuilder';
+import CloseIcon from '@mui/icons-material/CloseRounded';
+import CheckIcon from '@mui/icons-material/CheckRounded';
 
-const orderByDummy =[ 'Ordenar por antiguedad', 'Ordenar alfabeticamente', 'Ordenar por'];
+// NOTA: Aquí se actualizaran los estatus de una cita, o se sacan de la BD, no m acuerdo xd
+const statusAppointment =[ {name:'Pendiente', icon:<ClockIcon/>}, {name:'Completada', icon:<CheckIcon/>}, {name:'Cancelada', icon:<CloseIcon/>}];
+
 // ************** media dummy **************
 // |  Imagenes
 import photo from '@/assets/dummy/don.jpg'
 import photo2 from '@/assets/dummy/dd.jpg'
 import photo3 from '@/assets/dummy/a.jpg'
 // |  Datos
-const servicesDummy =[ 'Servicio 1', 'Servicio 2', 'Servicio 3', 'Servicio 4', 'Servicio 5'];
+const orderByDummy =[ 'Ordenar por antiguedad', 'Ordenar alfabeticamente', 'Ordenar por'];
 const employsDummy = [{name: 'Oliver Hansen', pfp: photo},{name:'Van Henry', pfp: photo2 },{name:'April Tucker', pfp: photo3}];
-const hoursDummy =[ '09:00-10:00am', '10:30-11:30am', '12:00-13:00pm', '13:00-14:00pm', '15:00-16:00pm'];
+const clientDummy =[ 
+    {name:'John Doe', age:'25', gender: 'Masculino', mail: 'jonD@gmail.com', phoneNumber:'81 3161 9950'},
+    {name:'Richard Roe', age:'62', gender: 'Masculino', mail: 'rr@gmail.com', phoneNumber:'81 3161 9951'},
+    {name:'Jane Doe', age:'25', gender: 'Femenino', mail: 'janeD@gmail.com', phoneNumber:'81 3161 9952' }
+];
+const appointmentsInfo =[
+    {service:'Servicio 1', date:'Febrero 11, 2026 9:00am a 10:00am.', price: '$4000', status:statusAppointment[2], employ: employsDummy[1], client: clientDummy[0]},
+    {service:'Servicio 2', date:'Marzo 1, 2026 13:00am a 14:00am.', price: '$500', status:statusAppointment[1], employ: employsDummy[2], client: clientDummy[1]}
+]
 // ****************************
 
 function ClientSchedule()
 {
-    const linearDegraded= 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)';
-    const linearDegradedBody= 'linear-gradient(180deg, #000114c2 0%, #0e0f30 100%)';
-    const colorBorder='2px solid #2c2e5bba';
     return(
         <>
         <NavBar/>
@@ -39,59 +52,16 @@ function ClientSchedule()
                     <Combobox name='Ordenar por:' array={orderByDummy} size='14px'/>
                 </Grid>
             </Grid>
-
-            <Box>
-                <Collapsable
-                    headerContent=
-                    {
-                        <Grid container sx={{width: '100%', p:1}}>
-                            <Grid size={{md:9}}>
-                                <Title children={'Servicio 1'} size={'20'} color={'text.primary'}/>
-                                <Text children={'Febrero 11, 2026 9:00am a 10:00am.'} size={'16'} color={'primary.main'}/>
-                            </Grid>
-                            <Grid size={{md:3}} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                                <SimpleInfoDisplay title='Costo: $$$$' align='center' width='fit-content' weightFont='700' 
-                                    titleSize='20' titleColor='text.primary' 
-                                    background='linear-gradient(180deg, #4e5082 0%, #3b3d75d3 100%)'/>
-                            </Grid>
-                        </Grid>
-                    }
-                >
-                    <Grid container sx={{display: 'flex', alignItems: 'center'}}>
-                        <Grid size={9}>
-                            <Box sx={{display: 'flex', flexDirection:'row', alignItems: 'center', gap: 3}}>
-                                <Avatar></Avatar>
-                                <Text children='Empleado 1'></Text>
-                            </Box>
-                        </Grid>
-                        <Grid size={3}>
-                            <SimpleInfoDisplay title='Estado: ' text='Pendiente' width='fit-content' hasIcon={true} icon={<ClockIcon/>} />
-                        </Grid>
-                    </Grid>
-
-                    <Box sx={{p: 3}}>
-                        <Title children={'Datos del Cliente'} size={'16'} />
-                        <Box sx={{background: linearDegraded, p:1, m:1, borderRadius: '10px'}}>
-                            <Grid container>
-                                <Grid size={10}><SimpleInfoDisplay title='Nombre'/></Grid>
-                                <Grid size={2}><SimpleInfoDisplay title='Edad'/></Grid>
-                            </Grid>
-
-                            <Grid container>
-                                <Grid size={5}> <SimpleInfoDisplay title='Sexo'/></Grid>
-                                <Grid size={7} ><SimpleInfoDisplay title='Correo electrónico'/></Grid>
-                            </Grid>
-                            <Grid container>
-                                <Grid size={6}> <SimpleInfoDisplay title='Número telefónico'/></Grid>
-                                <Grid size={6}>
-                                    <Box>
-                                        <MainButton children={'Cancelar cita'}/>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Box>
-                    </Box>
-                </Collapsable>
+            <Box sx={{display:'flex', flexDirection: 'column', gap:1, my: 3}}>
+                {appointmentsInfo.map((appointment) =>
+                {
+                    return(
+                        <Collapsable headerContent={<AppointmentHeader title={appointment.service} date={appointment.date} price={appointment.price}/>}>
+                        <AppointmentBody status={appointment.status} employ={appointment.employ} client={appointment.client}/>
+                        </Collapsable>
+                    )
+                }
+                )}
             </Box>
         </Box>
         </>

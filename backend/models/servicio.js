@@ -7,31 +7,34 @@
 */
 
 const mongoose = require("mongoose");
-const servicioSchema = new mongoose.Schema({
-    nombre: {
-        type: String,
-        required: true,
-    },
-    descripcion: {
-        type: String,
-        required: true,
-    },
-    precio: {
-        type: Number,
-        required: true,
-    },
-    /* tiempoEstimado: {
+const servicioSchema = new mongoose.Schema(
+    {
+        nombre: {
+            type: String,
+            required: true,
+        },
+        descripcion: {
+            type: String,
+            required: true,
+        },
+        precio: {
+            type: Number,
+            required: true,
+        },
+        /* tiempoEstimado: {
         type: Number,
         default: 60,
     }, */
-    foto: {
-        type: String,
-        required: true,
+        foto: {
+            type: String,
+            required: true,
+        },
+        activo: {
+            type: Boolean,
+            default: true,
+        },
     },
-    activo: {
-        type: Boolean,
-        default: true,
-    },
-});
+    { timestamps: true }, // Crea 'createdAt' y 'updatedAt' solitos
+);
 
-module.exports = mongoose.model("servicio", servicioSchema);
+module.exports = mongoose.model("Servicio", servicioSchema);

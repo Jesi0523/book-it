@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 
-const Text = ({ children, color = "text.primary", align = "start", size = 18 }) => {
+const Text = ({ children, color = "text.primary", align = "start", size = 18, fontWeight }) => {
   return (
     <Typography
       variant="body1"
@@ -11,7 +11,8 @@ const Text = ({ children, color = "text.primary", align = "start", size = 18 }) 
         fontSize: {
           xs: `${size * 0.7}px`,
           sm: `${size * 0.85}px`
-        }
+        },
+        fontWeight: fontWeight
       }}
       
     >

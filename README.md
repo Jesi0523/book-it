@@ -58,3 +58,11 @@
 ## ACT: Librería para carusel
     Ejecuten este comando desde el front para instalar el carrusel que se usa para las fotos del main:
     npm install swiper
+
+## ACT: Librería para el calendario
+    Ejecuten este comando desde el front para instalar lo necesario para el calendario
+    npm install @mui/x-date-pickers@^8.0.0
+    npm install dayjs
+
+    - El primero es para los estilos
+    - El segundo es para el manejo de fechas en cosas como mostrar la fecha recuperada, el parse, etc

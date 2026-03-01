@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 const Text = ({ children, color = "text.primary", align = "start", size = 18 }) => {
   return (
     <Typography
-      variant="p"
+      variant="body1"
       align={align}
       sx={{
         color: color,

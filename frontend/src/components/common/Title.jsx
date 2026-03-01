@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 
-const Title = ({ children, color = "primary.main", align = "start", size = 32 }) => {
+const Title = ({ children, color = "primary.main", align = "start", size = 32, textTransform= 'uppercase' }) => {
   return (
     <Typography
       variant="h1"
@@ -8,7 +8,7 @@ const Title = ({ children, color = "primary.main", align = "start", size = 32 })
       sx={{
         color: color,
         fontWeight: "bold",
-        textTransform: "uppercase",
+        textTransform: textTransform,
         letterSpacing: "1px",
         fontSize: {
           xs: `${size * 0.7}px`,

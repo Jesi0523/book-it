@@ -1,0 +1,12 @@
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+
+export default function Calendar() 
+{
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}> 
+      <DateCalendar sx={{ background: '#05061b'}}  />
+    </LocalizationProvider>
+  );
+}

@@ -1,4 +1,4 @@
-import{Grid, Typography, Box} from '@mui/material'
+import{Grid, Box} from '@mui/material'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
@@ -9,8 +9,10 @@ import 'swiper/css/navigation';
 // |  layout
 import NavBar from '@/layouts/NavBar'
 // |  common
-import MainButton from '@/components/common/MainButton'
+import MainButton from '@/components/common/MainButton';
 import TextWIcon from '@/components/common/TextWIcon';
+import Title from '@/components/common/Title';
+import Text from '@/components/common/Text';
 // |  main
 import CardServices from '@/components/main/CardServices';
 // ************** media dummy **************
@@ -65,7 +67,8 @@ function MainPage()
 {
     return(
         <>
-            <NavBar></NavBar>
+            <NavBar/>
+
             {/* Slider principal de las imagenes -> está en modo automatico */}
             <Box sx={{position: 'relative'}}>
                 <Box sx=
@@ -75,10 +78,10 @@ function MainPage()
                     pointerEvents: 'none'
                 }}/>
 
-                <Box sx={{position: 'absolute', zIndex: 100, top: '70%', width:'100%', textAlign: 'center'}}>
-                    <Typography variant='h4'>Empresa</Typography>
-                    <Typography variant='body1' sx={{color: 'primary.main'}}>slogan</Typography>
-                    <Typography variant='body2' sx={{color: 'text.main'}}>descripción breve</Typography>
+                <Box sx={{position: 'absolute', zIndex: 100, top: '70%', width:'100%', display: 'flex', flexDirection: 'column'}}>
+                    <Title children='Empresa' align='center' color='text.primary'/>
+                    <Text children='slogan' align='center' color= 'primary.main' size='20'/>
+                    <Text children='Descripción breve' align='center' color= 'text.primary' size='18'/>
                 </Box>
 
                 <Swiper
@@ -105,7 +108,7 @@ function MainPage()
                     <Box component='img' src={mainPhoto} sx={{height: { xs:'180px', md:'220px'}, padding: '2%'}}/>
                 </Grid>
                 <Grid size={{xs: 12, md:8}} sx={{display: 'flex', alignItems: 'center'}}>
-                    <Typography sx={{textAlign: 'justify', fontSize: 15}}> Somos una empresa que se dedica a ofrecer servicios de administración. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</Typography>
+                    <Text align='justify' color= 'text.primary' size='16' children="Somos una empresa que se dedica a ofrecer servicios de administración. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."/>
                 </Grid>
             </Grid> 
 
@@ -143,25 +146,25 @@ function MainPage()
 
             {/* Botón para agendar */}
             <Box sx={{display:'flex',justifyContent: 'center', m:5 }}>
-                <MainButton>Agenda tu cita <CalendarIcon/></MainButton>    
+                <MainButton href="/bookAppointment">Agenda tu cita <CalendarIcon/></MainButton>    
             </Box>            
 
             {/* ****** footer *****  */}
             <Box sx={{background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)', p: 3}}>
-                <Typography variant="h4" sx={{fontSize:18, p:1}} >Contáctanos</Typography>
+                <Title children='Contáctanos' color='text.primary' size='18'/>
                 <Grid container sx={{justifyContent: 'center'}}>
                     <Grid size={{xs:12, md:6}}>
-                        <TextWIcon icon={<LocationIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Dirección de la empresa" ></TextWIcon>
-                        <TextWIcon icon={<PhoneIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Teléfono de la empresa" ></TextWIcon>
-                        <TextWIcon icon={<EmailIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Correo electrónico" ></TextWIcon>
-
+                        <TextWIcon icon={<LocationIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Dirección de la empresa" />
+                        <TextWIcon icon={<PhoneIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Teléfono de la empresa" />
+                        <TextWIcon icon={<EmailIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Correo electrónico" />
                     </Grid>
                     <Grid size={{xs:12, md:6}}>
-                        <TextWIcon icon={<CalendarIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Horario de atención" ></TextWIcon>
-                        <Typography sx={{textAlign: 'justify', fontSize: 12, color: 'text.secondary', px: 4}}>Lunes a Viernes : 10:00 am a 4:00 pm <br></br> Sábado: 10:00 am a 2:00 pm</Typography>
+                        <TextWIcon icon={<CalendarIcon sx={{color: 'secondary.main', p:0.3}}/>} text="Horario de atención" />
+                        <Box sx={{px:4}}>
+                            <Text align='justify' color= 'text.secondary' size='14' children='Lunes a Viernes : 10:00 am a 4:00 pm'/>
+                        </Box>
                     </Grid>
                 </Grid>    
-
             </Box>
         </>
     )

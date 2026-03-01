@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
 import { Man, Woman } from "@mui/icons-material";
 
-const GenderSelect = ({ label = "Sexo" }) => {
+const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px solid #6C63FF'}) => 
+{
   const [selected, setSelected] = useState(null);
 
   return (
     <Box sx={{
-      border: '1.5px solid #6C63FF',
+      border: border,
       borderRadius: '30px',
       padding: '4px 12px',
       position: 'relative',
@@ -15,7 +16,7 @@ const GenderSelect = ({ label = "Sexo" }) => {
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
-      backgroundColor: 'rgba(255, 255, 255, 0.03)',
+      background: background,
       boxSizing: 'border-box'
     }}>
       <Typography sx={{

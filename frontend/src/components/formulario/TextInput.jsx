@@ -5,6 +5,9 @@ const TextInput = ({
   type = "text",
   placeholder = "lorem ipsum",
   height = "auto",
+  background = "#0c0c18",
+  border= 'secondary.main',
+  borderHover= 'secondary.light',
   ...props
 }) => {
   return (
@@ -20,20 +23,20 @@ const TextInput = ({
       sx={{
         "& .MuiOutlinedInput-root": {
           borderRadius: "50px",
-          height: {height},
+          height: height,
           color: "white",
           fontFamily: "'Montserrat', sans-serif",
-          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          background: background ,
 
           "& fieldset": {
-            borderColor: "secondary.main",
+            borderColor: border,
             borderWidth: "1.5px",
           },
           "&:hover fieldset": {
-            borderColor: "secondary.light",
+            borderColor: borderHover,
           },
           "&.Mui-focused fieldset": {
-            borderColor: "secondary.main",
+            borderColor: border,
             borderWidth: "2px",
           },
 

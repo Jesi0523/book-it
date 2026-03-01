@@ -1,17 +1,21 @@
 const mongoose = require("mongoose");
+const logger = require("./logger");
 
 const db = process.env.MONGO_URI;
 
 const connectDB = async () => {
+    logger.info("Intentando conectar a Atlas...");
     try {
-        console.log("Intentando conectar a Atlas...");
         await mongoose.connect(db);
-        console.log("-- MongoDB conectado --");
+        logger.info("-- MongoDB conectado --");
     } catch (err) {
-        console.error("-- ERROR CONECTANDO MONGO --", err.message);
+        logger.error("-- ERROR CONECTANDO MONGO --", err.message);
 
         // exit process with failure
-        process.exit(1);
+        setTimeout(() => {
+            // para que el log se escriba antes de salir
+            process.exit(1);
+        }, 1000);
     }
 };
 

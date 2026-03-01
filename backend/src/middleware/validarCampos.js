@@ -3,7 +3,7 @@ const { validationResult } = require("express-validator");
 const validarCampos = (req, res, next) => {
     // extrae los errores de la validacion
     const errors = validationResult(req);
-
+    //console.dir(req);
     // si hay errores responde con un status 400 y los errores
     if (!errors.isEmpty()) {
         return res.status(400).json({

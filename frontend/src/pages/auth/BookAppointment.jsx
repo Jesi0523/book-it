@@ -1,21 +1,26 @@
+import {Grid, Box} from '@mui/material'
 // ************** componentes propios :3 **************
 // |  layout
-import {Grid, Box, Typography} from '@mui/material'
 import NavBar from '@/layouts/NavBar'
+// |  common
 import Title from '@/components/common/Title'
 import Calendar from '@/components/common/Calendar'
+import MainButton from '@/components/common/MainButton'
+import Text from '@/components/common/Text'
+// | formulario
 import Combobox from '@/components/formulario/Combobox'
 import TextInput from '@/components/formulario/TextInput'
 import GenderSelect from '@/components/formulario/GenderSelect'
-import MainButton from '@/components/common/MainButton'
-import Text from '@/components/common/Text'
-
+// ************** media dummy **************
+// |  Imagenes
 import photo from '@/assets/dummy/don.jpg'
 import photo2 from '@/assets/dummy/dd.jpg'
 import photo3 from '@/assets/dummy/a.jpg'
+// |  Datos
 const servicesDummy =[ 'Servicio 1', 'Servicio 2', 'Servicio 3', 'Servicio 4', 'Servicio 5'];
 const employsDummy = [{name: 'Oliver Hansen', pfp: photo},{name:'Van Henry', pfp: photo2 },{name:'April Tucker', pfp: photo3}];
 const hoursDummy =[ '09:00-10:00am', '10:30-11:30am', '12:00-13:00pm', '13:00-14:00pm', '15:00-16:00pm'];
+// ****************************
 
 function BookAppointment()
 {
@@ -26,6 +31,8 @@ function BookAppointment()
                 <Box sx={{px: 3}}>
                     <Title color='text.primary' align="{xs: 'center', md: 'start'}">Agenda tu cita</Title>
                 </Box>
+
+                {/* Agendar cita */}
                 <Grid container spacing={0} sx={{height: '100%', p:2}}>
                     <Grid size={{xs: 12, md: 4}} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                         <Calendar/>
@@ -49,6 +56,8 @@ function BookAppointment()
                         <Combobox name='Horarios disponibles' array={hoursDummy}/>
                     </Grid>
                 </Grid>
+
+                {/* Datos del cliente */}
                 <Box sx={{px:5, py:1}}>
                     <Title children= 'Datos del cliente' size='16' textTransform='capitalize'></Title>
                     <Box sx={{p: 3, my:3, background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)', borderRadius: '15px',display: 'flex', flexDirection: 'column', gap:5 }}>
@@ -72,6 +81,8 @@ function BookAppointment()
                         </Grid>
                     </Box>
                 </Box>
+
+                {/* Confirmación y muestra de datos */}
                 <Box sx={{px:5}}>
                     <Title children= 'Se agendará una cita con la siguiente fecha:' size='16' textTransform='capitalize' align='center'/>
                     <Box sx={{p: 3, my:3, background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)', borderRadius: '15px',display: 'flex', flexDirection: 'column', gap:1 }}>

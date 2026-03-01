@@ -16,10 +16,10 @@
     "name": "bookit",
     "version": "1.0.0",
     "description": "App web diseñada para agendar y administrar citas",
-    "main": "server.js",
+    "main": "src/server.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server.js",
+        "start": "node src/server.js",
         "server": "nodemon --env-file=.env src/server.js"
     },
     "author": "Sofia Alanis, Aylin Rodriguez, Luz García, Itzel Pérez",

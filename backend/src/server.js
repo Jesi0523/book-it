@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 // Rutas
 app.use("/api/usuarios", usuarioRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Conectar la base de datos
 connectDB()

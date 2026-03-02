@@ -46,18 +46,18 @@ function ClientSchedule()
         <Box sx={{p:{xs: 2, md:7}}}>
             <Grid container sx={{px: 3}}>
                 <Grid size={{xs:12, md:7 }}>
-                    <Title children='Mis citas' color='text.primary' align="{xs: 'center', md: 'start'}"/>
+                    <Title children='Mis citas' color='text.primary' align={{xs: 'center', md: 'start'}}/>
                 </Grid>
                 <Grid size={{xs:12, md:5}}>
                     <Combobox name='Ordenar por:' array={orderByDummy} size='14px'/>
                 </Grid>
             </Grid>
             <Box sx={{display:'flex', flexDirection: 'column', gap:1, my: 3}}>
-                {appointmentsInfo.map((appointment) =>
+                {appointmentsInfo.map((appointment, index) =>
                 {
                     return(
-                        <Collapsable headerContent={<AppointmentHeader title={appointment.service} date={appointment.date} price={appointment.price}/>}>
-                        <AppointmentBody status={appointment.status} employ={appointment.employ} client={appointment.client}/>
+                        <Collapsable key={index} headerContent={<AppointmentHeader title={appointment.service} date={appointment.date} price={appointment.price}/>}>
+                        <AppointmentBody appointment={appointment}/>
                         </Collapsable>
                     )
                 }

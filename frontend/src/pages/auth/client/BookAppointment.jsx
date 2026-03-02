@@ -32,7 +32,7 @@ function BookAppointment()
             <NavBar/>
             <Box sx={{p:{xs: 2, md:7}}}>
                 <Box sx={{px: 3}}>
-                    <Title children='Agenda tu cita' color='text.primary' align="{xs: 'center', md: 'start'}"/>
+                    <Title children='Agenda tu cita' color='text.primary' align='center'/>
                 </Box>
 
                 {/* Agendar cita */}

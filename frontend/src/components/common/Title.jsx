@@ -11,7 +11,7 @@ const Title = ({ children, color = "primary.main", align = "start", size = 32, t
   return (
     <Typography
       variant="h1"
-      align={align}
+      textAlign={align}
       sx={{
         color: color,
         fontWeight: "bold",

@@ -5,7 +5,7 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 
-const AppointmentBody = ({status, employ, client}) =>
+const AppointmentBody = ({appointment}) =>
 {
     const linearDegraded= 'linear-gradient(180deg, #11122b 0%, #1c1e51d3 100%)';
     return(
@@ -14,12 +14,12 @@ const AppointmentBody = ({status, employ, client}) =>
             <Grid size={9} sx={{px: 2, display: 'flex', flexDirection:{xs:'column', md:'row'}, alignItems: {xs:'start', md:'center'}}}>
                 <Text children='Atiende: ' fontWeight={'700'} size={16}/>
                 <Box sx={{display: 'flex', flexDirection:'row', alignItems: 'center', gap: 1, px:2}}>
-                    <Avatar src={employ.pfp}/>
-                    <Text children={employ.name} size={14}/>
+                    <Avatar src={appointment.employ.pfp}/>
+                    <Text children={appointment.employ.name} size={14}/>
                 </Box>
             </Grid>
             <Grid size={3}>
-                <SimpleInfoDisplay title='Estado: ' text={status.name} width='fit-content' hasIcon={true} icon={status.icon} flexDirection={{xs:'column', md:'row'}} />
+                <SimpleInfoDisplay title='Estado: ' text={appointment.status.name} width='fit-content' hasIcon={true} icon={appointment.status.icon} flexDirection={{xs:'column', md:'row'}} />
             </Grid>
         </Grid>
 
@@ -27,16 +27,16 @@ const AppointmentBody = ({status, employ, client}) =>
             <Title children={'Datos del Cliente'} size={'16'} />
             <Box sx={{background: linearDegraded, p:3, m:1, borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: 2}}>
                 <Grid container spacing={{xs:1, md:5}}>
-                    <Grid size={9}><SimpleInfoDisplay title={client.name}/></Grid>
-                    <Grid size={3}><SimpleInfoDisplay title={client.age}/></Grid>
+                    <Grid size={9}><SimpleInfoDisplay title={appointment.client.name}/></Grid>
+                    <Grid size={3}><SimpleInfoDisplay title={appointment.client.age}/></Grid>
                 </Grid>
 
                 <Grid container spacing={{xs:1, md:5}}>
-                    <Grid size={5}> <SimpleInfoDisplay title={client.gender}/></Grid>
-                    <Grid size={7} ><SimpleInfoDisplay title={client.mail}/></Grid>
+                    <Grid size={5}> <SimpleInfoDisplay title={appointment.client.gender}/></Grid>
+                    <Grid size={7} ><SimpleInfoDisplay title={appointment.client.mail}/></Grid>
                 </Grid>
                 <Grid container spacing={{xs:1, md:5}} sx={{display: 'flex', alignItems: 'center'}}>
-                    <Grid size={6}> <SimpleInfoDisplay title={client.phoneNumber}/></Grid>
+                    <Grid size={6}> <SimpleInfoDisplay title={appointment.client.phoneNumber}/></Grid>
                     <Grid size={6}>
                         <Box sx={{display: 'flex', justifyContent: 'center'}}>
                             <MainButton size={{xs:'12px', md:'16px'}}>Cancelar<CloseIcon></CloseIcon></MainButton>

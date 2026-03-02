@@ -62,6 +62,7 @@ const imageDummy =
 [
     { id: '1', image: photoExample1}, {id: '2',image: photoExample2}, { id: '3',image: photoExample3}
 ];
+
 // ***********************************
 
 function MainPage()
@@ -70,7 +71,7 @@ function MainPage()
         <>
             <NavBar/>
 
-            {/* Slider principal de las imagenes -> está en modo automatico */}
+            {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
             <Box sx={{position: 'relative'}}>
                 <Box sx=
                 {{
@@ -79,9 +80,14 @@ function MainPage()
                     pointerEvents: 'none'
                 }}/>
 
-                <Box sx={{position: 'absolute', zIndex: 100, top: '70%', width:'100%', display: 'flex', flexDirection: 'column'}}>
+                <Box sx=
+                {{
+                    position: 'absolute', zIndex: 100,
+                    top: '70%', width:'100%',
+                    display: 'flex', flexDirection: 'column'
+                }}>
                     <Title children='Empresa' align='center' color='text.primary'/>
-                    <Text children='slogan' align='center' color= 'primary.main' size='20'/>
+                    <Text children='Slogan' align='center' color= 'primary.main' size='20'/>
                     <Text children='Descripción breve' align='center' color= 'text.primary' size='18'/>
                 </Box>
 
@@ -97,7 +103,7 @@ function MainPage()
                     {imageDummy.map((item) => 
                     (
                         <SwiperSlide key={item.id}>
-                            <img src={item.image} alt={`Slide ${item.id}`} style={{ height: '400px', width: '100%', objectFit: 'cover' }}/>
+                            <Box component='img' src={item.image} alt={`Slide ${item.id}`} style={{ height: '400px', width: '100%', objectFit: 'cover' }}/>
                         </SwiperSlide>
                     ))}
                 </Swiper>

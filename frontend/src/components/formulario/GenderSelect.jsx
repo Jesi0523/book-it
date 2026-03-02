@@ -22,7 +22,7 @@ const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px 
       <Typography sx={{
         color: 'primary.main',
         fontWeight: 'bold',
-        fontSize: '12px',
+        fontSize: '14px',
         position: 'absolute',
         top: 8,
         left: 20,

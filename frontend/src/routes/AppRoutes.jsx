@@ -4,7 +4,8 @@ import Login from "@/pages/auth/client/Login.jsx";
 import Signup from "@/pages/auth/client/Signup.jsx";
 import MainPage  from "@/pages/auth/client/MainPage";
 import BookAppointment from "@/pages/auth/client/BookAppointment";
-import ClientSchedule from "@/pages/auth/client/mySchedule";
+import ClientSchedule from "@/pages/auth/client/ClientSchedule";
+import Profile from '@/pages/auth/client/Profile';
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/main" element ={<MainPage />} />
       <Route path="/bookAppointment" element ={<BookAppointment />} />
       <Route path="/clientSchedule" element ={<ClientSchedule />} />
+      <Route path="/profile" element ={<Profile />} />
       {/* Admin */}
 
 

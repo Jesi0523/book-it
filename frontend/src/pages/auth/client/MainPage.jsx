@@ -21,6 +21,7 @@ import mainPhoto from '@/assets/dummy/main-1.png'
 import photoExample1 from '@/assets/dummy/main-2.png';
 import photoExample2 from '@/assets/dummy/main-3.png';
 import photoExample3 from '@/assets/dummy/main-4.png';
+
 // ************** iconos **************
 import CalendarIcon from '@mui/icons-material/CalendarMonth';
 import LocationIcon from '@mui/icons-material/LocationOnRounded';

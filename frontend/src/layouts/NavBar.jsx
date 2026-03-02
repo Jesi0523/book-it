@@ -69,7 +69,7 @@ function NavBar()
                     <MenuItem component="a" href="/clientSchedule">
                         <Typography><CalendarIcon/> Mis citas</Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleCloseNavMenu}>
+                    <MenuItem component="a" href="/profile">
                         <Typography><UserIcon/> Ver perfil</Typography>
                     </MenuItem>
                 </Menu>
@@ -78,7 +78,7 @@ function NavBar()
             {/* LAPTOPS, MONITORES GRANDES, TELES xd */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "end"}}>
                 <NavOptions icon={<CalendarIcon/>} link='/clientSchedule' text="Mis citas"></NavOptions>
-                <NavOptions onClick={handleCloseNavMenu} icon={<UserIcon/>} text="Ver perfil"></NavOptions>
+                <NavOptions icon={<UserIcon/>} link='/profile' text="Ver perfil"></NavOptions>
             </Box>
 
             <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, flexDirection: 'column', width: '150px', maxWidth: '300px', px: 2}}>
@@ -88,7 +88,7 @@ function NavBar()
             
             {/* TODO: Desplegar modal de confirmación */}
             <Box sx={{ flexGrow: 0}}>
-                <NavOptions icon={<LogoutIcon/>} text="Cerrar Sesión"></NavOptions>
+                <NavOptions icon={<LogoutIcon/>} text="Cerrar Sesión" link='/'></NavOptions>
             </Box>
         </Toolbar>
       </Container>

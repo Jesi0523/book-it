@@ -1,9 +1,6 @@
-const logger = require("../config/logger");
-
 const logTransacciones = (req, res, next) => {
     // filtra datos sensibles
-    const { password, ...bodySeguro } = req.body;
-
+    const { password, ...bodySeguro } = req.body || {};
     logger.info({
         mensaje: `Transacción: ${req.method} ${req.url}`,
         detalles: {

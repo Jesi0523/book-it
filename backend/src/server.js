@@ -1,26 +1,36 @@
 const express = require("express");
 const connectDB = require("./config/db");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const logger = require("./config/logger");
+const cookieParser = require("cookie-parser");
 const logTransacciones = require("./middleware/logMiddleware");
-
-// importar rutas
-const usuarioRoutes = require("./routes/usuarioRoutes");
+const cors = require("cors");
 
 const app = express();
 
-// middleware general
-app.use(cors());
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // para poder parsear bodies con formato x-www-form-urlencoded
+// Logger global
+const logger = require("./config/logger");
+global.logger = logger;
+
+// Middlewares globales
+app.use(cookieParser());
+app.use(
+    cors({
+        origin: "http://localhost:5173", // debe de ser el puerto de React
+        credentials: true, // Permite que las cookies pasen
+    }),
+);
 
 // middleware de logs
 app.use(logTransacciones);
 
 // Rutas
-app.use("/api/usuarios", usuarioRoutes);
+const usuarioRoutes = require("./routes/authRoutes");
+
+// importar rutas
+app.use("/api/auth", usuarioRoutes);
 
 const PORT = process.env.PORT || 5001;
 

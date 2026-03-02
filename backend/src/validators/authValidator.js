@@ -86,5 +86,13 @@ const registroValidator = [
             return true;
         }),
 ];
+const loginValidator = [
+    body("correo")
+        .isEmail()
+        .withMessage("Credenciales incorrectas")
+        .normalizeEmail(),
 
-module.exports = { registroValidator };
+    body("password").notEmpty().withMessage("La contraseña es requerida"),
+];
+
+module.exports = { registroValidator, loginValidator };

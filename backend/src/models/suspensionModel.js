@@ -30,6 +30,10 @@ const suspensionSchema = new mongoose.Schema(
                 return this.todoElDia === false;
             },
         },
+        activo: {
+            type: Boolean,
+            default: true,
+        },
     },
     { timestamps: true }, // Crea 'createdAt' y 'updatedAt' solitos
 );

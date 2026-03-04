@@ -21,11 +21,11 @@ const servicioSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        /* tiempoEstimado: {
+        duracion: {
         type: Number,
-        default: 60,
-    }, */
-        foto: {
+        default: 30,
+        },
+        fotoURL: {
             type: String,
             required: true,
         },

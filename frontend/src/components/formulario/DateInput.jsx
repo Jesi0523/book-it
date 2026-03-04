@@ -9,24 +9,38 @@ const DateInput = ({ label = "Fecha de nacimiento" }) => {
       InputLabelProps={{ shrink: true }}
       InputProps={{ notched: false }}
       sx={{
-        '& .MuiOutlinedInput-root': {
+        fontSize: '14px',
+        '& .MuiOutlinedInput-root': 
+        {
+          backgroundColor: '#0c0c18',
           borderRadius: '35px',
           color: 'white',
           height: '85px',
           '& fieldset': { borderColor: 'secondary.main', borderWidth: '1.5px' },
           
-          '& input': {
-            backgroundColor: '#16162a',
-            borderRadius: '12px',
+          '& input': 
+          {
+            backgroundColor: '#16162b',
             margin: '24px 15px 5px 15px',
             padding: '8px 0',
             textAlign: 'center',
-            fontSize: '0.9rem',
-            fontFamily: 'monospace',
-            color: 'rgba(255, 255, 255, 0.8)',
+            
+            borderRadius: '10px',
+            fontSize: '1rem',
+            color: 'rgba(255, 255, 255, 0.9)',
+          },
+
+          '& input::-webkit-calendar-picker-indicator': 
+          {
+            filter: 'invert(1)', 
+            cursor: 'pointer',
+            opacity: 0.6,
+            transition: '0.2s ease-in-out',
+            '&:hover': { opacity: 0.8 }
           }
         },
-        '& .MuiInputLabel-root': {
+        '& .MuiInputLabel-root': 
+        {
           color: 'primary.main',
           fontWeight: 'bold',
           fontSize: '14px',

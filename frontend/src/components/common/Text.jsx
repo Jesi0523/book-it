@@ -1,17 +1,23 @@
 import { Typography } from "@mui/material";
 
-const Text = ({ children, color = "text.primary", align = "start", size = 18 }) => {
+const Text = ({ children, color = "text.primary", align = "start", size = 18, fontWeight }) => 
+{
+  const responsiveFontSize = typeof size === 'object' 
+    ? { ...size } 
+    : {  
+        xs: `${Number(size) * 0.7}px`,
+        sm: `${Number(size) * 0.85}px`,
+        md: `${size}px`
+      };
   return (
     <Typography
-      variant="p"
+      variant="body1"
       align={align}
       sx={{
         color: color,
         letterSpacing: "1px",
-        fontSize: {
-          xs: `${size * 0.7}px`,
-          sm: `${size * 0.85}px`
-        }
+        fontSize: responsiveFontSize,
+        fontWeight: fontWeight
       }}
       
     >

@@ -19,11 +19,11 @@ const empleadoSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        informacionAdicional: {
+        informacion: {
             type: String,
             required: true,
         },
-        foto: {
+        fotoURL: {
             type: String,
             required: true,
         },

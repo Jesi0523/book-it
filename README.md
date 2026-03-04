@@ -66,12 +66,22 @@
     ```
 
 ### Ejecución Local
+   
+   1. Entra en la carpeta de **frontend** y ejecuta:
+   ```bash
+    npm run dev
+   ```
+   - Dale Ctrl + Click al que dice **http://localhost:5173/**
+   - Si quieres terminar la ejecución dale Ctrl + C
 
-1. Entra en la carpeta de **frontend** y ejecuta:
+## ACT: Librería para carusel
+    Ejecuten este comando desde el front para instalar el carrusel que se usa para las fotos del main:
+    npm install swiper
 
-```bash
- npm run dev
-```
+## ACT: Librería para el calendario
+    Ejecuten este comando desde el front para instalar lo necesario para el calendario
+    npm install @mui/x-date-pickers@^8.0.0
+    npm install dayjs
 
-- Dale Ctrl + Click al que dice **http://localhost:5173/**
-- Si quieres terminar la ejecución dale Ctrl + C
+    - El primero es para los estilos
+    - El segundo es para el manejo de fechas en cosas como mostrar la fecha recuperada, el parse, etc

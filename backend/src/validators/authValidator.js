@@ -38,6 +38,16 @@ const registroValidator = [
         .matches(/[^A-Za-z0-9]/)
         .withMessage("Debe contener al menos un carácter especial"),
 
+    body("passwordConfirmacion")
+        .custom((value,{req}) => {
+            if(value !== req.body.password){
+                throw new Error(
+                    "Las contraseñas no coinciden",
+                );
+            }
+            return true;
+        }),
+
     body("sexo")
         .toLowerCase()
         .notEmpty()
@@ -52,7 +62,7 @@ const registroValidator = [
         .isMobilePhone("any")
         .withMessage("El teléfono debe ser válido"),
 
-    body("fechaNacimiento", "La fecha de nacimiento no es válida")
+    body("fechaNacimiento")
         .trim()
         .notEmpty()
         .withMessage("La fecha de nacimiento es requerida")

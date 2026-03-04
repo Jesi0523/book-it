@@ -8,7 +8,7 @@ const validarCampos = (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({
             ok: false, // es para el frontend
-            errors: errors.mapped(), // devuelve los errores en objeto
+            msg: errors.mapped(), // devuelve los errores en objeto
         });
     }
     next(); // continuea con el siguiente middleware si no hay errores

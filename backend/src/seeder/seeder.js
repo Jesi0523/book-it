@@ -23,10 +23,10 @@ const poblarBaseDeDatos = async () => {
     try {
         // conexion a la bd
         await connectDB();
-        console.log("Iniciando el Seeding");
+        logger.info("Iniciando el Seeding");
 
         // limpiar datos
-        console.log("Borrando Datos");
+        logger.info("Borrando Datos");
         await Usuario.deleteMany();
         await Servicio.deleteMany();
         await Empleado.deleteMany();
@@ -35,7 +35,7 @@ const poblarBaseDeDatos = async () => {
         await Cita.deleteMany();
 
         // datos sin dependencias
-        console.log("Generando Usuarios y Servicios");
+        logger.info("Generando Usuarios y Servicios");
 
         // 20 usuarios
         const usuariosData = generarUsuariosFalsos(20);
@@ -45,21 +45,21 @@ const poblarBaseDeDatos = async () => {
         const serviciosData = generarServiciosFalsos();
         const serviciosDB = await Servicio.insertMany(serviciosData);
 
-        console.log("Ingresando la Empresa");
+        logger.info("Ingresando la Empresa");
         const empresaDB = generarEmpresa();
         await Empresa.insertMany(empresaDB);
 
         // colecciones dependientes
-        console.log("Generando Empleados");
+        logger.info("Generando Empleados");
         const empleadosData = generarEmpleadosFalsos(5, serviciosDB, empresaDB);
         const empleadosDB = await Empleado.insertMany(empleadosData);
 
         // colecciones dependientes
-        console.log("Generando Suspensiones");
+        logger.info("Generando Suspensiones");
         const suspensionesData = generarSuspensionesFalsas(empleadosDB);
         const suspensionesDB = await Suspension.insertMany(suspensionesData);
 
-        console.log("Generando Citas");
+        logger.info("Generando Citas");
         const citasData = generarCitasFalsas(
             usuariosDB,
             empleadosDB,
@@ -69,10 +69,10 @@ const poblarBaseDeDatos = async () => {
         );
         await Cita.insertMany(citasData);
 
-        console.log("SEEDING CORRECTO");
+        logger.info("SEEDING CORRECTO");
         process.exit(0);
     } catch (error) {
-        console.error("ERROR AL POBLAR LA BASE DE DATOS:", error);
+        logger.error("ERROR AL POBLAR LA BASE DE DATOS:", error);
         process.exit(1);
     }
 };

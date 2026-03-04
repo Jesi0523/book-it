@@ -3,13 +3,14 @@ const mongoose = require("mongoose");
 const citaSchema = new mongoose.Schema(
     {
         usuarioId: {
+            // NO ES REQUERIDO PORQUE SE PUEDE AGENDAR UNA CITA PARA UN TERCERO, PERO SI SE INGRESA, DEBE EXISTIR EN LA COLECCIÓN DE USUARIOS
             type: mongoose.Schema.Types.ObjectId,
-            ref: "usuario",
+            ref: "Usuario",
         }, // viene del front, el ID del cliente que tiene la sesión iniciada
 
         empleadoId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "empleado",
+            ref: "Empleado",
         }, // ID del empleado que el cliente seleccionó
 
         fecha: {
@@ -22,7 +23,7 @@ const citaSchema = new mongoose.Schema(
             required: true,
         },
 
-        // SE CALCULA EN EL BACK
+        // SE CALCULA EN EL BACK ** nota para aylin
         // ** QUIZA NO HACE FALTA GUARDARLO, PERO PUEDE QUE SEA MAS FACIL EN EL FRONT YA TENERLO **
         // la duración total de todos los servicios seleccionados.
         horaFin: {
@@ -52,10 +53,11 @@ const citaSchema = new mongoose.Schema(
             }, // en minutos */
         },
 
-        total: {
+        /* total: {
+            // ahora q lo veo, puede ser q no haga falta, pq tendríamos el snapshot del precio del servicio, pero lo checamos
             type: Number,
-            required: true,
-        },
+            //required: true,
+        }, */
 
         estado: {
             type: String,
@@ -75,4 +77,4 @@ const citaSchema = new mongoose.Schema(
     { timestamps: true }, // Crea 'createdAt' y 'updatedAt' solitos
 );
 
-module.exports = mongoose.model("cita", citaSchema);
+module.exports = mongoose.model("Cita", citaSchema);

@@ -66,7 +66,7 @@ const createServicio = async (req, res) => {
         });
 
         //escribe en mongo
-        await nuevoServicio.save();
+        await newServicio.save();
 
         res.status(201).json({
             ok:true,

@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
 
+//// MIDDLEWARE FINAL DE LAS VALIDACIONES////
+// revisa todos los errores que se hayan acumulado con los validators
+
 const validarCampos = (req, res, next) => {
     // extrae los errores de la validacion
     const errors = validationResult(req);

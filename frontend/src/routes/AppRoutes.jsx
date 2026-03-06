@@ -1,11 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 
-import Login from "@/pages/auth/client/Login.jsx"; 
-import Signup from "@/pages/auth/client/Signup.jsx";
-import MainPage  from "@/pages/auth/client/MainPage";
-import BookAppointment from "@/pages/auth/client/BookAppointment";
-import ClientSchedule from "@/pages/auth/client/ClientSchedule";
-import Profile from '@/pages/auth/client/Profile';
+import Login from "@/pages/auth/Login.jsx"; 
+import Signup from "@/pages/auth/Signup.jsx";
+import MainPage  from "@/pages/client/MainPage";
+import BookAppointment from "@/pages/client/BookAppointment";
+import ClientSchedule from "@/pages/client/ClientSchedule";
+import Profile from '@/pages/client/Profile';
 
 const AppRoutes = () => {
   return (

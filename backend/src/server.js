@@ -28,9 +28,11 @@ app.use(logTransacciones);
 
 // Rutas
 const usuarioRoutes = require("./routes/authRoutes");
+const servicioRoutes = require("./routes/servicioRoutes");
 
 // importar rutas
 app.use("/api/auth", usuarioRoutes);
+app.use("/api/servicios", servicioRoutes);
 
 const PORT = process.env.PORT || 5001;
 

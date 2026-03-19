@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import Button from '@mui/material/Button';
 
 const MainButton = ({ children, onClick, type = "button", fullWidth = false, size = 18, ...props }) => {
   const responsiveFontSize = typeof size === 'object' 

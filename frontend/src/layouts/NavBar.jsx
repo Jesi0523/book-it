@@ -1,12 +1,20 @@
 import * as React from 'react';
-import {AppBar, Link, Box, Toolbar, IconButton, Typography, Menu, Container, MenuItem} from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Container from '@mui/material/Container';
+import MenuItem from '@mui/material/MenuItem';
 
 // ************** componentes propios :3 **************
 // |  navigation
 import NavOptions from '@/components/navigation/NavOptions';
 
 // ************** imagenes **************
-import logo from '@/assets/Logo1.png';
+import logo from '@/assets/principal/Logo1.webp';
 
 // ************** iconos **************
 import MenuIcon from '@mui/icons-material/Menu';

@@ -1,4 +1,6 @@
-import {Grid, Box, Avatar} from '@mui/material'
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 import Title from '@/components/common/Title'
 import Text from '@/components/common/Text'
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';

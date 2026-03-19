@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
-import img from "@/assets/bg_auth.png";
-import logo from "@/assets/Logo1.png";
+import Box from '@mui/material/Box';
+import img from "@/assets/auth/bg_auth.webp";
+import logo from "@/assets/principal/Logo1.webp";
 
 const AuthLayout = ({ children }) => {
   return (

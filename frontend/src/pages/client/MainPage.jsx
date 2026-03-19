@@ -1,4 +1,6 @@
-import{Grid, Box} from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
@@ -17,10 +19,10 @@ import Text from '@/components/common/Text';
 import CardServices from '@/components/main/CardServices';
 // ************** media dummy **************
 // |  Imagenes
-import mainPhoto from '@/assets/dummy/main-1.png'
-import photoExample1 from '@/assets/dummy/main-2.png';
-import photoExample2 from '@/assets/dummy/main-3.png';
-import photoExample3 from '@/assets/dummy/main-4.png';
+import mainPhoto from '@/assets/dummy/main-1.webp'
+import photoExample1 from '@/assets/dummy/main-2.webp';
+import photoExample2 from '@/assets/dummy/main-3.webp';
+import photoExample3 from '@/assets/dummy/main-4.webp';
 
 // ************** iconos **************
 import CalendarIcon from '@mui/icons-material/CalendarMonth';

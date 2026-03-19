@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Box, Typography, IconButton } from "@mui/material";
-import { Man, Woman } from "@mui/icons-material";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Man from '@mui/icons-material/Man';
+import Woman from '@mui/icons-material/Woman';
 
 const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px solid #6C63FF'}) => 
 {

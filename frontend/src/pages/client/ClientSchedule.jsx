@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 
 // ************** componentes propios :3 **************
 // |  layout
-import NavBar from '@/layouts/NavBar';
+import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
 import Collapsable from '@/components/common/Collapsable';
@@ -34,7 +34,7 @@ import photo3 from '@/assets/dummy/perfil-3.jpg';
 const orderByDummy = [
   'Ordenar por antiguedad',
   'Ordenar alfabeticamente',
-  'Ordenar por',
+  // 'Ordenar por',
 ];
 const employsDummy = [
   { name: 'Oliver Hansen', pfp: photo },
@@ -86,10 +86,17 @@ const appointmentsInfo = [
 
 function ClientSchedule() {
   return (
-    <>
-      <NavBar />
-      <Box sx={{ p: { xs: 2, md: 7 } }}>
-        <Grid container sx={{ px: 3 }}>
+    <ClientLayout>
+      <Box
+        sx={{
+          py: { xs: 2, md: 5 },
+          px: { xs: 2, md: 2 },
+          width: '95%',
+          maxWidth: '1250px',
+          mx: 'auto',
+        }}
+      >
+        <Grid container sx={{ px: 3 }} rowSpacing={{ xs: 2, md: 0 }}>
           <Grid size={{ xs: 12, md: 7 }}>
             <Title
               children='Mis citas'
@@ -98,7 +105,12 @@ function ClientSchedule() {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 5 }}>
-            <Combobox name='Ordenar por:' array={orderByDummy} size='14px' />
+            <Combobox 
+              name='Ordenar por:' 
+              array={orderByDummy} 
+              size='14px' 
+              defaultValue={orderByDummy[0]} 
+            />
           </Grid>
         </Grid>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 3 }}>
@@ -120,7 +132,7 @@ function ClientSchedule() {
           })}
         </Box>
       </Box>
-    </>
+    </ClientLayout>
   );
 }
 

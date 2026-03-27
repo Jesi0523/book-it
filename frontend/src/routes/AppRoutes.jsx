@@ -19,6 +19,7 @@ const AppRoutes = () => {
       <Route path="/bookAppointment" element ={<BookAppointment />} />
       <Route path="/clientSchedule" element ={<ClientSchedule />} />
       <Route path="/profile" element ={<Profile />} />
+      
       {/* Admin */}
 
 

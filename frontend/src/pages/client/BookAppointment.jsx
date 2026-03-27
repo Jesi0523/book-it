@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 
 // ************** componentes propios :3 **************
 // |  layout
-import NavBar from '@/layouts/NavBar';
+import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
 import Calendar from '@/components/common/Calendar';
@@ -20,6 +20,7 @@ import photo2 from '@/assets/dummy/perfil-2.jpg';
 import photo3 from '@/assets/dummy/perfil-3.jpg';
 // |  Datos
 const servicesDummy = [
+  'Servicio super hyper mega largo para pruebas :)',
   'Servicio 1',
   'Servicio 2',
   'Servicio 3',
@@ -29,7 +30,10 @@ const servicesDummy = [
 const employsDummy = [
   { name: 'Oliver Hansen', pfp: photo },
   { name: 'Van Henry', pfp: photo2 },
-  { name: 'April Tucker', pfp: photo3 },
+  {
+    name: 'Teodora Vicenta de la Purísima Concepción de la Inmaculada Trinidad Villavicencio',
+    pfp: photo3,
+  },
 ];
 const hoursDummy = [
   '09:00-10:00am',
@@ -44,9 +48,16 @@ function BookAppointment() {
   const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51 100%)';
   const colorBorder = '2px solid #2c2e5bba';
   return (
-    <>
-      <NavBar />
-      <Box sx={{ p: { xs: 2, md: 7 } }}>
+    <ClientLayout>
+      <Box
+        sx={{
+          py: { xs: 2, md: 5 }, 
+          px: { xs: 2, md: 2 }, 
+          width: '95%',
+          maxWidth: '1600px',
+          mx: 'auto',
+        }}
+      >
         <Box sx={{ px: 3 }}>
           <Title
             children='Agenda tu cita'
@@ -72,49 +83,134 @@ function BookAppointment() {
             size={{ xs: 12, md: 8 }}
             sx={{
               p: { xs: 0.5, md: 5 },
+              py: { xs: 2, md: 6 },
               display: 'flex',
               flexDirection: 'column',
-              gap: { xs: 1, md: 5 },
+              gap: { xs: 2, md: 4 },
             }}
           >
-            <Grid container spacing={2} sx={{ display: 'flex' }}>
-              <Grid size={{ xs: 8, md: 10 }}>
-                <Combobox name='Selecciona un servicio' array={servicesDummy} />
-              </Grid>
-              <Grid size={{ xs: 4, md: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                width: '100%',
+                gap: 3,
+                alignItems: 'flex-end',
+              }}
+            >
+              {/* Seleccionar servicio */}
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                  minWidth: 0,
+                }}
+              >
+                <Text
+                  children='Selecciona un servicio'
+                  color='primary.main'
+                  size='20'
+                />
                 <Box
                   sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                    color: 'primary.main',
-                    justifyContent: 'center',
+                    width: '100%',
+                    '& .MuiFormControl-root': { m: 0, width: '100%' },
                   }}
                 >
-                  <Text children='Costo' color='primary.main' />
-                  <Box
-                    sx={{
-                      background: linearDegraded,
-                      py: 1,
-                      px: 2,
-                      borderRadius: '25%',
-                    }}
-                  >
-                    $$$$
-                  </Box>
+                  <Combobox
+                    array={servicesDummy}
+                    placeholder='Elige un servicio'
+                  />
                 </Box>
-              </Grid>
-            </Grid>
-            <Combobox name='Empleado' array={employsDummy} hasImage={true} />
-            <Combobox name='Horarios disponibles' array={hoursDummy} />
+              </Box>
+
+              {/* Costo */}
+              <Box
+                sx={{
+                  width: '100px',
+                  flexShrink: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+                }}
+              >
+                <Box sx={{ width: '100%', textAlign: 'right' }}>
+                  <Text children='Costo' color='primary.main' size='20' />
+                </Box>
+                <Box
+                  sx={{
+                    background: linearDegraded,
+                    height: '56px',
+                    width: '100%',
+                    borderRadius: '8px',
+                    border: colorBorder,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxSizing: 'border-box',
+                  }}
+                >
+                  $$$$
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Empleado */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                width: '100%',
+              }}
+            >
+              <Text children='Empleados' color='primary.main' size='20' />
+              <Box
+                sx={{
+                  width: '100%',
+                  '& .MuiFormControl-root': { m: 0, width: '100%' },
+                }}
+              >
+                <Combobox
+                  array={employsDummy}
+                  hasImage={true}
+                  placeholder='Elige un empleado'
+                />
+              </Box>
+            </Box>
+
+            {/* Horarios */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+                width: '100%',
+              }}
+            >
+              <Text
+                children='Horarios disponibles'
+                color='primary.main'
+                size='20'
+              />
+              <Box
+                sx={{
+                  width: '100%',
+                  '& .MuiFormControl-root': { m: 0, width: '100%' },
+                }}
+              >
+                <Combobox array={hoursDummy} placeholder='Elige un horario' />
+              </Box>
+            </Box>
           </Grid>
         </Grid>
 
         {/* Datos del cliente */}
-        <Box sx={{ px: { xs: 3, md: 5 }, py: 1 }}>
+        {/* <Box sx={{ px: { xs: 3, md: 5 }, py: 1 }}>
           <Title
             children='Datos del cliente'
-            size='16'
+            size='18'
             textTransform='capitalize'
           ></Title>
           <Box
@@ -140,13 +236,87 @@ function BookAppointment() {
               <Grid size={{ xs: 4, md: 2 }}>
                 <TextInput
                   label='Edad'
-                  placeholder='Ej:18 años'
+                  placeholder='Ej: 18 años'
                   type='number'
                   background={linearDegraded}
                   border={colorBorder}
                 />
               </Grid>
-              {/* TODO: Cambiar por otro display */}
+              
+              <Grid size={{ xs: 8, md: 4 }}>
+                <TextInput
+                  label='Número telefónico'
+                  type='number'
+                  placeholder='Ejemplo'
+                  background={linearDegraded}
+                  border={colorBorder}
+                />
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              spacing={{ xs: 1, md: 5 }}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Grid size={{ xs: 4, md: 2 }}>
+                <GenderSelect
+                  background={linearDegraded}
+                  border={colorBorder}
+                />
+              </Grid>
+              <Grid size={{ xs: 8, md: 6 }}>
+                <TextInput
+                  label='Correo electrónico'
+                  type='email'
+                  placeholder='Ejemplo'
+                  background={linearDegraded}
+                  border={colorBorder}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+        </Box> */}
+
+        <Box sx={{ px: { xs: 3, md: 5 }, py: 1 }}>
+          <Title
+            children='Datos del cliente'
+            size='18'
+            textTransform='capitalize'
+          ></Title>
+          <Box
+            sx={{
+              p: { xs: 1.5, md: 3 },
+              my: 3,
+              background: linearDegraded,
+              borderRadius: '15px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: { xs: 1, md: 5 },
+            }}
+          >
+            <Grid container spacing={{ xs: 1, md: 5 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextInput
+                  label='Nombre Completo'
+                  placeholder='Ingresa tu nombre'
+                  background={linearDegraded}
+                  border={colorBorder}
+                />
+              </Grid>
+              <Grid size={{ xs: 4, md: 2 }}>
+                <TextInput
+                  label='Edad'
+                  placeholder='Ej: 18 años'
+                  type='number'
+                  background={linearDegraded}
+                  border={colorBorder}
+                />
+              </Grid>
+
               <Grid size={{ xs: 8, md: 4 }}>
                 <TextInput
                   label='Número telefónico'
@@ -204,8 +374,9 @@ function BookAppointment() {
               gap: 1,
             }}
           >
+            <Text children='Febrero 11, 2026' size='18' align='center' />
             <Text
-              children='Febrero 11, 2026 9:00am a 10:00am.'
+              children='Horario: 9:00am a 10:00am. '
               size='18'
               align='center'
             />
@@ -232,7 +403,7 @@ function BookAppointment() {
           <MainButton>Agendar</MainButton>
         </Box>
       </Box>
-    </>
+    </ClientLayout>
   );
 }
 

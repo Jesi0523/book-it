@@ -1,101 +1,158 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box'
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
-
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-function getStyles(name, labelName, theme) 
-{
+function getStyles(name, labelName, theme) {
   return {
-    fontWeight: labelName.includes(name)
+    fontWeight: labelName === name
       ? theme.typography.fontWeightMedium
       : theme.typography.fontWeightRegular,
   };
 }
 
+const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, defaultValue = '' }) => {
+  const theme = useTheme();
+  const [labelName, setLabelName] = React.useState(defaultValue);
 
-const Combobox = ({ name, size = '16px', array, hasImage = false}) =>
-{
-    const theme = useTheme();
-    const [labelName, setLabelName] = React.useState([]);
+  const handleChange = (event) => {
+    setLabelName(event.target.value);
+  };
 
-    const handleChange = (event) => 
-    {
-        const { target: { value } } = event;
-        setLabelName(typeof value === 'string' ? value.split(',') : value);
-    };
+  return (
+    <FormControl sx={{ width: '100%' }}>
+      <Select
+        id='select'
+        value={labelName}
+        onChange={handleChange}
+        displayEmpty
+        renderValue={(selected) => {
+          if (!selected) {
+            return <span style={{ opacity: 0.6 }}>{placeholder || name}</span>;
+          }
 
-    return (
-        <FormControl sx={{ m: 1, width: '100%' }}>
-          <InputLabel id="label" sx={{ color: 'primary.main', fontSize: size }}>{name}</InputLabel>
-          <Select
-            labelId="label"
-            id="select"
-            value={labelName}
-            onChange={handleChange}
-            input={<OutlinedInput label={name} />} 
-            MenuProps=
-            {{
-                PaperProps: 
-                {
-                    style: { maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP, width: 250,},
-                    sx: 
-                    {
-                        background: 'linear-gradient(180deg, #05061b 100%, #a0a3de 0%)',
-                        color: 'text.primary',
-                    
-                        '& .MuiMenuItem-root': { fontSize: size},
-                    
-                        '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(12, 6, 74, 0.7)'},
-                    
-                        '& .MuiMenuItem-root.Mui-selected': 
-                        {
-                            backgroundColor: 'rgb(11, 8, 47) !important',
-                            color: 'white'
-                        },
-                    
-                        '& .MuiMenuItem-root.Mui-selected:hover': { backgroundColor: 'rgb(12, 6, 74) !important'}
-                    }
-                }
-            }}
-            sx=
-            {{ 
-                background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)',
-                '& .MuiSelect-select': { backgroundColor: 'transparent !important', color: 'text.primary', fontSize: size },
-                '.MuiSvgIcon-root': { fill: 'orange !important' },
-                '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' }
-            }}
-        >
-            {array.map((element) => 
-            {
-                const valor = hasImage ? element.name : element;
-                const photo = hasImage ? element.pfp : null;
-    
-                return (
-                    <MenuItem
-                        key={valor}
-                        value={valor}
-                        style={getStyles(valor, labelName, theme)}
-                    >
-                        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1.5 }} >
-                            { hasImage && ( <Avatar alt={valor} src={photo} sx={{ width: 24, height: 24 }} />)}
-                            {valor}
-                        </Box>
-                    </MenuItem>
-                );
-            }
-            )}
-        </Select>
+          const selectedObj = hasImage
+            ? array.find((item) => item.name === selected)
+            : null;
+          const photo = selectedObj ? selectedObj.pfp : null;
+
+          return (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1.5,
+                width: '100%',
+                overflow: 'hidden',
+              }}
+            >
+              {hasImage && (
+                <Avatar
+                  alt={selected}
+                  src={photo}
+                  sx={{ width: 24, height: 24, flexShrink: 0 }}
+                />
+              )}
+
+              <Box
+                component="span"
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  display: 'block',
+                }}
+              >
+                {selected}
+              </Box>
+            </Box>
+          );
+        }}
+        MenuProps={{
+          PaperProps: {
+            style: { maxHeight: ITEM_HEIGHT * 6 + ITEM_PADDING_TOP },
+            sx: {
+              background: 'linear-gradient(180deg, #05061b 100%, #a0a3de 0%)',
+              color: 'text.primary',
+              '& .MuiMenuItem-root': {
+                fontSize: size,
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                py: 1.5,
+              },
+              '& .MuiMenuItem-root:hover': {
+                backgroundColor: 'rgba(12, 6, 74, 0.7)',
+              },
+              '& .MuiMenuItem-root.Mui-selected': {
+                backgroundColor: 'rgb(11, 8, 47) !important',
+                color: 'white',
+              },
+              '& .MuiMenuItem-root.Mui-selected:hover': {
+                backgroundColor: 'rgb(12, 6, 74) !important',
+              },
+            },
+          },
+        }}
+        sx={{
+          background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)',
+          borderRadius: '8px',
+          height: '56px',
+
+          '& .MuiSelect-select': {
+            backgroundColor: 'transparent !important',
+            color: 'text.primary',
+            fontSize: size,
+            paddingRight: '40px !important', 
+            boxSizing: 'border-box',
+          },
+          '.MuiSvgIcon-root': { fill: 'orange !important' },
+          '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
+        }}
+      >
+        <MenuItem value='' disabled sx={{ display: 'none' }}>
+          <span style={{ opacity: 0.6 }}>{placeholder || name}</span>
+        </MenuItem>
+
+        {array.map((element) => {
+          const valor = hasImage ? element.name : element;
+          const photo = hasImage ? element.pfp : null;
+
+          return (
+            <MenuItem
+              key={valor}
+              value={valor}
+              style={getStyles(valor, labelName, theme)}
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  width: '100%',
+                }}
+              >
+                {hasImage && (
+                  <Avatar
+                    alt={valor}
+                    src={photo}
+                    sx={{ width: 24, height: 24, flexShrink: 0 }}
+                  />
+                )}
+                <span>{valor}</span>
+              </Box>
+            </MenuItem>
+          );
+        })}
+      </Select>
     </FormControl>
   );
-}
+};
 
 export default Combobox;

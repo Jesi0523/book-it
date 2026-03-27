@@ -46,7 +46,7 @@ function Signup() {
           }}
         >
           <Box sx={{ flex: 0.35 }}>
-            <GenderSelect />
+            <GenderSelect height="80px" />
           </Box>
 
           <Box sx={{ flex: 0.65 }}>

@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 
-const NavOptions = ({icon, text, textSize = "0.6rem", textDirection = "column", link}) => 
+const NavOptions = ({icon, text, textSize = "0.6rem", textDirection = "column", link, isActive}) => 
 {
     return(
         <Button
@@ -11,7 +11,7 @@ const NavOptions = ({icon, text, textSize = "0.6rem", textDirection = "column", 
                 fontSize: textSize,
                 fontFamily: "'Montserrat', sans-serif",
                 fontWeight: 'normal',
-                color: 'secondary.main',
+                color: isActive ? 'secondary.blueShade' : 'secondary.main',
                 transition: '0.2s ease-in-out',
                 '&:hover': 
                 {

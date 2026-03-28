@@ -6,6 +6,7 @@ import MainPage  from "@/pages/client/MainPage";
 import BookAppointment from "@/pages/client/BookAppointment";
 import ClientSchedule from "@/pages/client/ClientSchedule";
 import Profile from '@/pages/client/Profile';
+import AppointmentCalendar from "@/pages/admin/AppointmentCalendar";
 
 const AppRoutes = () => {
   return (
@@ -21,7 +22,7 @@ const AppRoutes = () => {
       <Route path="/profile" element ={<Profile />} />
       
       {/* Admin */}
-
+      <Route path="/appointmentCalendar" element ={<AppointmentCalendar />} />
 
     </Routes>
   );

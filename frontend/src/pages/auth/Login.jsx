@@ -1,5 +1,5 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import MuiLink from "@mui/material/Link";
 
 import AuthLayout from "@/layouts/AuthLayout";
@@ -17,6 +17,21 @@ import TextInput from "@/components/formulario/TextInput";
 import PasswordInput from "@/components/formulario/PasswordInput";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (email === "admin@gmail.com" && password === "1234") {
+      navigate("/appointmentCalendar");
+    } else {
+      navigate("/main"); 
+    }
+  };
+
   return (
     <AuthLayout>
       <Card
@@ -31,10 +46,15 @@ function Login() {
           type="email"
           label="Correo electrónico"
           placeholder="ejemplo@gmail.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
-        <PasswordInput />
+        <PasswordInput 
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-        <MainButton size={20} href="/main" >
+        <MainButton size={20} onClick={handleLogin}>
             Iniciar sesión
         </MainButton>
 

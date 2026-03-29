@@ -9,6 +9,7 @@ import { useLocation, Link as RouterLink } from 'react-router-dom';
 
 // Iconos
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import PeopleIcon from '@mui/icons-material/People';
 import BuildIcon from '@mui/icons-material/Build';
 import InfoIcon from '@mui/icons-material/Info';
@@ -22,6 +23,7 @@ import logo from '@/assets/principal/Logo1.webp';
 // Opciones
 const menuItems = [
   { text: 'Calendario de citas', icon: <CalendarMonthIcon />, path: '/appointmentCalendar' },
+  { text: 'Agendar cita', icon: <EditCalendarIcon/>, path: '/adminBookAppointment' },
   { text: 'Gestión de empleados', icon: <PeopleIcon />, path: '/employees' },
   { text: 'Gestión de servicios', icon: <BuildIcon />, path: '/services' },
   { text: 'Información de la empresa', icon: <InfoIcon />, path: '/companyInfo' },

@@ -7,6 +7,7 @@ import BookAppointment from "@/pages/client/BookAppointment";
 import ClientSchedule from "@/pages/client/ClientSchedule";
 import Profile from '@/pages/client/Profile';
 import AppointmentCalendar from "@/pages/admin/AppointmentCalendar";
+import AdminBookAppointment from "@/pages/admin/AdminBookAppointment";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       
       {/* Admin */}
       <Route path="/appointmentCalendar" element ={<AppointmentCalendar />} />
+      <Route path="/adminBookAppointment" element ={<AdminBookAppointment />} />
 
     </Routes>
   );

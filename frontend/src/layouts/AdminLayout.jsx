@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
@@ -24,51 +24,85 @@ const AdminLayout = ({ children }) => {
     setMobileOpen(!mobileOpen);
   };
 
+  // Overlay en PC
+  useEffect(() => {
+    if (isDesktopExpanded) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isDesktopExpanded]);
+
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#060511' }}>
-      
+    <Box
+      sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#060511' }}
+    >
+      {/* Overlay */}
+      <Box
+        sx={{
+          display: { xs: 'none', md: 'block' },
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+          zIndex: 1199,
+          opacity: isDesktopExpanded ? 1 : 0,
+          visibility: isDesktopExpanded ? 'visible' : 'hidden',
+          transition: 'opacity 0.3s ease, visibility 0.3s ease',
+        }}
+      />
+
       <AppBar
-        position="fixed"
+        position='fixed'
         sx={{
           display: { xs: 'block', md: 'none' },
           background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)',
           boxShadow: 'none',
-          borderBottom: '1px solid rgba(255,255,255,0.1)'
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}
       >
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
+            color='inherit'
+            aria-label='open drawer'
+            edge='start'
             onClick={handleDrawerToggle}
             sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
           {/* Logo en la barra superior en celulares */}
-          <img src={logo} alt="Logo" style={{ height: '30px' }} />
+          <img src={logo} alt='Logo' style={{ height: '30px' }} />
         </Toolbar>
       </AppBar>
 
       {/* Sidebar */}
       <Box
-        component="nav"
+        component='nav'
         sx={{
-          width: { md: isDesktopExpanded ? drawerWidthExpanded : drawerWidthCollapsed }, 
+          width: { md: drawerWidthCollapsed },
           flexShrink: { md: 0 },
-          transition: 'width 0.3s ease' 
         }}
       >
         {/* Sidebar celular */}
         <Drawer
-          variant="temporary"
+          variant='temporary'
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{ keepMounted: true }}
           sx={{
             display: { xs: 'block', md: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidthExpanded, borderRight: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidthExpanded,
+              borderRight: 'none',
+            },
           }}
         >
           <Sidebar isExpanded={true} />
@@ -76,17 +110,19 @@ const AdminLayout = ({ children }) => {
 
         {/* Sidebar desktop */}
         <Drawer
-          variant="permanent"
+          variant='permanent'
           onMouseEnter={() => setIsDesktopExpanded(true)}
           onMouseLeave={() => setIsDesktopExpanded(false)}
           sx={{
             display: { xs: 'none', md: 'block' },
-            '& .MuiDrawer-paper': { 
-              boxSizing: 'border-box', 
-              width: isDesktopExpanded ? drawerWidthExpanded : drawerWidthCollapsed, 
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: isDesktopExpanded
+                ? drawerWidthExpanded
+                : drawerWidthCollapsed,
               overflowX: 'hidden',
               transition: 'width 0.3s ease',
-              borderRight: '1px solid rgba(255,255,255,0.05)'
+              borderRight: '1px solid rgba(255,255,255,0.05)',
             },
           }}
           open
@@ -97,12 +133,12 @@ const AdminLayout = ({ children }) => {
 
       {/* Paginas */}
       <Box
-        component="main"
-        sx={{ 
-          flexGrow: 1, 
-          p: 3, 
+        component='main'
+        sx={{
+          flexGrow: 1,
+          p: 0,
           width: { xs: '100%', md: `calc(100% - ${drawerWidthCollapsed}px)` },
-          mt: { xs: '64px', md: 0 } 
+          mt: { xs: '64px', md: 0 },
         }}
       >
         {children}

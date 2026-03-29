@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 
 // ************** componentes propios :3 **************
 // |  layout
-import ClientLayout from '@/layouts/ClientLayout';
+import AdminLayout from '@/layouts/AdminLayout';
 // |  common
 import Title from '@/components/common/Title';
 import Calendar from '@/components/common/Calendar';
@@ -44,11 +44,11 @@ const hoursDummy = [
 ];
 // ****************************
 
-function BookAppointment() {
+function AdminBookAppointment() {
   const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51 100%)';
   const colorBorder = '2px solid #2c2e5bba';
   return (
-    <ClientLayout>
+    <AdminLayout>
       <Box
         sx={{
           py: { xs: 2, md: 5 }, 
@@ -329,8 +329,8 @@ function BookAppointment() {
           <MainButton>Agendar</MainButton>
         </Box>
       </Box>
-    </ClientLayout>
+    </AdminLayout>
   );
 }
 
-export default BookAppointment;
+export default AdminBookAppointment;

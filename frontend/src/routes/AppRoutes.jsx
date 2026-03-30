@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
+import NotFound from "@/pages/NotFound.jsx";
 import Login from "@/pages/auth/Login.jsx"; 
 import Signup from "@/pages/auth/Signup.jsx";
 import MainPage  from "@/pages/client/MainPage";
@@ -25,6 +26,9 @@ const AppRoutes = () => {
       {/* Admin */}
       <Route path="/appointmentCalendar" element ={<AppointmentCalendar />} />
       <Route path="/adminBookAppointment" element ={<AdminBookAppointment />} />
+
+      {/* Not Found */}
+      <Route path="*" element={<NotFound />} />
 
     </Routes>
   );

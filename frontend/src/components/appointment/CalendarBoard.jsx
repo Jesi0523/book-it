@@ -12,6 +12,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 // Componentes propios
 import CalendarCombobox from '@/components/formulario/CalendarCombobox';
 import CalendarDateInput from '@/components/formulario/CalendarDateInput';
+import AppointmentModal from '@/components/appointment/AppointmentModal';
 
 // Fotos prueba
 import avatar1 from '@/assets/dummy/perfil-1.jpg';
@@ -81,7 +82,7 @@ const horariosSemanalesDB = {
 
 // Horarios de cada dia
 const generarHorariosDelDia = (fecha) => {
-  const dia = fecha.getDay(); // Retorna un numero del 0 al 6
+  const dia = fecha.getDay(); // Devuelve un numero del 0 al 6
   const configDia = horariosSemanalesDB[dia];
 
   // Si ese dia esta cerrado, se devuelven arreglos vacios
@@ -110,7 +111,14 @@ const CalendarBoard = () => {
   const [empleadoBuscado, setEmpleadoBuscado] = useState(null);
   const [ahora, setAhora] = useState(new Date());
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [citaSeleccionada, setCitaSeleccionada] = useState(null);
   const scrollRef = useRef(null);
+
+  const handleAbrirModal = (cita, empleado) => {
+    setCitaSeleccionada({ ...cita, employ: empleado });
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     const intervalo = setInterval(() => setAhora(new Date()), 60000);
@@ -429,7 +437,9 @@ const CalendarBoard = () => {
                       >
                         {cita && (
                           <Box
+                            onClick={() => handleAbrirModal(cita, emp)}
                             sx={{
+                              cursor: 'pointer',
                               position: 'absolute',
                               top: 0,
                               left: 0,
@@ -518,6 +528,14 @@ const CalendarBoard = () => {
           </Box>
         )}
       </Box>
+
+      {/* Detalles de la cita */}
+      <AppointmentModal 
+        open={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        appointment={citaSeleccionada} 
+      />
+
     </Box>
   );
 };

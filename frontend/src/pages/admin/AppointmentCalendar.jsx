@@ -1,12 +1,16 @@
 import React from 'react';
 import Box from '@mui/material/Box';
+
+// Layout
 import AdminLayout from '@/layouts/AdminLayout';
-import Title from '@/components/common/Title';
-import MainButton from '@/components/common/MainButton';
+
+// Iconos
 import CalendarIcon from '@mui/icons-material/CalendarMonth';
 
 // Componentes propios
 import CalendarBoard from '@/components/appointment/CalendarBoard'; 
+import Title from '@/components/common/Title';
+import MainButton from '@/components/common/MainButton';
 
 const AppointmentCalendar = () => {
   return (

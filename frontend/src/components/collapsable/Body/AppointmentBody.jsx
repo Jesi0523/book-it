@@ -99,7 +99,7 @@ const AppointmentBody = ({appointment}) => {
                     {/* Cancelar cita */}
                     <Grid size={{xs: 12, md: 6}}>
                         <Box sx={{display: 'flex', justifyContent: {xs: 'center', md: 'flex-end'} }}>
-                            <MainButton size={{xs:'12px', md:'16px'}}>Cancelar<CloseIcon></CloseIcon></MainButton>
+                            <MainButton size={{xs:'12px', md:'16px'}}><CloseIcon /> Cancelar cita</MainButton>
                         </Box>
                     </Grid>
                 </Grid>

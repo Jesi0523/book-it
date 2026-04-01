@@ -105,11 +105,11 @@ function ClientSchedule() {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 5 }}>
-            <Combobox 
-              name='Ordenar por:' 
-              array={orderByDummy} 
-              size='14px' 
-              defaultValue={orderByDummy[0]} 
+            <Combobox
+              name='Ordenar por:'
+              array={orderByDummy}
+              size='14px'
+              defaultValue={orderByDummy[0]}
             />
           </Grid>
         </Grid>

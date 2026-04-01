@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 
-const MainButton = ({ children, onClick, type = "button", fullWidth = false, size = 18, ...props }) => {
+const MainButton = ({ children, onClick, type = "button", fullWidth = false, size = 18, sx, ...props }) => {
   const responsiveFontSize = typeof size === 'object' 
   ? { ...size } 
   : {  
@@ -8,6 +8,7 @@ const MainButton = ({ children, onClick, type = "button", fullWidth = false, siz
       sm: `${Number(size) * 0.85}px`,
       md: `${size}px`
     };
+    
   return (
     <Button
       type={type}
@@ -15,24 +16,26 @@ const MainButton = ({ children, onClick, type = "button", fullWidth = false, siz
       fullWidth={fullWidth}
       onClick={onClick}
       {...props}
-      sx={{
-        borderRadius: '50px',
-        backgroundColor: 'primary.main',
-        color: '#000',
-        width: 'fit-content',
-        margin: 'auto', 
-        padding: '10px 32px', 
-        
-        fontFamily: "'Montserrat', sans-serif",
-        fontWeight: 'bold',
-        fontSize: responsiveFontSize,
-        textTransform: 'none',
-        
-        '&:hover': {
-          backgroundColor: 'primary.light'
+      sx={[
+        {
+          borderRadius: '50px',
+          backgroundColor: 'primary.main',
+          color: '#000',
+          width: 'fit-content',
+          margin: 'auto',
+          padding: '10px 32px', 
+          fontFamily: "'Montserrat', sans-serif",
+          fontWeight: 'bold',
+          fontSize: responsiveFontSize,
+          textTransform: 'none',
+          
+          '&:hover': {
+            backgroundColor: 'primary.light'
+          },
+          transition: 'all 0.3s ease',
         },
-        transition: 'all 0.3s ease',
-      }}
+        ...(sx ? (Array.isArray(sx) ? sx : [sx]) : [])
+      ]}
     >
       {children}
     </Button>

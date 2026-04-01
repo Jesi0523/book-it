@@ -22,16 +22,16 @@ import avatar3 from '@/assets/dummy/perfil-3.jpg';
 // <------------- DUMMY ------------->
 
 // Empleados
-const dummyEmployees = [
+const dummyEmpleados = [
   { id: 1, name: 'Roberto Rodríguez', foto: avatar2 },
-  { id: 2, name: 'Marcela S.', foto: avatar1 },
+  { id: 2, name: 'Marcela López', foto: avatar1 },
   { id: 3, name: 'Ricardo Martínez', foto: avatar2 },
   { id: 4, name: 'Laura Cavazos', foto: avatar3 },
   { id: 5, name: 'Pedro Sánchez', foto: avatar2 },
 ];
 
 // Citas
-const dummyAppointments = [
+const dummyCitas = [
   {
     id: 101,
     empId: 1,
@@ -161,7 +161,7 @@ const CalendarBoard = () => {
 
   const empleadosAMostrar = empleadoBuscado
     ? [empleadoBuscado]
-    : dummyEmployees;
+    : dummyEmpleados;
   const {
     slots: horariosDelDia,
     horaInicio,
@@ -209,14 +209,14 @@ const CalendarBoard = () => {
           <CalendarCombobox
             name='Buscar empleado'
             placeholder='Buscar empleado...'
-            array={dummyEmployees}
+            array={dummyEmpleados}
             hasImage={true}
             value={empleadoBuscado?.name || ''}
             onChange={(e) => {
               if (!e.target.value) {
                 setEmpleadoBuscado(null);
               } else {
-                const emp = dummyEmployees.find(
+                const emp = dummyEmpleados.find(
                   (emp) => emp.name === e.target.value,
                 );
                 setEmpleadoBuscado(emp || null);
@@ -420,7 +420,7 @@ const CalendarBoard = () => {
                   </Box>
 
                   {empleadosAMostrar.map((emp) => {
-                    const cita = dummyAppointments.find(
+                    const cita = dummyCitas.find(
                       (a) =>
                         a.empId === emp.id && a.start === horaInicioCeldita,
                     );

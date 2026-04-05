@@ -4,8 +4,8 @@ import Box from '@mui/material/Box';
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
 import EmployeeDataSection from '@/components/employees/sections/EmployeeDataSection';
-import ScheduleSection from '@/components/employees/sections/ScheduleSection';
-import ServicesSection from '@/components/employees/sections/ServicesSection'; 
+import ScheduleSection from '@/components/common/ScheduleSection';
+import ServicesSection from '@/components/employees/sections/ServicesSection';
 
 // <----------- DUMMY DATA ----------->
 
@@ -29,10 +29,22 @@ const availableDummyServices = [
 const EmployeeForm = ({ employee, onCancel, onSave }) => {
   // Estados
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', birthdate: '', info: '', foto: null, archivoFisico: null,
+    name: '',
+    email: '',
+    phone: '',
+    birthdate: '',
+    info: '',
+    foto: null,
+    archivoFisico: null,
   });
   const [scheduleMap, setScheduleMap] = useState({
-    Domingo: [], Lunes: [], Martes: [], Miércoles: [], Jueves: [], Viernes: [], Sábado: []
+    Domingo: [],
+    Lunes: [],
+    Martes: [],
+    Miércoles: [],
+    Jueves: [],
+    Viernes: [],
+    Sábado: [],
   });
   const [selectedServices, setSelectedServices] = useState([]);
 
@@ -40,8 +52,13 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
   useEffect(() => {
     if (employee && employee.id !== 'nuevo') {
       setFormData({
-        name: employee.name || '', email: employee.email || '', phone: employee.phone || '',
-        birthdate: employee.birthdate || '', info: employee.info || '', foto: employee.foto || null, archivoFisico: null,
+        name: employee.name || '',
+        email: employee.email || '',
+        phone: employee.phone || '',
+        birthdate: employee.birthdate || '',
+        info: employee.info || '',
+        foto: employee.foto || null,
+        archivoFisico: null,
       });
       if (employee.scheduleMap) {
         setScheduleMap(employee.scheduleMap);
@@ -51,10 +68,25 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
       } else {
         setSelectedServices([]);
       }
-
     } else {
-      setFormData({ name: '', email: '', phone: '', birthdate: '', info: '', foto: null, archivoFisico: null });
-      setScheduleMap({ Domingo: [], Lunes: [], Martes: [], Miércoles: [], Jueves: [], Viernes: [], Sábado: [] });
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        birthdate: '',
+        info: '',
+        foto: null,
+        archivoFisico: null,
+      });
+      setScheduleMap({
+        Domingo: [],
+        Lunes: [],
+        Martes: [],
+        Miércoles: [],
+        Jueves: [],
+        Viernes: [],
+        Sábado: [],
+      });
       setSelectedServices([]);
     }
   }, [employee]);
@@ -83,7 +115,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
   const handleServiceToggle = (serviceName) => {
     setSelectedServices((prev) => {
       if (prev.includes(serviceName)) {
-        return prev.filter(name => name !== serviceName);
+        return prev.filter((name) => name !== serviceName);
       } else {
         return [...prev, serviceName];
       }
@@ -92,52 +124,74 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
 
   // Funcion agregar/editar empleado
   const handleSubmit = () => {
-    onSave({ 
-      ...employee, 
-      ...formData, 
-      scheduleMap, 
-      services: selectedServices
+    onSave({
+      ...employee,
+      ...formData,
+      scheduleMap,
+      services: selectedServices,
     });
   };
 
   // Estructura
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4, color: 'white' }}>
-      
+    <Box
+      sx={{
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+        color: 'white',
+      }}
+    >
       {/* Datos del empleado */}
       <Box>
-        <EmployeeDataSection 
-          formData={formData} 
-          handleInputChange={handleInputChange} 
-          handleDateChange={handleDateChange} 
-          handlePhotoChange={handlePhotoChange} 
+        <EmployeeDataSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleDateChange={handleDateChange}
+          handlePhotoChange={handlePhotoChange}
         />
       </Box>
 
       {/* Horario */}
-      <Box sx={{p: { xs: 2, md: 4 }, borderRadius: '16px', border: `1px solid #787ff6` }}>
-        <ScheduleSection 
-          scheduleMap={scheduleMap} 
-          setScheduleMap={setScheduleMap} 
+      <Box
+        sx={{
+          p: { xs: 2, md: 4 },
+          borderRadius: '16px',
+          border: `1px solid #787ff6`,
+        }}
+      >
+        <ScheduleSection
+          scheduleMap={scheduleMap}
+          setScheduleMap={setScheduleMap}
         />
       </Box>
 
       {/* Servicios */}
-      <Box sx={{p: { xs: 2, md: 4 }, borderRadius: '16px', border: `1px solid #787ff6` }}>
-        <ServicesSection 
-          availableServices={availableDummyServices} 
-          selectedServices={selectedServices} 
-          onServiceToggle={handleServiceToggle} 
+      <Box
+        sx={{
+          p: { xs: 2, md: 4 },
+          borderRadius: '16px',
+          border: `1px solid #787ff6`,
+        }}
+      >
+        <ServicesSection
+          availableServices={availableDummyServices}
+          selectedServices={selectedServices}
+          onServiceToggle={handleServiceToggle}
         />
       </Box>
 
       {/* Boton guardar */}
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-        <MainButton size={{ xs: '16px', md: '18px' }} onClick={handleSubmit} sx={{ backgroundColor: '#ffb74d', color: '#000', px: 6 }}>
+        <MainButton
+          size={{ xs: '16px', md: '18px' }}
+          onClick={handleSubmit}
+          sx={{ backgroundColor: '#ffb74d', color: '#000', px: 6 }}
+        >
           {employee?.id === 'nuevo' ? 'Agregar' : 'Guardar'}
         </MainButton>
       </Box>
-
     </Box>
   );
 };

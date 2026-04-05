@@ -152,6 +152,16 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             value={selectedDay}
             onChange={(e) => setSelectedDay(e.target.value)}
             size='small'
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  backgroundColor: '#1b1c37',
+                  color: 'white',
+                  '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 183, 77, 0.2)' },
+                  '& .Mui-selected': { backgroundColor: 'rgba(255, 183, 77, 0.4) !important' }
+                }
+              }
+            }}
             sx={{
               minWidth: '130px',
               backgroundColor: '#1b1c37',

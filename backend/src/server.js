@@ -3,7 +3,7 @@ const connectDB = require("./config/db");
 const cookieParser = require("cookie-parser");
 const logTransacciones = require("./middleware/logMiddleware");
 const cors = require("cors");
-
+const path = require("path");
 const app = express();
 
 // Body parser
@@ -33,6 +33,19 @@ const servicioRoutes = require("./routes/servicioRoutes");
 // importar rutas
 app.use("/api/auth", usuarioRoutes);
 app.use("/api/servicios", servicioRoutes);
+
+// PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
+if (process.env.NODE_ENV === "production") {
+    // archivos de React
+    app.use(express.static(path.join(__dirname, "../dist")));
+    app.get(/(.*)/, (req, res) => {
+        if (!req.url.startsWith("/api")) {
+            res.sendFile(path.join(__dirname, "../dist", "index.html"));
+        }
+    });
+} else {
+    logger.info("Modo desarrollo: React se sirve desde Vite.");
+}
 
 const PORT = process.env.PORT || 5001;
 

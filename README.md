@@ -1,12 +1,14 @@
 # BookIT!
 
 ## Integrantes
+
 - Luz Paola García Rodríguez
 - Sofia Alejandra Alanís Ayala
 - Aylin Celeste Rodríguez Cavazos
 - Itzel Anahí Pérez Morales
 
 ## Descripción de la aplicación
+
 Book IT! es una plataforma digital diseñada para optimizar la gestión de citas. Permite a los clientes agendar servicios en tiempo real, mientras ofrece a los dueños de negocios herramientas para administrar su personal, horarios y obtener reportes estratégicos para la toma de decisiones.
 
 ## Descripción de las carpetas contenidas
@@ -14,45 +16,30 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
 ### Backend
 
 - **src**: Código fuente
-  
     - **config**: Conexion a la BD y logger
- 
     - **controllers**: Controladores de la api
- 
     - **helpers**: Funciones auxiliares
- 
     - **middleware**: Middleware para logs y validación de datos
- 
     - **models**: Modelo de cada collection
- 
     - **routes**: Routers de cada api
- 
     - **seeder**: Llena la BD con datos prueba
- 
     - **validators**: Validadores de datos
 
 ### Frontend
 
 - **src**: Código fuente
-  
     - **assets**: Contenido multimedia
 
     - **api**: Conectar el frontend con la carpeta de backend
- 
     - **components**: Componentes reutilizables
 
     - **context**: Guarda el estado del usuario, es decir, si esta logueado o no
- 
     - **layouts**: Plantillas que se pueden usar en varias páginas
- 
     - **pages**: Páginas principales de la aplicación
- 
     - **routes**: Ruta de navegación de cada página
- 
     - **styles**: Estilos globales
- 
     - **theme**: Configuración de estilos y tema para MUI
-  
+
 ## Backend & Base de Datos
 
 ### Configuración del Entorno
@@ -114,6 +101,7 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
     ```
 
 2. **Instala las dependencias**
+
     ```bash
     npm install react-router-dom react-hot-toast @mui/material @emotion/react @emotion/styled @mui/icons-material axios react-hook-form zod @hookform/resolvers jwt-decode
     ```
@@ -121,17 +109,19 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
 3. **Instala las librerias**
 
 - Ejecuten este comando desde el front para instalar el carrusel que se usa para las fotos del main
+
     ```bash
     npm install swiper
     ```
 
 - Ejecuten este comando desde el front para instalar lo necesario para el calendario
+
     ```bash
     npm install @mui/x-date-pickers@^8.0.0
     npm install dayjs
     ```
+
     - El primero es para los estilos
-      
     - El segundo es para el manejo de fechas en cosas como mostrar la fecha recuperada, el parse, etc
 
 4.  **Configura las Variables de Entorno**
@@ -139,10 +129,34 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
     Crea un archivo `.env` dentro de la carpeta **frontend** (pueden usar `.envEjemplo` como base).
 
 ### Ejecución Local
-   
-   1. Entra en la carpeta de **frontend** y ejecuta:
-   ```bash
-    npm run dev
-   ```
-   - Dale Ctrl + Click al que dice **http://localhost:5173/**
-   - Si quieres terminar la ejecución dale Ctrl + C
+
+1. Entra en la carpeta de **frontend** y ejecuta:
+
+```bash
+ npm run dev
+```
+
+- Dale Ctrl + Click al que dice **http://localhost:5173/**
+- Si quieres terminar la ejecución dale Ctrl + C
+
+## Ejecución Monolito
+
+Se configuró el proyecto para que funcione de dos formas: en modo desarrollo y en modo producción.
+
+### Configuración inicial
+
+1. Compilar el Frontend: En la ruta del frontend, ejecuten:
+
+    ```bash
+    npm run build
+    ```
+
+2. Copie la carpeta DIST del front a la raiz del backend, fuera de la carpeta src. Backend/
+
+3. Se debe de configurar la variable NODE_ENV de las variables de entorno del back en **production**
+
+4. Finalmente inicie el servidor desde la carpeta del backend:
+
+    ```bash
+    npm run server
+    ```

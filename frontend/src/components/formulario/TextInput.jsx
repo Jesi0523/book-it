@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import TextField from '@mui/material/TextField';
 
 const TextInput = ({
   label = "Lorem ipsum",
@@ -6,8 +6,9 @@ const TextInput = ({
   placeholder = "lorem ipsum",
   height = "auto",
   background = "#0c0c18",
-  border= 'secondary.main',
-  borderHover= 'secondary.light',
+  border = 'secondary.main',
+  borderHover = 'secondary.light',
+  sx,
   ...props
 }) => {
   return (
@@ -20,48 +21,59 @@ const TextInput = ({
       InputLabelProps={{ shrink: true }}
       InputProps={{ notched: false }}
       {...props}
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          borderRadius: "50px",
-          height: height,
-          color: "white",
-          fontFamily: "'Montserrat', sans-serif",
-          background: background ,
+      sx={[
+        {
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "50px",
+            height: height,
+            color: "white",
+            fontFamily: "'Montserrat', sans-serif",
+            background: background,
 
-          "& fieldset": {
-            borderColor: border,
-            borderWidth: "1.5px",
-          },
-          "&:hover fieldset": {
-            borderColor: borderHover,
-          },
-          "&.Mui-focused fieldset": {
-            borderColor: border,
-            borderWidth: "2px",
+            "& fieldset": {
+              borderColor: border,
+              borderWidth: "1.5px",
+            },
+            "&:hover fieldset": {
+              borderColor: borderHover,
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: border,
+              borderWidth: "2px",
+            },
+
+            "& input::placeholder, & textarea::placeholder": {
+              color: "rgba(255, 255, 255, 0.4)",
+              opacity: 1,
+            },
+
+            "&.MuiInputBase-multiline": {
+              padding: "28px 24px 16px 24px",
+              alignItems: "flex-start",
+            },
+            "& .MuiInputBase-inputMultiline": {
+              padding: 0,
+            }
           },
 
-          "& input::placeholder": {
-            color: "rgba(255, 255, 255, 0.4)",
-            opacity: 1,
-          },
-        },
-
-        "& .MuiInputLabel-root": {
-          color: "primary.main",
-          fontSize: "18px",
-          fontWeight: "600",
-          transform: "translate(24px, 8px) scale(0.75)",
-          transformOrigin: "top left",
-          "&.Mui-focused": {
+          "& .MuiInputLabel-root": {
             color: "primary.main",
+            fontSize: "18px",
+            fontWeight: "600",
+            transform: "translate(24px, 10px) scale(0.75) !important", 
+            transformOrigin: "top left",
+            "&.Mui-focused": {
+              color: "primary.main",
+            },
+          },
+
+          "& .MuiInputBase-input": {
+            fontSize: "16px",
+            padding: "28px 24px 10px 24px",
           },
         },
-
-        "& .MuiInputBase-input": {
-          fontSize: "16px",
-          padding: "28px 24px 10px 24px",
-        },
-      }}
+        ...(Array.isArray(sx) ? sx : [sx])
+      ]}
     />
   );
 };

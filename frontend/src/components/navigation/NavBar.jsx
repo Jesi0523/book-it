@@ -1,15 +1,26 @@
 import * as React from 'react';
-import {AppBar, Link, Box, Toolbar, IconButton, Typography, Menu, Container, MenuItem} from '@mui/material';
+import { useLocation } from 'react-router-dom';
+import AppBar from '@mui/material/AppBar';
+import Link from '@mui/material/Link';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import Container from '@mui/material/Container';
+import MenuItem from '@mui/material/MenuItem';
 
 // ************** componentes propios :3 **************
 // |  navigation
-import NavOptions from '@/components/navigation/NavOptions';
+import NavOptions from '@/components/navigation/options/NavOptions';
 
 // ************** imagenes **************
-import logo from '@/assets/Logo1.png';
+import logo from '@/assets/principal/Logo1.webp';
 
 // ************** iconos **************
 import MenuIcon from '@mui/icons-material/Menu';
+import HomeIcon from '@mui/icons-material/Home';
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import CalendarIcon from '@mui/icons-material/CalendarMonth';
 import UserIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
@@ -19,6 +30,8 @@ function NavBar()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const handleOpenNavMenu = (event) => { setAnchorElNav(event.currentTarget);};
   const handleCloseNavMenu = () => { setAnchorElNav(null);};
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   return (
     <AppBar position="static" 
@@ -31,7 +44,7 @@ function NavBar()
             </Link>
 
             {/* ****** Display de las opciones *****  */}
-             {/* C E L U L A R, T A B L E T S, E T C  */}
+            {/* C E L U L A R, T A B L E T S, E T C  */}
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }}}>
                 <IconButton
                     size="large"
@@ -56,7 +69,7 @@ function NavBar()
                         { 
                             display: "flex", 
                             alignItems: "center", 
-                            gap: 1,
+                            gap: "4px",
                             py: 0.5 
                         },
                         '.MuiTypography-root, svg': 
@@ -66,19 +79,31 @@ function NavBar()
                         }
                     }}
                 >
-                    <MenuItem component="a" href="/clientSchedule">
-                        <Typography><CalendarIcon/> Mis citas</Typography>
+                    <MenuItem component="a" href="/main" sx={{ color: currentPath === '/main' ? 'secondary.blueShade' : 'inherit' }}>
+                        <HomeIcon/>
+                        <Typography>Inicio</Typography>
                     </MenuItem>
-                    <MenuItem component="a" href="/profile">
-                        <Typography><UserIcon/> Ver perfil</Typography>
+                    <MenuItem component="a" href="/bookAppointment" sx={{ color: currentPath === '/bookAppointment' ? 'secondary.blueShade' : 'inherit' }}>
+                        <EditCalendarIcon/>
+                        <Typography>Agendar cita</Typography>
+                    </MenuItem>
+                    <MenuItem component="a" href="/clientSchedule" sx={{ color: currentPath === '/clientSchedule' ? 'secondary.blueShade' : 'inherit' }}>
+                        <CalendarIcon/>
+                        <Typography>Mis citas</Typography>
+                    </MenuItem>
+                    <MenuItem component="a" href="/profile" sx={{ color: currentPath === '/profile' ? 'secondary.blueShade' : 'inherit' }}>
+                        <UserIcon/>
+                        <Typography>Ver perfil</Typography>
                     </MenuItem>
                 </Menu>
             </Box>
 
             {/* LAPTOPS, MONITORES GRANDES, TELES xd */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "end"}}>
-                <NavOptions icon={<CalendarIcon/>} link='/clientSchedule' text="Mis citas"></NavOptions>
-                <NavOptions icon={<UserIcon/>} link='/profile' text="Ver perfil"></NavOptions>
+                <NavOptions icon={<HomeIcon/>} link='/main' text="Inicio" isActive={currentPath === '/main'} />
+                <NavOptions icon={<EditCalendarIcon/>} link='/bookAppointment' text="Agendar cita" isActive={currentPath === '/bookAppointment'} />
+                <NavOptions icon={<CalendarIcon/>} link='/clientSchedule' text="Mis citas" isActive={currentPath === '/clientSchedule'} />
+                <NavOptions icon={<UserIcon/>} link='/profile' text="Ver perfil" isActive={currentPath === '/profile'} />
             </Box>
 
             <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' }, flexDirection: 'column', width: '150px', maxWidth: '300px', px: 2}}>

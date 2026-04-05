@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import Typography from '@mui/material/Typography';
 
 const Text = ({ children, color = "text.primary", align = "start", size = 18, fontWeight }) => 
 {

@@ -134,6 +134,10 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
       
     - El segundo es para el manejo de fechas en cosas como mostrar la fecha recuperada, el parse, etc
 
+4.  **Configura las Variables de Entorno**
+
+    Crea un archivo `.env` dentro de la carpeta **frontend** (pueden usar `.envEjemplo` como base).
+
 ### Ejecución Local
    
    1. Entra en la carpeta de **frontend** y ejecuta:

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { Link as MuiLink, Grid, Box } from "@mui/material";
+import MuiLink from '@mui/material/Link';
+import Box from '@mui/material/Box';
 
 import AuthLayout from "@/layouts/AuthLayout";
 
@@ -45,7 +46,7 @@ function Signup() {
           }}
         >
           <Box sx={{ flex: 0.35 }}>
-            <GenderSelect />
+            <GenderSelect height="80px" />
           </Box>
 
           <Box sx={{ flex: 0.65 }}>
@@ -82,6 +83,7 @@ function Signup() {
               color: "primary.main",
               fontWeight: "bold",
               textDecoration: "none",
+              whiteSpace: "nowrap",
               "&:hover": {
                 textDecoration: "underline",
                 color: "primary.light",

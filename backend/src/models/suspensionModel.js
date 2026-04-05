@@ -15,6 +15,7 @@ const suspensionSchema = new mongoose.Schema(
         todoElDia: {
             type: Boolean,
             default: true,
+            required: true
         },
         horaInicio: {
             type: String,

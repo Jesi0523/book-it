@@ -47,17 +47,11 @@ const citaSchema = new mongoose.Schema(
                 type: Number,
                 required: true,
             },
-            /* duracionSnapshot: {
+            duracionSnapshot: {
                 type: Number,
                 required: true,
-            }, // en minutos */
+            }, // en minutos
         },
-
-        /* total: {
-            // ahora q lo veo, puede ser q no haga falta, pq tendríamos el snapshot del precio del servicio, pero lo checamos
-            type: Number,
-            //required: true,
-        }, */
 
         estado: {
             type: String,
@@ -65,7 +59,7 @@ const citaSchema = new mongoose.Schema(
             default: "pendiente",
         },
 
-        datosPaciente: {
+        datosCliente: {
             // es por si es para un tercero
             nombre: { type: String },
             edad: { type: Number },

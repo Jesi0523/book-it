@@ -13,6 +13,7 @@ import Employees from "@/pages/admin/Employees";
 import Services from "@/pages/admin/Services";
 import CompanyInfo from "@/pages/admin/CompanyInfo";
 import Suspensions from "@/pages/admin/Suspensions";
+import Reports from "@/pages/admin/Reports";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
       <Route path="/services" element ={<Services />} />
       <Route path="/companyInfo" element ={<CompanyInfo />} />
       <Route path="/suspensions" element ={<Suspensions />} />
+      <Route path="/reports" element ={<Reports />} />
 
       {/* Not Found */}
       <Route path="*" element={<NotFound />} />

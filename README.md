@@ -115,32 +115,17 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
 
 2. **Instala las dependencias**
     ```bash
-    npm install react-router-dom react-hot-toast @mui/material @emotion/react @emotion/styled @mui/icons-material axios react-hook-form zod @hookform/resolvers jwt-decode
+    npm install react-router-dom react-hot-toast @mui/material @emotion/react @emotion/styled @mui/icons-material axios react-hook-form zod @hookform/resolvers jwt-decode swiper @mui/x-date-pickers dayjs recharts
     ```
 
-3. **Instala las librerias**
+3.  **Configura las Variables de Entorno**
 
-- Ejecuten este comando desde el front para instalar el carrusel que se usa para las fotos del main
-    ```bash
-    npm install swiper
-    ```
-
-- Ejecuten este comando desde el front para instalar lo necesario para el calendario
-    ```bash
-    npm install @mui/x-date-pickers@^8.0.0
-    npm install dayjs
-    ```
-    - El primero es para los estilos
-      
-    - El segundo es para el manejo de fechas en cosas como mostrar la fecha recuperada, el parse, etc
-
-4.  **Configura las Variables de Entorno**
-
-    Crea un archivo `.env` dentro de la carpeta **frontend** (pueden usar `.envEjemplo` como base).
+    Crea un archivo `.env` dentro de la carpeta **frontend** y usa las variables que se encuentran en `.envEjemplo`.
 
 ### Ejecución Local
    
-   1. Entra en la carpeta de **frontend** y ejecuta:
+1. Entra en la carpeta de **frontend** y ejecuta:
+   
    ```bash
     npm run dev
    ```

@@ -1,23 +1,23 @@
-
 const logger = require("../config/logger");
 const Servicio = require("../models/servicioModel");
+const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 
 // @route   GET /api/servicios/
 // @desc    GET ALL servicios
 // @access  Public
 const getAllServicios = async (req, res) => {
-    try{
+    try {
         const servicios = await Servicio.find({ activo: true }); //.find() trae todos los activos
 
         res.status(200).json({
-            ok:true,
-            servicios // llave y valor se llaman igual, con solo ponerlo una vez funciona
+            ok: true,
+            servicios, // llave y valor se llaman igual, con solo ponerlo una vez funciona
         });
-    } catch (error){
+    } catch (error) {
         logger.error("Error al obtener servicios:", error);
         res.status(500).json({
-            ok:false,
-            msg:"Error interno"
+            ok: false,
+            msg: "Error interno",
         });
     }
 };
@@ -25,28 +25,30 @@ const getAllServicios = async (req, res) => {
 // @route   GET /api/servicios/:id
 // @desc    GET ONE servicio
 // @access  Public
-const getOneServicio = async (req,res) => {
-    try{
-        const {id} = req.params; //extraer id de la URL
+const getOneServicio = async (req, res) => {
+    try {
+        const { id } = req.params; //extraer id de la URL
 
         const servicio = await Servicio.findById(id);
 
-        if(!servicio) {
+        if (!servicio) {
             return res.status(404).json({
-                ok:false,
-                msg:"Servicio no encontrado"
+                ok: false,
+                msg: "Servicio no encontrado",
             });
         }
 
         res.status(200).json({
-            ok:true,
-            servicio
+            ok: true,
+            servicio,
         });
     } catch (error) {
         logger.error("Error al obtener el servicio: ", error);
-        res.status(500).json({ ok:false, msg: "Error interno. Revisa que el Id sea válido"});
+        res.status(500).json({
+            ok: false,
+            msg: "Error interno. Revisa que el Id sea válido",
+        });
     }
-
 };
 
 // @route   POST /api/servicios/
@@ -55,53 +57,87 @@ const getOneServicio = async (req,res) => {
 const createServicio = async (req, res) => {
     try {
         //extraer el req.body
-        const {nombre, descripcion, precio, duracion } = req.body;
+        const { nombre, descripcion, precio, duracion } = req.body;
+
+        let fotoData = {};
+        if (req.files && req.files.foto) {
+            fotoData = await subirImagen(req.files.foto, "servicios");
+        }
 
         const newServicio = new Servicio({
             nombre,
             descripcion,
             precio,
             duracion,
-            fotoURL: "url_temporal_cloudinary" //dato falso temporal
+            foto: fotoData,
         });
 
         //escribe en mongo
         await newServicio.save();
 
         res.status(201).json({
-            ok:true,
+            ok: true,
             msg: "Servicio creado exitosamente",
         });
     } catch (error) {
         logger.error("Error al crear servicio:", error);
-        res.status(500).json({ ok:false, msg:"Error interno"});
+        res.status(500).json({ ok: false, msg: "Error interno" });
     }
-
 };
 
 // @route   PATCH /api/servicios/:id
 // @desc    UPDATE servicio
 // @access  Admin only
 const updateServicio = async (req, res) => {
-    try{
-        const {id} = req.params;
+    try {
+        const { id } = req.params;
+        let datosActualizar = { ...req.body };
+        delete datosActualizar.foto; // se borra la foto pq en resumen, si la foto llega vacía, da error lol
+
+        // si viene una nueva foto se borra la anterior y se sube la nueva
+        if (req.files && req.files.foto) {
+            const servicioActual = await Servicio.findById(id);
+
+            if (!servicioActual) {
+                return res
+                    .status(404)
+                    .json({ ok: false, msg: "Servicio no encontrado" });
+            }
+
+            // borra la imagen antigua si existe
+            if (servicioActual.foto && servicioActual.foto.public_id) {
+                await borrarImagen(servicioActual.foto.public_id);
+            }
+
+            // nueva foto
+            const fotoData = await subirImagen(req.files.foto, "servicios");
+            datosActualizar.foto = fotoData;
+        }
 
         //findByIdAndUpdate(id, los nuevos datos, y opciones)
         //{new:true} trae el objeto ya actualizado no el anterior
-        const updatedServicio = await Servicio.findByIdAndUpdate(id, req.body, {new:true});
+        const updatedServicio = await Servicio.findByIdAndUpdate(
+            id,
+            datosActualizar,
+            {
+                new: true,
+            },
+        );
 
-        if(!updatedServicio){
-            return res.status(404).json({ok:false, msg:"Servicio no encontrado"});
+        if (!updatedServicio) {
+            return res
+                .status(404)
+                .json({ ok: false, msg: "Servicio no encontrado" });
         }
 
         res.status(200).json({
-            ok:true,
+            ok: true,
             servicio: updatedServicio,
-            msg:"Servicio actualizado correctamente"
+            msg: "Servicio actualizado correctamente",
         });
-    } catch(error) {
+    } catch (error) {
         logger.error("Error al actualizar servicio", error);
-        res.status(500).json({ ok:false, msg:"Error interno"});
+        res.status(500).json({ ok: false, msg: "Error interno" });
     }
 };
 
@@ -114,19 +150,21 @@ const deleteServicio = async (req, res) => {
 
         // findByIdAndUpdate solo para cambiar activo a false
         const deletedServicio = await Servicio.findByIdAndUpdate(
-            id, 
+            id,
             { activo: false },
-            { new: true }      //devuelve el doc ya actualizado
+            { new: true }, //devuelve el doc ya actualizado
         );
 
         if (!deletedServicio) {
-            return res.status(404).json({ ok: false, msg: "Servicio no encontrado" });
+            return res
+                .status(404)
+                .json({ ok: false, msg: "Servicio no encontrado" });
         }
 
         res.status(200).json({
             ok: true,
-            id:id,
-            msg: "Servicio desactivado"
+            id: id,
+            msg: "Servicio desactivado",
         });
     } catch (error) {
         logger.error("Error al eliminar servicio:", error);
@@ -139,5 +177,5 @@ module.exports = {
     getOneServicio,
     createServicio,
     updateServicio,
-    deleteServicio
-}
+    deleteServicio,
+};

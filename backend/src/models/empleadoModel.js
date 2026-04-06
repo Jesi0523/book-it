@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const imagenSchema = require("./imagenModel");
 
 const empleadoSchema = new mongoose.Schema(
     {
@@ -23,9 +24,9 @@ const empleadoSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        fotoURL: {
-            type: String,
-            required: true,
+        foto: {
+            type: imagenSchema,
+            required: false,
         },
 
         servicios: [

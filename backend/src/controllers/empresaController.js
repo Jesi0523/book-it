@@ -79,13 +79,13 @@ const updateEmpresa = async (req, res) => {
                         (h) => h.dia === turno.dia,
                     );
 
-                    // si la empresa ya no tiene ese día, se borra el turno del empleado
+                    // si la empresa ya no tiene ese día se borra el turno del empleado
                     if (!turnoEmpresa) {
                         horarioModificado = true;
                         continue; // Nos saltamos este turno, o sea, lo borramos
                     }
 
-                    // Si el turno queda completamente fuera del horario de la empresa, se borra el turno del empleado
+                    // Si el turno queda completamente fuera del horario de la empresa se borra el turno del empleado
                     // De que Emp (07:00 - 10:00) vs Empresa (11:00 - 18:00)
                     if (
                         turno.horaFin <= turnoEmpresa.horaInicio ||
@@ -110,7 +110,7 @@ const updateEmpresa = async (req, res) => {
                         horarioModificado = true;
                     }
 
-                    // Guardamos el turno validado y recortado
+                    // guarda el turno validado y recortado
                     nuevoHorarioEmpleado.push({
                         dia: turno.dia,
                         horaInicio: nuevaHoraInicio,
@@ -118,7 +118,7 @@ const updateEmpresa = async (req, res) => {
                     });
                 }
 
-                // Si le tuvimos que recortar o borrar algo, guardamos al empleado
+                // si se modifico se guarda al empleado
                 if (horarioModificado) {
                     empleado.horario = nuevoHorarioEmpleado;
                     await empleado.save();

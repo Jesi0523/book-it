@@ -102,17 +102,19 @@ const updateServicioValidator = [
         }),
 
     body("duracion")
-        // duracion - opcional porq el default es 30min, que sea numerico, no mayor a 3h y no negativo
-        .optional()
+        .optional() // opcional pq el default es 30min
         .isNumeric()
         .withMessage("La duración del servicio debe ser un número")
-        .isLength({ max: 180 })
-        .withMessage("La duración del servicio no puede exceder 3hrs")
+        .isInt({ min: 30, max: 180 })
+        .withMessage(
+            "La duración debe ser un número entero entre 30 y 180 minutos (3hrs)",
+        )
         .custom((value) => {
-            if (value < 0)
+            if (value % 30 !== 0) {
                 throw new Error(
-                    "La duración del servicio no puede ser negativa",
+                    "La duración debe ser en bloques exactos de media hora (ej. 30, 60, 90, 120, 150, 180).",
                 );
+            }
             return true;
         }),
 

@@ -233,7 +233,9 @@ const updateEmpresaValidator = [
             "domingo",
         ];
         const diasVistos = new Set();
-        const regexHora = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/; // formato de 00:00 a 23:59
+
+        // regex solo acepta :00 o :30 en formato de 24 horas 00:00 a 23:30
+        const regexHora = /^([0-1]?[0-9]|2[0-3]):(00|30)$/;
 
         for (const turno of horarioParseado) {
             // campos obligatorios
@@ -262,7 +264,7 @@ const updateEmpresaValidator = [
                 !regexHora.test(turno.horaFin)
             ) {
                 throw new Error(
-                    `Las horas para el día ${turno.dia} deben tener formato HH:MM (ej. 09:00).`,
+                    `Las horas para el día ${turno.dia} deben tener formato HH:MM y en bloques de 30 minutos (ej. 09:00 o 14:30).`,
                 );
             }
 

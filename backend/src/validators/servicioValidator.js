@@ -42,9 +42,13 @@ const createServicioValidator = [
         }),
 
     body("foto").custom((value, { req }) => {
+        if (Array.isArray(req.files.foto)) {
+            throw new Error("Solo se permite un archivo por empleado");
+        }
+
         if (!req.files || !req.files.foto) {
             throw new Error(
-                "La foto es obligatoria para registrar un nuevo servicio.",
+                "La foto es obligatoria para registrar un nuevo empleado.",
             );
         }
 

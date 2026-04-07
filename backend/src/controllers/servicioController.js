@@ -1,5 +1,6 @@
 const logger = require("../config/logger");
 const Servicio = require("../models/servicioModel");
+const Empleado = require("../models/empleadoModel");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 
 // @route   GET /api/servicios/
@@ -161,10 +162,16 @@ const deleteServicio = async (req, res) => {
                 .json({ ok: false, msg: "Servicio no encontrado" });
         }
 
+        // actualizar empleados que tenían este servicio para que ya no lo tengan asignado
+        await Empleado.updateMany(
+            { servicios: id },
+            { $pull: { servicios: id } }, // extraer este ID del arreglo
+        );
+
         res.status(200).json({
             ok: true,
             id: id,
-            msg: "Servicio desactivado",
+            msg: "Servicio desactivado y desvinculado de los empleados exitosamente",
         });
     } catch (error) {
         logger.error("Error al eliminar servicio:", error);

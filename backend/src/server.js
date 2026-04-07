@@ -30,11 +30,13 @@ app.use(logTransacciones);
 const usuarioRoutes = require("./routes/authRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
 const empresaRoutes = require("./routes/empresaRoutes");
+const empleadoRoutes = require("./routes/empleadoRoutes");
 
 // importar rutas
 app.use("/api/auth", usuarioRoutes);
 app.use("/api/servicios", servicioRoutes);
 app.use("/api/empresa", empresaRoutes);
+app.use("/api/empleados", empleadoRoutes);
 
 // PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
 if (process.env.NODE_ENV === "production") {

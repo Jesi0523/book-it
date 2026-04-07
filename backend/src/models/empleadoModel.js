@@ -26,7 +26,7 @@ const empleadoSchema = new mongoose.Schema(
         },
         foto: {
             type: imagenSchema,
-            required: false,
+            required: true,
         },
 
         servicios: [

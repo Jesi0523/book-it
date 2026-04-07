@@ -1,5 +1,6 @@
 const logger = require("../config/logger");
 const Empresa = require("../models/empresaModel");
+const Empleado = require("../models/empleadoModel");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 
 // @route GET api/empresa
@@ -32,6 +33,8 @@ const getEmpresa = async (req, res) => {
 // @route PATCH api/empresa
 // @desc PATCH info empresa
 // @access Admin Only
+
+// TODO: Cancelar citas si se cambia la hora de entrada o salida de la empresa a un horario que afecte a las citas agendadas
 const updateEmpresa = async (req, res) => {
     try {
         // solo hay una empresa
@@ -61,6 +64,66 @@ const updateEmpresa = async (req, res) => {
                 typeof horarioGlobal === "string"
                     ? JSON.parse(horarioGlobal)
                     : horarioGlobal;
+
+            // actualizar horario de empleados
+            const empleados = await Empleado.find(); // traer a todos los empleados
+
+            for (const empleado of empleados) {
+                let horarioModificado = false;
+                const nuevoHorarioEmpleado = [];
+
+                // revisar cada turno del empleado
+                for (const turno of empleado.horario) {
+                    // buscar ese dia de la empresa
+                    const turnoEmpresa = empresa.horarioGlobal.find(
+                        (h) => h.dia === turno.dia,
+                    );
+
+                    // si la empresa ya no tiene ese día, se borra el turno del empleado
+                    if (!turnoEmpresa) {
+                        horarioModificado = true;
+                        continue; // Nos saltamos este turno, o sea, lo borramos
+                    }
+
+                    // Si el turno queda completamente fuera del horario de la empresa, se borra el turno del empleado
+                    // De que Emp (07:00 - 10:00) vs Empresa (11:00 - 18:00)
+                    if (
+                        turno.horaFin <= turnoEmpresa.horaInicio ||
+                        turno.horaInicio >= turnoEmpresa.horaFin
+                    ) {
+                        horarioModificado = true;
+                        continue; // Se elimina el turno porque ya no aplica
+                    }
+
+                    // Recortes
+                    // de que si empleado.inicio es antes de empresa.inicio, lo recortamos a empresa.inicio y si empleado.fin es después de empresa.fin, lo recortamos a empresa.fin
+                    let nuevaHoraInicio = turno.horaInicio;
+                    let nuevaHoraFin = turno.horaFin;
+
+                    if (turno.horaInicio < turnoEmpresa.horaInicio) {
+                        nuevaHoraInicio = turnoEmpresa.horaInicio;
+                        horarioModificado = true;
+                    }
+
+                    if (turno.horaFin > turnoEmpresa.horaFin) {
+                        nuevaHoraFin = turnoEmpresa.horaFin;
+                        horarioModificado = true;
+                    }
+
+                    // Guardamos el turno validado y recortado
+                    nuevoHorarioEmpleado.push({
+                        dia: turno.dia,
+                        horaInicio: nuevaHoraInicio,
+                        horaFin: nuevaHoraFin,
+                    });
+                }
+
+                // Si le tuvimos que recortar o borrar algo, guardamos al empleado
+                if (horarioModificado) {
+                    empleado.horario = nuevoHorarioEmpleado;
+                    await empleado.save();
+                }
+            }
         }
 
         // archivos de 1 foto - logo e imagen principal
@@ -70,7 +133,7 @@ const updateEmpresa = async (req, res) => {
             if (empresa.logo && empresa.logo.public_id) {
                 await borrarImagen(empresa.logo.public_id);
             }
-            empresa.logo = await subirImagen(req.files.logo, "empresa");
+            empresa.logo = await subirImagen(req.files.logo, "empresa_logo");
         }
 
         // Imagen principal - si mandaron la foto

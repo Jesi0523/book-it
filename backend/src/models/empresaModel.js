@@ -31,6 +31,10 @@ const empresaSchema = new mongoose.Schema(
             type: imagenSchema,
             required: true,
         },
+        imagenPrincipal: {
+            type: imagenSchema,
+            required: true,
+        },
         galeria: [
             {
                 type: imagenSchema,

@@ -34,22 +34,28 @@ const getEmpresa = async (req, res) => {
 // @access Admin Only
 const updateEmpresa = async (req, res) => {
     try {
-        // buscar empresa
+        // solo hay una empresa
         const empresa = await Empresa.findOne();
 
         if (!empresa) {
-            return res.status(404).json({
-                ok: false,
-                msg: "Empresa no encontrada",
-            });
+            return res
+                .status(404)
+                .json({ ok: false, msg: "Empresa no encontrada" });
         }
 
-        // separar campos del body, se separan los arreglos y objetos para parsearlos
-        const { galeria, logo, horarioGlobal, ...data } = req.body || {};
+        // sacar cosas que ocupan parseo
+        const {
+            logo,
+            horarioGlobal,
+            galeriaConservada,
+            imagenPrincipal,
+            ...data
+        } = req.body || {};
 
-        Object.assign(empresa, data); // actualizar campos simples de texto
+        // actualiza datos simples
+        Object.assign(empresa, data);
 
-        // convierte el texto del horario global a un objeto
+        // se procesa el horario global
         if (horarioGlobal) {
             empresa.horarioGlobal =
                 typeof horarioGlobal === "string"
@@ -57,58 +63,87 @@ const updateEmpresa = async (req, res) => {
                     : horarioGlobal;
         }
 
-        // Logo, se reemplaza pq es un archivo unico
+        // archivos de 1 foto - logo e imagen principal
+
+        // LOGO - si mandaron la foto
         if (req.files && req.files.logo) {
             if (empresa.logo && empresa.logo.public_id) {
                 await borrarImagen(empresa.logo.public_id);
             }
-            const nuevoLogo = await subirImagen(req.files.logo, "empresa");
-            empresa.logo = nuevoLogo;
+            empresa.logo = await subirImagen(req.files.logo, "empresa");
         }
 
-        // Galeria
-
-        // convierte la galeria que se conserva de string a arreglo
-        let galeriaConservada = [];
-        if (galeria) {
-            galeriaConservada =
-                typeof galeria === "string" ? JSON.parse(galeria) : galeria;
-        }
-        const idsConservados = galeriaConservada.map((img) => img.public_id); // extraer los public_id de las fotos que se conservaran
-
-        // encontrar en cloudinary las fotos que se borraran
-        const imagenesParaBorrar = empresa.galeria.filter(
-            (img) => !idsConservados.includes(img.public_id),
-        );
-
-        for (const img of imagenesParaBorrar) {
-            if (img.public_id) await borrarImagen(img.public_id);
-        }
-
-        // crear el nuevo arreglo de galeria con las fotos conservadas
-        let galeriaFinal = [...galeriaConservada];
-
-        // subir las nuevas fotos de galería
-        if (req.files && req.files.nuevasFotosGaleria) {
-            const fotosNuevas = Array.isArray(req.files.nuevasFotosGaleria) // si es un solo archivo lo convierte a un arreglo
-                ? req.files.nuevasFotosGaleria
-                : [req.files.nuevasFotosGaleria];
-
-            // sube cada foto nueva y la agrega al arreglo final
-            for (const foto of fotosNuevas) {
-                const fotoSubida = await subirImagen(foto, "empresa_galeria");
-                galeriaFinal.push(fotoSubida);
+        // Imagen principal - si mandaron la foto
+        if (req.files && req.files.imagenPrincipal) {
+            if (empresa.imagenPrincipal && empresa.imagenPrincipal.public_id) {
+                await borrarImagen(empresa.imagenPrincipal.public_id);
             }
+            empresa.imagenPrincipal = await subirImagen(
+                req.files.imagenPrincipal,
+                "empresa_portada",
+            );
         }
 
-        // actualizar el arreglo de la base de datos
-        empresa.galeria = galeriaFinal;
+        // Galería
 
+        // Checar si modificaron la galería o si mandaron fotos nuevas
+        const tocaGaleria =
+            galeriaConservada !== undefined ||
+            (req.files && req.files.nuevasFotosGaleria);
+
+        if (tocaGaleria) {
+            // desempaquetar fotos viejas
+            let viejas = [];
+            if (
+                galeriaConservada &&
+                galeriaConservada !== "undefined" &&
+                galeriaConservada !== "null"
+            ) {
+                viejas =
+                    typeof galeriaConservada === "string"
+                        ? JSON.parse(galeriaConservada)
+                        : galeriaConservada;
+            }
+
+            // sacar id que sobrevivieron
+            const idsConservados = viejas.map((img) => img.public_id);
+
+            // borrar en cloudinary las que el usuario quitó
+            const imagenesParaBorrar = empresa.galeria.filter(
+                (img) => !idsConservados.includes(img.public_id),
+            );
+
+            for (const img of imagenesParaBorrar) {
+                if (img.public_id) await borrarImagen(img.public_id);
+            }
+
+            let galeriaFinal = [...viejas];
+
+            // subir fotos y agregarlas al arreglo
+            if (req.files && req.files.nuevasFotosGaleria) {
+                const fotosNuevas = Array.isArray(req.files.nuevasFotosGaleria)
+                    ? req.files.nuevasFotosGaleria
+                    : [req.files.nuevasFotosGaleria];
+
+                for (const foto of fotosNuevas) {
+                    const fotoSubida = await subirImagen(
+                        foto,
+                        "empresa_galeria",
+                    );
+                    galeriaFinal.push(fotoSubida);
+                }
+            }
+
+            // guardar el arreglo
+            empresa.galeria = galeriaFinal;
+        }
+
+        // guardar todo
         const empresaActualizada = await empresa.save();
 
         res.status(200).json({
             ok: true,
-            msg: "Información y galería actualizadas correctamente",
+            msg: "Información actualizada correctamente",
             empresa: empresaActualizada,
         });
     } catch (error) {
@@ -116,10 +151,7 @@ const updateEmpresa = async (req, res) => {
             "Error al actualizar la información de la empresa: ",
             error,
         );
-        res.status(500).json({
-            ok: false,
-            msg: "Error interno del servidor",
-        });
+        res.status(500).json({ ok: false, msg: "Error interno del servidor" });
     }
 };
 

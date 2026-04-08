@@ -27,7 +27,7 @@ const EmployeeDataSection = ({ formData, handleInputChange, handleDateChange, ha
               sx={{
                 width: { xs: 120, md: 160 },
                 height: { xs: 120, md: 160 },
-                border: `2px solid #787ff6`,
+                border: `1px solid #ced0ffa6`,
               }}
             />
             <MainButton 

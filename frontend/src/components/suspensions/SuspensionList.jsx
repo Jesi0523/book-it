@@ -56,7 +56,7 @@ const SuspensionList = ({
                 flexGrow: 1, backgroundColor: '#1b1c37', borderRadius: '50px',
                 px: { xs: 2, md: 3 }, py: 1.5, display: 'flex', alignItems: 'center'
               }}>
-                <Text children={susp.texto} color="white" size={18} />
+                <Text children={susp.texto} color="white" size={16} />
               </Box>
               <IconButton
                 onClick={() => handleEliminarSuspension(susp.id)}

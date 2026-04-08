@@ -136,7 +136,8 @@ const AdminLayout = ({ children }) => {
         component='main'
         sx={{
           flexGrow: 1,
-          p: 0,
+          py: {xs:0, md:5},
+          px: {xs:0, md:15},
           width: { xs: '100%', md: `calc(100% - ${drawerWidthCollapsed}px)` },
           mt: { xs: '64px', md: 0 },
         }}

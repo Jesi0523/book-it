@@ -52,7 +52,7 @@ function BookAppointment() {
       <Box
         sx={{
           py: { xs: 2, md: 5 }, 
-          px: { xs: 2, md: 15 }, 
+          px: { xs: 1, md: 15 }, 
           width: '95%',
           maxWidth: '1600px',
           mx: 'auto',

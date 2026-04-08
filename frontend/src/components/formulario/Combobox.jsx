@@ -82,7 +82,7 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
               maxWidth: 300,
             },
             sx: {
-              background: 'linear-gradient(180deg, #05061b 100%, #a0a3de 0%)',
+              background: 'linear-gradient(180deg, #1b1c37 100%, #a0a3de 0%)',
               color: 'text.primary',
               '& .MuiMenuItem-root': {
                 fontSize: size,
@@ -91,14 +91,11 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
                 py: 1.5,
               },
               '& .MuiMenuItem-root:hover': {
-                backgroundColor: 'rgba(12, 6, 74, 0.7)',
+                backgroundColor: 'rgba(255, 183, 77, 0.2)',
               },
               '& .MuiMenuItem-root.Mui-selected': {
-                backgroundColor: 'rgb(11, 8, 47) !important',
+                backgroundColor: 'rgba(255, 183, 77, 0.4) !important',
                 color: 'white',
-              },
-              '& .MuiMenuItem-root.Mui-selected:hover': {
-                backgroundColor: 'rgb(12, 6, 74) !important',
               },
             },
           },

@@ -91,7 +91,7 @@ function ClientSchedule()
       <Box
         sx={{
           py: { xs: 2, md: 5 },
-          px: { xs: 2, md: 20 },
+          px: { xs: 1, md: 20 },
           width: '95%',
           maxWidth: '1250px',
           mx: 'auto',

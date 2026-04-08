@@ -1,6 +1,6 @@
-import { Typography } from "@mui/material";
+import Typography from '@mui/material/Typography';
 
-const Text = ({ children, color = "text.primary", align = "start", size = 18, fontWeight }) => 
+const Text = ({ children, color = "text.primary", align = "start", size = 18, fontWeight, sx, ...props }) => 
 {
   const responsiveFontSize = typeof size === 'object' 
     ? { ...size } 
@@ -9,6 +9,7 @@ const Text = ({ children, color = "text.primary", align = "start", size = 18, fo
         sm: `${Number(size) * 0.85}px`,
         md: `${size}px`
       };
+
   return (
     <Typography
       variant="body1"
@@ -17,9 +18,10 @@ const Text = ({ children, color = "text.primary", align = "start", size = 18, fo
         color: color,
         letterSpacing: "1px",
         fontSize: responsiveFontSize,
-        fontWeight: fontWeight
+        fontWeight: fontWeight,
+        ...sx
       }}
-      
+      {...props}
     >
       {children}
     </Typography>

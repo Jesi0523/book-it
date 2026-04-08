@@ -1,11 +1,19 @@
 import { Routes, Route } from "react-router-dom";
 
-import Login from "@/pages/auth/client/Login.jsx"; 
-import Signup from "@/pages/auth/client/Signup.jsx";
-import MainPage  from "@/pages/auth/client/MainPage";
-import BookAppointment from "@/pages/auth/client/BookAppointment";
-import ClientSchedule from "@/pages/auth/client/ClientSchedule";
-import Profile from '@/pages/auth/client/Profile';
+import NotFound from "@/pages/NotFound.jsx";
+import Login from "@/pages/auth/Login.jsx"; 
+import Signup from "@/pages/auth/Signup.jsx";
+import MainPage  from "@/pages/client/MainPage";
+import BookAppointment from "@/pages/client/BookAppointment";
+import ClientSchedule from "@/pages/client/ClientSchedule";
+import Profile from '@/pages/client/Profile';
+import AppointmentCalendar from "@/pages/admin/AppointmentCalendar";
+import AdminBookAppointment from "@/pages/admin/AdminBookAppointment";
+import Employees from "@/pages/admin/Employees";
+import Services from "@/pages/admin/Services";
+import CompanyInfo from "@/pages/admin/CompanyInfo";
+import Suspensions from "@/pages/admin/Suspensions";
+import Reports from "@/pages/admin/Reports";
 
 const AppRoutes = () => {
   return (
@@ -19,8 +27,18 @@ const AppRoutes = () => {
       <Route path="/bookAppointment" element ={<BookAppointment />} />
       <Route path="/clientSchedule" element ={<ClientSchedule />} />
       <Route path="/profile" element ={<Profile />} />
+      
       {/* Admin */}
+      <Route path="/appointmentCalendar" element ={<AppointmentCalendar />} />
+      <Route path="/adminBookAppointment" element ={<AdminBookAppointment />} />
+      <Route path="/employees" element ={<Employees />} />
+      <Route path="/services" element ={<Services />} />
+      <Route path="/companyInfo" element ={<CompanyInfo />} />
+      <Route path="/suspensions" element ={<Suspensions />} />
+      <Route path="/reports" element ={<Reports />} />
 
+      {/* Not Found */}
+      <Route path="*" element={<NotFound />} />
 
     </Routes>
   );

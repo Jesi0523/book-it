@@ -3,3 +3,7 @@ node_modules/
 
 # Ignora archivos .env en cualquier nivel
 .env
+
+# Logs
+logs/*.log
+logs/

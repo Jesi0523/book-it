@@ -24,7 +24,7 @@ const CompanyDataSection = ({ formData, handleInputChange, handleLogoChange }) =
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
-                background: 'linear-gradient(180deg, #87CEEB 0%, #a8e6cf 50%, #90EE90 100%)',
+                background: 'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',

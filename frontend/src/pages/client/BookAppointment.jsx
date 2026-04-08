@@ -52,7 +52,7 @@ function BookAppointment() {
       <Box
         sx={{
           py: { xs: 2, md: 5 }, 
-          px: { xs: 2, md: 2 }, 
+          px: { xs: 1, md: 15 }, 
           width: '95%',
           maxWidth: '1600px',
           mx: 'auto',
@@ -67,7 +67,7 @@ function BookAppointment() {
         </Box>
 
         {/* Agendar cita */}
-        <Grid container spacing={0} sx={{ height: '100%', p: 2 }}>
+        <Grid container sx={{ height: '100%', p: 2 }}>
           <Grid
             size={{ xs: 12, md: 4 }}
             sx={{
@@ -228,7 +228,7 @@ function BookAppointment() {
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextInput
                   label='Nombre Completo'
-                  placeholder='Ingresa tu nombre'
+                  placeholder='Ingrese su nombre'
                   background={linearDegraded}
                   border={colorBorder}
                 />
@@ -236,7 +236,7 @@ function BookAppointment() {
               <Grid size={{ xs: 4, md: 2 }}>
                 <TextInput
                   label='Edad'
-                  placeholder='Ej: 18 años'
+                  placeholder='Ej: 18'
                   type='number'
                   background={linearDegraded}
                   border={colorBorder}
@@ -247,7 +247,7 @@ function BookAppointment() {
                 <TextInput
                   label='Número telefónico'
                   type='number'
-                  placeholder='Ejemplo'
+                  placeholder='Ej: 8101010011'
                   background={linearDegraded}
                   border={colorBorder}
                 />
@@ -272,7 +272,7 @@ function BookAppointment() {
                 <TextInput
                   label='Correo electrónico'
                   type='email'
-                  placeholder='Ejemplo'
+                  placeholder='Ingrese su correo'
                   background={linearDegraded}
                   border={colorBorder}
                 />
@@ -308,7 +308,7 @@ function BookAppointment() {
             />
             <Text children='Empleado 1' size='16' align='center' />
           </Box>
-          <hr />
+          <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Title
               children='Total a pagar: $$$$'

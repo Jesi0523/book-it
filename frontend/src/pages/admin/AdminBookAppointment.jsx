@@ -308,7 +308,7 @@ function AdminBookAppointment() {
             />
             <Text children='Empleado 1' size='16' align='center' />
           </Box>
-          <hr />
+          <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Title
               children='Total a pagar: $$$$'

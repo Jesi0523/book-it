@@ -19,7 +19,7 @@ const CompanyGallerySection = ({
   onGalleryImagesChange, 
   onRemoveGalleryImage 
 }) => {
-  const linearDegraded = 'linear-gradient(180deg, #87CEEB 0%, #a8e6cf 50%, #90EE90 100%)';
+  const linearDegraded = 'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)';
 
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>

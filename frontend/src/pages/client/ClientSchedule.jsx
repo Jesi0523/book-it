@@ -84,19 +84,20 @@ const appointmentsInfo = [
 ];
 // ****************************
 
-function ClientSchedule() {
+function ClientSchedule() 
+{
   return (
     <ClientLayout>
       <Box
         sx={{
           py: { xs: 2, md: 5 },
-          px: { xs: 2, md: 2 },
+          px: { xs: 1, md: 20 },
           width: '95%',
           maxWidth: '1250px',
           mx: 'auto',
         }}
       >
-        <Grid container sx={{ px: 3 }} rowSpacing={{ xs: 2, md: 0 }}>
+        <Grid container sx={{display: 'flex', alignItems: 'center' }} rowSpacing={{ xs: 2, md: 0 }}>
           <Grid size={{ xs: 12, md: 7 }}>
             <Title
               children='Mis citas'
@@ -113,6 +114,7 @@ function ClientSchedule() {
             />
           </Grid>
         </Grid>
+        <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 3 }}>
           {appointmentsInfo.map((appointment, index) => {
             return (

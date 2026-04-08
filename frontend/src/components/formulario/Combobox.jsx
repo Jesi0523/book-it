@@ -76,7 +76,11 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
         }}
         MenuProps={{
           PaperProps: {
-            style: { maxHeight: ITEM_HEIGHT * 6 + ITEM_PADDING_TOP },
+            style: 
+            { 
+              maxHeight: ITEM_HEIGHT * 6 + ITEM_PADDING_TOP,
+              maxWidth: 300,
+            },
             sx: {
               background: 'linear-gradient(180deg, #05061b 100%, #a0a3de 0%)',
               color: 'text.primary',

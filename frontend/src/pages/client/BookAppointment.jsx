@@ -52,7 +52,7 @@ function BookAppointment() {
       <Box
         sx={{
           py: { xs: 2, md: 5 }, 
-          px: { xs: 2, md: 12 }, 
+          px: { xs: 2, md: 15 }, 
           width: '95%',
           maxWidth: '1600px',
           mx: 'auto',
@@ -308,7 +308,7 @@ function BookAppointment() {
             />
             <Text children='Empleado 1' size='16' align='center' />
           </Box>
-          <hr />
+          <hr style={{ border: 'none', height: '1px', backgroundColor: '#e4e9ff6e'}} />
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Title
               children='Total a pagar: $$$$'

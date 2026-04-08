@@ -1,23 +1,26 @@
 const logger = require("../config/logger");
 const Servicio = require("../models/servicioModel");
 const Empleado = require("../models/empleadoModel");
+const mongoose = require("mongoose");
+const { matchedData } = require("express-validator");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 
 // @route GET /api/empleados?servicioId=
-// @desc GET empleados de x servicio
+// @desc GET empleados name and photo from X service
 // @access public
 const getEmpleadosByServicio = async (req, res) => {
     try {
         const { servicioId } = req.query; //extraer id de la URL
 
-        if (!servicioId) {
+        // si no viene el id
+        if (!req.query.servicioId) {
             return res.status(400).json({
                 ok: false,
                 msg: "El ID del servicio es requerido",
             });
         }
 
-        const mongoose = require("mongoose");
+        // checar que sea un id valido
         if (!mongoose.Types.ObjectId.isValid(servicioId)) {
             return res.status(400).json({
                 ok: false,
@@ -25,6 +28,7 @@ const getEmpleadosByServicio = async (req, res) => {
             });
         }
 
+        // buscar el servicio
         const servicio = await Servicio.findOne({
             _id: servicioId,
             activo: true,
@@ -56,7 +60,7 @@ const getEmpleadosByServicio = async (req, res) => {
 };
 
 // @route GET /api/empleados/admin
-// @desc GET all empleados
+// @desc GET details all empleados
 // @access Admin only
 const getAllEmpleados = async (req, res) => {
     try {
@@ -76,7 +80,7 @@ const getAllEmpleados = async (req, res) => {
 };
 
 // @route GET /api/empleados/:id
-// @desc GET one empleado
+// @desc GET details one empleado
 // @access Admin only
 const getEmpleadoById = async (req, res) => {
     try {
@@ -109,39 +113,16 @@ const getEmpleadoById = async (req, res) => {
 // @access Admin only
 const createEmpleado = async (req, res) => {
     try {
-        const {
-            servicios,
-            horario,
-            nombre,
-            correo,
-            fechaNacimiento,
-            telefono,
-            informacion,
-        } = req.body || {};
+        const data = matchedData(req, { locations: ["body"] });
+        delete data.foto;
 
-        let fotoData = {};
+        // creaer empleado
+        const newEmpleado = new Empleado(data);
+
+        // subir la imagen a cloudinary
         if (req.files && req.files.foto) {
-            fotoData = await subirImagen(req.files.foto, "empleados");
+            newEmpleado.foto = await subirImagen(req.files.foto, "empleados");
         }
-
-        const newEmpleado = new Empleado({
-            nombre,
-            correo,
-            fechaNacimiento,
-            telefono,
-            informacion,
-            foto: fotoData,
-            servicios: servicios
-                ? typeof servicios === "string"
-                    ? JSON.parse(servicios)
-                    : servicios
-                : [],
-            horario: horario
-                ? typeof horario === "string"
-                    ? JSON.parse(horario)
-                    : horario
-                : [],
-        });
 
         await newEmpleado.save();
 
@@ -164,6 +145,7 @@ const createEmpleado = async (req, res) => {
 const updateEmpleado = async (req, res) => {
     try {
         const { id } = req.params;
+
         const empleado = await Empleado.findById(id);
 
         if (!empleado) {
@@ -173,8 +155,8 @@ const updateEmpleado = async (req, res) => {
             });
         }
 
-        const { servicios, horario, ...data } = req.body || {};
-
+        const data = matchedData(req, { locations: ["body"] });
+        delete data.foto;
         Object.assign(empleado, data);
 
         // Foto
@@ -183,20 +165,6 @@ const updateEmpleado = async (req, res) => {
                 await borrarImagen(empleado.foto.public_id);
             }
             empleado.foto = await subirImagen(req.files.foto, "empleados");
-        }
-
-        // Actualizar servicios
-        if (servicios !== undefined) {
-            empleado.servicios =
-                typeof servicios === "string"
-                    ? JSON.parse(servicios)
-                    : servicios;
-        }
-
-        // Actualizar horario
-        if (horario !== undefined) {
-            empleado.horario =
-                typeof horario === "string" ? JSON.parse(horario) : horario;
         }
 
         const empleadoActualizado = await empleado.save();

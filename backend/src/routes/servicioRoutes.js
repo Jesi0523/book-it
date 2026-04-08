@@ -1,18 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const fileUpload = require("express-fileupload");
 
 const { validarCampos } = require("../middleware/validarCampos");
 const { validarJWT } = require("../middleware/validarJWT");
 const { validarAdmin } = require("../middleware/validarAdmin");
-
-router.use(
-    fileUpload({
-        useTempFiles: true,
-        tempFileDir: "/tmp/",
-        createParentPath: true,
-    }),
-);
+const validarMongoId = require("../middleware/validarMongoId");
+const subirArchivos = require("../middleware/subirArchivos");
 
 // Importar validador de campos
 const {
@@ -31,22 +24,39 @@ const {
 
 //////////////////RUTAS PÚBLICAS////////////////
 router.get("/", getAllServicios);
-router.get("/:id", getOneServicio);
+router.get("/:id", [validarMongoId()], getOneServicio);
 
 //////////////////RUTAS SOLO ADMIN////////////////
 
 router.post(
     "/",
-    [validarJWT, validarAdmin, createServicioValidator, validarCampos],
+    [
+        validarJWT,
+        validarAdmin,
+        subirArchivos,
+        createServicioValidator,
+        validarCampos,
+    ],
     createServicio,
 );
 
 router.patch(
     "/:id",
-    [validarJWT, validarAdmin, updateServicioValidator, validarCampos],
+    [
+        validarJWT,
+        validarAdmin,
+        subirArchivos,
+        validarMongoId(),
+        updateServicioValidator,
+        validarCampos,
+    ],
     updateServicio,
 );
 
-router.delete("/:id", [validarJWT, validarAdmin], deleteServicio);
+router.delete(
+    "/:id",
+    [validarJWT, validarAdmin, validarMongoId()],
+    deleteServicio,
+);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 const { body } = require("express-validator");
+const { validarImagen } = require("../helpers/validatorHelpers");
 
 const createServicioValidator = [
     // nombre - exista y no este vacio
@@ -29,47 +30,20 @@ const createServicioValidator = [
     body("duracion")
         // duracion - opcional porq el default es 30min, que sea numerico, no mayor a 3h y no negativo
         .optional()
-        .isNumeric()
-        .withMessage("La duración del servicio debe ser un número")
-        .isLength({ max: 180 })
-        .withMessage("La duración del servicio no puede exceder 3hrs")
+        .isInt({ min: 30, max: 180 })
+        .withMessage(
+            "La duración debe ser un número entero entre 30 y 180 minutos (3hrs)",
+        )
         .custom((value) => {
-            if (value < 0)
+            if (value % 30 !== 0) {
                 throw new Error(
-                    "La duración del servicio no puede ser negativa",
+                    "La duración debe ser en bloques exactos de media hora (ej. 30, 60, 90, 120, 150, 180).",
                 );
+            }
             return true;
         }),
 
-    body("foto").custom((value, { req }) => {
-        if (Array.isArray(req.files.foto)) {
-            throw new Error("Solo se permite un archivo por empleado");
-        }
-
-        if (!req.files || !req.files.foto) {
-            throw new Error(
-                "La foto es obligatoria para registrar un nuevo empleado.",
-            );
-        }
-
-        if (req.files.foto.size === 0) {
-            throw new Error("El archivo de la foto está vacío");
-        }
-
-        const formatosValidos = [
-            "image/jpeg",
-            "image/png",
-            "image/jpg",
-            "image/webp",
-        ];
-        if (!formatosValidos.includes(req.files.foto.mimetype)) {
-            throw new Error(
-                "Solo se permiten imágenes en formato JPG, PNG o WEBP",
-            );
-        }
-
-        return true;
-    }),
+    body("foto").custom(validarImagen(false)),
 ];
 
 const updateServicioValidator = [
@@ -103,8 +77,6 @@ const updateServicioValidator = [
 
     body("duracion")
         .optional() // opcional pq el default es 30min
-        .isNumeric()
-        .withMessage("La duración del servicio debe ser un número")
         .isInt({ min: 30, max: 180 })
         .withMessage(
             "La duración debe ser un número entero entre 30 y 180 minutos (3hrs)",
@@ -118,32 +90,7 @@ const updateServicioValidator = [
             return true;
         }),
 
-    body("foto").custom((value, { req }) => {
-        if (!req.files || !req.files.foto) {
-            return true;
-        }
-
-        const foto = req.files.foto;
-
-        if (foto.size === 0) {
-            throw new Error("El archivo de la foto está vacío o dañado");
-        }
-
-        const formatosValidos = [
-            "image/jpeg",
-            "image/png",
-            "image/jpg",
-            "image/webp",
-        ];
-
-        if (!formatosValidos.includes(foto.mimetype)) {
-            throw new Error(
-                "Solo se permiten imágenes en formato JPG, PNG o WEBP",
-            );
-        }
-
-        return true;
-    }),
+    body("foto").custom(validarImagen(true)),
 ];
 
 module.exports = { createServicioValidator, updateServicioValidator };

@@ -1,6 +1,9 @@
 const logger = require("../config/logger");
 const Servicio = require("../models/servicioModel");
 const Empleado = require("../models/empleadoModel");
+const mongoose = require("mongoose");
+
+const { matchedData } = require("express-validator");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 
 // @route   GET /api/servicios/
@@ -58,21 +61,14 @@ const getOneServicio = async (req, res) => {
 const createServicio = async (req, res) => {
     try {
         //extraer el req.body
-        const { nombre, descripcion, precio, duracion } = req.body;
+        const data = matchedData(req, { locations: ["body"] });
+        delete data.foto; // se borra la foto pq se maneja aparte
 
-        let fotoData = {};
+        const newServicio = new Servicio(data);
+
         if (req.files && req.files.foto) {
-            fotoData = await subirImagen(req.files.foto, "servicios");
+            newServicio.foto = await subirImagen(req.files.foto, "servicios");
         }
-
-        const newServicio = new Servicio({
-            nombre,
-            descripcion,
-            precio,
-            duracion,
-            foto: fotoData,
-        });
-
         //escribe en mongo
         await newServicio.save();
 
@@ -92,8 +88,8 @@ const createServicio = async (req, res) => {
 const updateServicio = async (req, res) => {
     try {
         const { id } = req.params;
-        let datosActualizar = { ...req.body };
-        delete datosActualizar.foto; // se borra la foto pq en resumen, si la foto llega vacía, da error lol
+        let data = matchedData(req, { locations: ["body"] });
+        delete data.foto; // se borra la foto pq en resumen, si la foto llega vacía, da error lol
 
         // si viene una nueva foto se borra la anterior y se sube la nueva
         if (req.files && req.files.foto) {
@@ -111,19 +107,14 @@ const updateServicio = async (req, res) => {
             }
 
             // nueva foto
-            const fotoData = await subirImagen(req.files.foto, "servicios");
-            datosActualizar.foto = fotoData;
+            data.foto = await subirImagen(req.files.foto, "servicios");
         }
 
         //findByIdAndUpdate(id, los nuevos datos, y opciones)
         //{new:true} trae el objeto ya actualizado no el anterior
-        const updatedServicio = await Servicio.findByIdAndUpdate(
-            id,
-            datosActualizar,
-            {
-                new: true,
-            },
-        );
+        const updatedServicio = await Servicio.findByIdAndUpdate(id, data, {
+            new: true,
+        });
 
         if (!updatedServicio) {
             return res

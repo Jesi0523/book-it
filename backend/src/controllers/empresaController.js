@@ -1,6 +1,7 @@
 const logger = require("../config/logger");
 const Empresa = require("../models/empresaModel");
 const Empleado = require("../models/empleadoModel");
+const { matchedData } = require("express-validator");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 
 // @route GET api/empresa
@@ -47,24 +48,25 @@ const updateEmpresa = async (req, res) => {
         }
 
         // sacar cosas que ocupan parseo
-        const {
-            logo,
-            horarioGlobal,
-            galeriaConservada,
-            imagenPrincipal,
-            ...data
-        } = req.body || {};
+        const data = matchedData(req, { locations: ["body"] });
+        let galeriaConservada = data.galeriaConservada;
+        delete data.galeriaConservada;
+        delete data.logo;
+        delete data.imagenPrincipal;
+
+        /* const {
+        logo,
+        horarioGlobal,
+        galeriaConservada,
+        imagenPrincipal,
+        ...data
+    } = req.body || {}; */
 
         // actualiza datos simples
         Object.assign(empresa, data);
 
         // se procesa el horario global
-        if (horarioGlobal) {
-            empresa.horarioGlobal =
-                typeof horarioGlobal === "string"
-                    ? JSON.parse(horarioGlobal)
-                    : horarioGlobal;
-
+        if (data.horarioGlobal) {
             // actualizar horario de empleados
             const empleados = await Empleado.find(); // traer a todos los empleados
 
@@ -155,21 +157,12 @@ const updateEmpresa = async (req, res) => {
             (req.files && req.files.nuevasFotosGaleria);
 
         if (tocaGaleria) {
-            // desempaquetar fotos viejas
-            let viejas = [];
-            if (
-                galeriaConservada &&
-                galeriaConservada !== "undefined" &&
-                galeriaConservada !== "null"
-            ) {
-                viejas =
-                    typeof galeriaConservada === "string"
-                        ? JSON.parse(galeriaConservada)
-                        : galeriaConservada;
-            }
+            const conservadasSeguras = galeriaConservada || [];
 
             // sacar id que sobrevivieron
-            const idsConservados = viejas.map((img) => img.public_id);
+            const idsConservados = conservadasSeguras.map(
+                (img) => img.public_id,
+            );
 
             // borrar en cloudinary las que el usuario quitó
             const imagenesParaBorrar = empresa.galeria.filter(
@@ -180,7 +173,7 @@ const updateEmpresa = async (req, res) => {
                 if (img.public_id) await borrarImagen(img.public_id);
             }
 
-            let galeriaFinal = [...viejas];
+            let galeriaFinal = [...conservadasSeguras];
 
             // subir fotos y agregarlas al arreglo
             if (req.files && req.files.nuevasFotosGaleria) {

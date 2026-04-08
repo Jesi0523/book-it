@@ -31,12 +31,14 @@ const usuarioRoutes = require("./routes/authRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
 const empresaRoutes = require("./routes/empresaRoutes");
 const empleadoRoutes = require("./routes/empleadoRoutes");
+const suspensionRoutes = require("./routes/suspensionRoutes");
 
 // importar rutas
 app.use("/api/auth", usuarioRoutes);
 app.use("/api/servicios", servicioRoutes);
 app.use("/api/empresa", empresaRoutes);
 app.use("/api/empleados", empleadoRoutes);
+app.use("/api/suspensiones", suspensionRoutes);
 
 // PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
 if (process.env.NODE_ENV === "production") {

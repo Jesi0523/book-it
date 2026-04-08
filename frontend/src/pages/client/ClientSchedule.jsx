@@ -114,6 +114,7 @@ function ClientSchedule()
             />
           </Grid>
         </Grid>
+        <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 3 }}>
           {appointmentsInfo.map((appointment, index) => {
             return (

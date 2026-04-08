@@ -19,7 +19,7 @@ function Profile() {
       <Box
         sx={{
           py: { xs: 2, md: 5 },
-          px: { xs: 2, md: 2 },
+          px: { xs: 2, md: 20 },
           width: '95%',
           maxWidth: '1250px',
           mx: 'auto',
@@ -35,13 +35,13 @@ function Profile() {
             p: 2,
             display: 'flex',
             flexDirection: 'column',
-            gap: { xs: 3, md: 2 },
+            gap: 3,
           }}
         >
-          <TextInput label='Nombre' placeholder='Nombre completo' />
+          <TextInput label='Nombre' placeholder='Ingrese su nombre' />
 
           <Grid container spacing={2}>
-            <Grid
+            <Grid 
               size={{ xs: 12, md: 6 }}
               sx={{
                 display: 'flex',
@@ -53,13 +53,12 @@ function Profile() {
               <TextInput
                 label='Correo electrónico'
                 type='email'
-                placeholder='ejemplo@gmail.com'
+                placeholder='Ingrese su correo'
               />
             </Grid>
 
-            <Grid
-              size={{ xs: 12, md: 6 }}
-            >
+            <Grid 
+              size={{ xs: 12, md: 6 }}>
               <Grid 
                 container
                 sx={{
@@ -71,22 +70,30 @@ function Profile() {
                 }}
               >
                 <Grid sx={{ width: { xs: '35%', md: '100%' } }}>
-                  <GenderSelect height={{ xs: '62px', md: '85px' }}></GenderSelect>
+                  <GenderSelect height={{ xs: '62px', md: '85px' }}/>
                 </Grid>
                 
                 <Grid sx={{ flexGrow: 1, width: { xs: '60%', md: '100%' } }}>
                   <TextInput
                     label='Número telefónico'
                     type='number'
-                    placeholder='81 1111 1111'
+                    placeholder='Ej: 8101010011'
                   />
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
 
-          <PasswordInput></PasswordInput>
-          <PasswordInput label='Confirmar contraseña'></PasswordInput>
+            <Grid container spacing={2}>
+              <Grid
+                size={{xs: 12, md: 6}}>
+                  <PasswordInput></PasswordInput>
+              </Grid>
+              <Grid
+                size={{xs: 12, md: 6}}>
+                  <PasswordInput label='Confirmar contraseña'></PasswordInput>
+              </Grid>
+            </Grid>
         </Box>
 
         <Box

@@ -228,7 +228,7 @@ function BookAppointment() {
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextInput
                   label='Nombre Completo'
-                  placeholder='Ingresa tu nombre'
+                  placeholder='Ingrese su nombre'
                   background={linearDegraded}
                   border={colorBorder}
                 />
@@ -272,7 +272,7 @@ function BookAppointment() {
                 <TextInput
                   label='Correo electrónico'
                   type='email'
-                  placeholder='Ejemplo'
+                  placeholder='Ingrese su correo'
                   background={linearDegraded}
                   border={colorBorder}
                 />
@@ -308,7 +308,7 @@ function BookAppointment() {
             />
             <Text children='Empleado 1' size='16' align='center' />
           </Box>
-          <hr style={{ border: 'none', height: '1px', backgroundColor: '#e4e9ff6e'}} />
+          <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
             <Title
               children='Total a pagar: $$$$'

@@ -43,7 +43,7 @@ const getCitas = async (req, res) => {
             });
         }
 
-        const citas = await Cita.find({ fecha })
+        const citas = await Cita.find({ fecha, estado: { $ne: "CANCELADA" } })
             .populate("usuarioId", "nombre apellido telefono")
             .populate("empleadoId", "nombre");
 

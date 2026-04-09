@@ -13,7 +13,7 @@ const validarAdmin = (req, res, next) => {
     if (req.rol !== "ADMIN") {
         return res.status(403).json({
             ok: false,
-            msg: "NO AUTORIZADO: Esta acción requiere rol de administrador",
+            msg: "NO AUTORIZADO",
         });
     }
 

@@ -56,6 +56,7 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
     npm install express mongoose dotenv cors express-validator jsonwebtoken bcryptjs winston cookie-parser cloudinary express-fileupload
 
     npm install -D nodemon concurrently
+    npm install --save-dev jest supertest
     ```
 
 3.  **Instalar el seeder (OPCIONAL)**

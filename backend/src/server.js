@@ -32,6 +32,7 @@ const servicioRoutes = require("./routes/servicioRoutes");
 const empresaRoutes = require("./routes/empresaRoutes");
 const empleadoRoutes = require("./routes/empleadoRoutes");
 const suspensionRoutes = require("./routes/suspensionRoutes");
+const citasRoutes = require("./routes/citaRoutes");
 
 // importar rutas
 app.use("/api/auth", usuarioRoutes);
@@ -39,6 +40,7 @@ app.use("/api/servicios", servicioRoutes);
 app.use("/api/empresa", empresaRoutes);
 app.use("/api/empleados", empleadoRoutes);
 app.use("/api/suspensiones", suspensionRoutes);
+app.use("/api/citas", citasRoutes);
 
 // PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
 if (process.env.NODE_ENV === "production") {
@@ -66,3 +68,5 @@ connectDB()
     .catch((err) => {
         logger.error("El servidor falló. Checar conexión con la BD:", err);
     });
+
+module.exports = app; // exportar para testing

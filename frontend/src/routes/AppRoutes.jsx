@@ -12,7 +12,7 @@ import Profile from '@/pages/client/Profile';
 
 // Admin
 import AppointmentCalendar from "@/pages/admin/AppointmentCalendar";
-import AdminBookAppointment from "@/pages/admin/BookAppointment";
+import AdminBookAppointment from "@/pages/admin/AdminBookAppointment";
 import Employees from "@/pages/admin/Employees";
 import Services from "@/pages/admin/Services";
 import CompanyInfo from "@/pages/admin/CompanyInfo";
@@ -36,7 +36,7 @@ const AppRoutes = () => {
       <Route path="/profile" element ={<Profile />} />
       
       {/* Admin */}
-      <Route path="/admin/calendar" element ={<AppointmentCalendar />} />
+      <Route path="/admin/appointment-calendar" element ={<AppointmentCalendar />} />
       <Route path="/admin/book-appointment" element ={<AdminBookAppointment />} />
       <Route path="/admin/employees" element ={<Employees />} />
       <Route path="/admin/services" element ={<Services />} />

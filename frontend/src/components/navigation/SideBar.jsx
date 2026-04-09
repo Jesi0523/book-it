@@ -22,7 +22,7 @@ import logo from '@/assets/principal/Logo1.webp';
 
 // Opciones
 const menuItems = [
-  { text: 'Calendario de citas', icon: <CalendarMonthIcon />, path: '/admin/calendar' },
+  { text: 'Calendario de citas', icon: <CalendarMonthIcon />, path: '/admin/appointment-calendar' },
   { text: 'Agendar cita', icon: <EditCalendarIcon/>, path: '/admin/book-appointment' },
   { text: 'Gestión de empleados', icon: <PeopleIcon />, path: '/admin/employees' },
   { text: 'Gestión de servicios', icon: <BuildIcon />, path: '/admin/services' },

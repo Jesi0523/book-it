@@ -11,11 +11,31 @@ const {
 
 const { matchedData } = require("express-validator");
 
-// @route GET /api/citas
+// @route GET /api/citas?fecha=YYYY-MM-DD
 // @description GET citas
 // @access Admin Only
 const getCitas = async (req, res) => {
     try {
+        let { fecha } = req.query;
+
+        if (!fecha) {
+            fecha = new Date().toISOString().split("T")[0];
+        }
+
+        const [anio, mes, dia] = fecha.split("-").map(Number);
+        const fechaObj = new Date(anio, mes - 1, dia);
+
+        if (
+            fechaObj.getFullYear() !== anio ||
+            fechaObj.getMonth() !== mes - 1 ||
+            fechaObj.getDate() !== dia
+        ) {
+            return res.status(400).json({
+                ok: false,
+                msg: `La fecha ${fecha} no es válida para el calendario.`,
+            });
+        }
+
         if (req.rol !== "ADMIN") {
             return res.status(403).json({
                 ok: false,
@@ -23,7 +43,10 @@ const getCitas = async (req, res) => {
             });
         }
 
-        const citas = await Cita.find();
+        const citas = await Cita.find({ fecha })
+            .populate("usuarioId", "nombre apellido telefono")
+            .populate("empleadoId", "nombre");
+
         res.status(200).json({
             ok: true,
             citas,
@@ -36,7 +59,6 @@ const getCitas = async (req, res) => {
         });
     }
 };
-
 // @route GET /api/citas/mis-citas
 // @description GET citas del cliente logueado
 // @access Private

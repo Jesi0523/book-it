@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
 import NavBar from '@/components/navigation/NavBar';
 
 const ClientLayout = ({ children }) => {
@@ -11,6 +12,8 @@ const ClientLayout = ({ children }) => {
       }}
     >
       <NavBar />
+
+      <Toolbar />
       
       <Box 
         component="main" 

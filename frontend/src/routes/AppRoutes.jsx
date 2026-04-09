@@ -1,19 +1,26 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import NotFound from "@/pages/NotFound.jsx";
+// Auth
 import Login from "@/pages/auth/Login.jsx"; 
 import Signup from "@/pages/auth/Signup.jsx";
+
+// Client
 import MainPage  from "@/pages/client/MainPage";
 import BookAppointment from "@/pages/client/BookAppointment";
-import ClientSchedule from "@/pages/client/ClientSchedule";
+import MySchedule from "@/pages/client/MySchedule";
 import Profile from '@/pages/client/Profile';
+
+// Admin
 import AppointmentCalendar from "@/pages/admin/AppointmentCalendar";
-import AdminBookAppointment from "@/pages/admin/AdminBookAppointment";
+import AdminBookAppointment from "@/pages/admin/BookAppointment";
 import Employees from "@/pages/admin/Employees";
 import Services from "@/pages/admin/Services";
 import CompanyInfo from "@/pages/admin/CompanyInfo";
 import Suspensions from "@/pages/admin/Suspensions";
 import Reports from "@/pages/admin/Reports";
+
+// Error
+import NotFound from "@/pages/NotFound.jsx";
 
 const AppRoutes = () => {
   return (
@@ -24,21 +31,22 @@ const AppRoutes = () => {
 
       {/* Usuario */}
       <Route path="/main" element ={<MainPage />} />
-      <Route path="/bookAppointment" element ={<BookAppointment />} />
-      <Route path="/clientSchedule" element ={<ClientSchedule />} />
+      <Route path="/book-appointment" element ={<BookAppointment />} />
+      <Route path="/my-schedule" element ={<MySchedule />} />
       <Route path="/profile" element ={<Profile />} />
       
       {/* Admin */}
-      <Route path="/appointmentCalendar" element ={<AppointmentCalendar />} />
-      <Route path="/adminBookAppointment" element ={<AdminBookAppointment />} />
-      <Route path="/employees" element ={<Employees />} />
-      <Route path="/services" element ={<Services />} />
-      <Route path="/companyInfo" element ={<CompanyInfo />} />
-      <Route path="/suspensions" element ={<Suspensions />} />
-      <Route path="/reports" element ={<Reports />} />
+      <Route path="/admin/calendar" element ={<AppointmentCalendar />} />
+      <Route path="/admin/book-appointment" element ={<AdminBookAppointment />} />
+      <Route path="/admin/employees" element ={<Employees />} />
+      <Route path="/admin/services" element ={<Services />} />
+      <Route path="/admin/company-info" element ={<CompanyInfo />} />
+      <Route path="/admin/suspensions" element ={<Suspensions />} />
+      <Route path="/admin/reports" element ={<Reports />} />
 
-      {/* Not Found */}
-      <Route path="*" element={<NotFound />} />
+      {/* Error */}
+      <Route path="/404" element={<NotFound />} />
+      <Route path="*" element={<Navigate to="/404" replace />} />
 
     </Routes>
   );

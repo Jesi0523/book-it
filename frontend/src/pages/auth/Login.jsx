@@ -26,7 +26,7 @@ function Login() {
     e.preventDefault();
 
     if (email === "admin@gmail.com" && password === "1234") {
-      navigate("/appointmentCalendar");
+      navigate("/admin/calendar");
     } else {
       navigate("/main"); 
     }

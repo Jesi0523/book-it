@@ -84,7 +84,7 @@ const appointmentsInfo = [
 ];
 // ****************************
 
-function ClientSchedule() 
+function MySchedule() 
 {
   return (
     <ClientLayout>
@@ -138,4 +138,4 @@ function ClientSchedule()
   );
 }
 
-export default ClientSchedule;
+export default MySchedule;

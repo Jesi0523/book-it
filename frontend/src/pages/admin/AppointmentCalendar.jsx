@@ -32,7 +32,7 @@ const AppointmentCalendar = () => {
               <Title children="Calendario de citas" size={{ xs: '1.5rem', md: '2.5rem' }} textTransform="uppercase" color='text.primary' align={{ xs: 'center', md: 'left' }} />
           </Box>
           
-          <MainButton size={{ xs: '14px', md: '16px' }} href="/adminBookAppointment">
+          <MainButton size={{ xs: '14px', md: '16px' }} href="/admin/book-appointment">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <CalendarIcon fontSize="small" />
               Agendar cita

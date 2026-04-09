@@ -241,7 +241,7 @@ function MainPage() {
           width: '100%',
         }}
       >
-        <MainButton href='/bookAppointment'>
+        <MainButton href='/book-appointment'>
           Agenda tu cita <CalendarIcon />
         </MainButton>
       </Box>

@@ -22,13 +22,13 @@ import logo from '@/assets/principal/Logo1.webp';
 
 // Opciones
 const menuItems = [
-  { text: 'Calendario de citas', icon: <CalendarMonthIcon />, path: '/appointmentCalendar' },
-  { text: 'Agendar cita', icon: <EditCalendarIcon/>, path: '/adminBookAppointment' },
-  { text: 'Gestión de empleados', icon: <PeopleIcon />, path: '/employees' },
-  { text: 'Gestión de servicios', icon: <BuildIcon />, path: '/services' },
-  { text: 'Información de la empresa', icon: <InfoIcon />, path: '/companyInfo' },
-  { text: 'Suspensión de servicios', icon: <ReportProblemIcon />, path: '/suspensions' },
-  { text: 'Reportes', icon: <BarChartIcon />, path: '/reports' },
+  { text: 'Calendario de citas', icon: <CalendarMonthIcon />, path: '/admin/calendar' },
+  { text: 'Agendar cita', icon: <EditCalendarIcon/>, path: '/admin/book-appointment' },
+  { text: 'Gestión de empleados', icon: <PeopleIcon />, path: '/admin/employees' },
+  { text: 'Gestión de servicios', icon: <BuildIcon />, path: '/admin/services' },
+  { text: 'Información de la empresa', icon: <InfoIcon />, path: '/admin/company-info' },
+  { text: 'Suspensión de servicios', icon: <ReportProblemIcon />, path: '/admin/suspensions' },
+  { text: 'Reportes', icon: <BarChartIcon />, path: '/admin/reports' },
 ];
 
 const Sidebar = ({ isExpanded = true }) => {

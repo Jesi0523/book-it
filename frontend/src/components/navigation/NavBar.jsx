@@ -34,7 +34,7 @@ function NavBar()
   const currentPath = location.pathname;
 
   return (
-    <AppBar position="static" 
+    <AppBar position="fixed" 
         sx={{ background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)'}}
     >
       <Container maxWidth="xl">
@@ -83,11 +83,11 @@ function NavBar()
                         <HomeIcon/>
                         <Typography>Inicio</Typography>
                     </MenuItem>
-                    <MenuItem component="a" href="/bookAppointment" sx={{ color: currentPath === '/bookAppointment' ? 'secondary.blueShade' : 'inherit' }}>
+                    <MenuItem component="a" href="/book-appointment" sx={{ color: currentPath === '/book-appointment' ? 'secondary.blueShade' : 'inherit' }}>
                         <EditCalendarIcon/>
                         <Typography>Agendar cita</Typography>
                     </MenuItem>
-                    <MenuItem component="a" href="/clientSchedule" sx={{ color: currentPath === '/clientSchedule' ? 'secondary.blueShade' : 'inherit' }}>
+                    <MenuItem component="a" href="/my-schedule" sx={{ color: currentPath === '/my-schedule' ? 'secondary.blueShade' : 'inherit' }}>
                         <CalendarIcon/>
                         <Typography>Mis citas</Typography>
                     </MenuItem>
@@ -101,8 +101,8 @@ function NavBar()
             {/* LAPTOPS, MONITORES GRANDES, TELES xd */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: "end"}}>
                 <NavOptions icon={<HomeIcon/>} link='/main' text="Inicio" isActive={currentPath === '/main'} />
-                <NavOptions icon={<EditCalendarIcon/>} link='/bookAppointment' text="Agendar cita" isActive={currentPath === '/bookAppointment'} />
-                <NavOptions icon={<CalendarIcon/>} link='/clientSchedule' text="Mis citas" isActive={currentPath === '/clientSchedule'} />
+                <NavOptions icon={<EditCalendarIcon/>} link='/book-appointment' text="Agendar cita" isActive={currentPath === '/book-appointment'} />
+                <NavOptions icon={<CalendarIcon/>} link='/my-schedule' text="Mis citas" isActive={currentPath === '/my-schedule'} />
                 <NavOptions icon={<UserIcon/>} link='/profile' text="Ver perfil" isActive={currentPath === '/profile'} />
             </Box>
 

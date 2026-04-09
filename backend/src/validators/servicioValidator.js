@@ -14,7 +14,9 @@ const createServicioValidator = [
         // descripcion - exista y no este vacia
         .trim()
         .notEmpty()
-        .withMessage("La descripción es requerida"),
+        .withMessage("La descripción es requerida")
+        .isLength({ max: 500 })
+        .withMessage("La descripción excedió longitud"),
 
     body("precio")
         // precio - exista, sea numerico y no negativo
@@ -61,7 +63,9 @@ const updateServicioValidator = [
         .optional()
         .trim()
         .notEmpty()
-        .withMessage("La descripción es requerida"),
+        .withMessage("La descripción es requerida")
+        .isLength({ max: 500 })
+        .withMessage("La descripción excedió longitud"),
 
     body("precio")
         // precio - exista, sea numerico y no negativo

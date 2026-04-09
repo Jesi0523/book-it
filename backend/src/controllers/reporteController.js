@@ -41,6 +41,18 @@ const getReporteCitas = async (req, res) => {
         if (!mes || !año)
             return res.status(400).json({ ok: false, msg: "Falta mes y año" });
 
+        if (
+            isNaN(mes) ||
+            isNaN(año) ||
+            mes < 1 ||
+            mes > 12 ||
+            año < 2000 ||
+            año > 2100
+        )
+            return res
+                .status(400)
+                .json({ ok: false, msg: "Mes o año inválido" });
+
         const { fechaInicio, fechaFin } = obtenerRangoMes(mes, año);
 
         const citas = await Cita.find({
@@ -71,6 +83,18 @@ const getReporteIngresos = async (req, res) => {
         if (!mes || !año)
             return res.status(400).json({ ok: false, msg: "Falta mes y año" });
 
+        if (
+            isNaN(mes) ||
+            isNaN(año) ||
+            mes < 1 ||
+            mes > 12 ||
+            año < 2000 ||
+            año > 2100
+        )
+            return res
+                .status(400)
+                .json({ ok: false, msg: "Mes o año inválido" });
+
         const { fechaInicio, fechaFin } = obtenerRangoMes(mes, año);
 
         const citas = await Cita.find({
@@ -100,6 +124,18 @@ const getReporteServicios = async (req, res) => {
         const { mes, año } = req.query;
         if (!mes || !año)
             return res.status(400).json({ ok: false, msg: "Falta mes y año" });
+
+        if (
+            isNaN(mes) ||
+            isNaN(año) ||
+            mes < 1 ||
+            mes > 12 ||
+            año < 2000 ||
+            año > 2100
+        )
+            return res
+                .status(400)
+                .json({ ok: false, msg: "Mes o año inválido" });
 
         const { fechaInicio, fechaFin } = obtenerRangoMes(mes, año);
 
@@ -148,6 +184,18 @@ const getReporteProductividad = async (req, res) => {
         const { mes, año } = req.query;
         if (!mes || !año)
             return res.status(400).json({ ok: false, msg: "Falta mes y año" });
+
+        if (
+            isNaN(mes) ||
+            isNaN(año) ||
+            mes < 1 ||
+            mes > 12 ||
+            año < 2000 ||
+            año > 2100
+        )
+            return res
+                .status(400)
+                .json({ ok: false, msg: "Mes o año inválido" });
 
         const { fechaInicio, fechaFin } = obtenerRangoMes(mes, año);
 

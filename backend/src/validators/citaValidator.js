@@ -173,7 +173,7 @@ const updateCitaStatusValidator = [
                 // buscar la cita para saber su fecha
                 const cita = await Cita.findById(req.params.id);
                 if (!cita) {
-                    throw new Error("Cita no encontrada");
+                    return false;
                 }
 
                 // normalizar las fechas para comparar solo el dia

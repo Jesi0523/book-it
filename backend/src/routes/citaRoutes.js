@@ -21,7 +21,7 @@ const {
 } = require("../controllers/citaController");
 
 //get disponibilidad
-router.get("/disponibilidad", getDisponibilidad);
+router.get("/disponibilidad", [validarJWT], getDisponibilidad);
 
 //get citas
 router.get("/mis-citas", [validarJWT], getMisCitas);

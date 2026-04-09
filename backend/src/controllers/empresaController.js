@@ -35,7 +35,7 @@ const getEmpresa = async (req, res) => {
 // @desc PATCH info empresa
 // @access Admin Only
 
-// TODO: Cancelar citas si se cambia la hora de entrada o salida de la empresa a un horario que afecte a las citas agendadas
+///TEST/// Cancelar citas si se cambia la hora de entrada o salida de la empresa a un horario que afecte a las citas agendadas
 const updateEmpresa = async (req, res) => {
     try {
         // solo hay una empresa
@@ -53,14 +53,6 @@ const updateEmpresa = async (req, res) => {
         delete data.galeriaConservada;
         delete data.logo;
         delete data.imagenPrincipal;
-
-        /* const {
-        logo,
-        horarioGlobal,
-        galeriaConservada,
-        imagenPrincipal,
-        ...data
-    } = req.body || {}; */
 
         // actualiza datos simples
         Object.assign(empresa, data);
@@ -125,6 +117,61 @@ const updateEmpresa = async (req, res) => {
                     empleado.horario = nuevoHorarioEmpleado;
                     await empleado.save();
                 }
+            }
+        }
+
+        // cancelar citas si se cambio el horario
+        if (data.horarioGlobal) {
+            const hoy = new Date();
+            hoy.setUTCHours(0, 0, 0, 0);
+
+            // identificar citas afectadas
+            const citasFuturas = await Cita.find({
+                fecha: { $gte: hoy },
+                estado: { $in: ["pendiente", "confirmada"] },
+            });
+
+            const idsACancelar = [];
+
+            for (const cita of citasFuturas) {
+                // obtener el día de la semana de la cita para comparar con el horario de la empresa
+                const diaSemana = new Date(cita.fecha)
+                    .toLocaleDateString("es-ES", {
+                        weekday: "long",
+                        timeZone: "UTC",
+                    })
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+
+                const horarioEmpresaDia = empresa.horarioGlobal.find(
+                    (h) => h.dia === diaSemana,
+                );
+
+                // si la empresa ya no abre ese dia
+                if (!horarioEmpresaDia) {
+                    idsACancelar.push(cita._id);
+                    continue;
+                }
+
+                // Si la cita inicia antes que la empresa o termina después que la empresa
+                if (
+                    cita.horaInicio < horarioEmpresaDia.horaInicio ||
+                    cita.horaFin > horarioEmpresaDia.horaFin
+                ) {
+                    idsACancelar.push(cita._id);
+                }
+            }
+
+            // cancelar las citas afectadas
+            if (idsACancelar.length > 0) {
+                await Cita.updateMany(
+                    { _id: { $in: idsACancelar } },
+                    { $set: { estado: "cancelada" } },
+                );
+                logger.info(
+                    `Se cancelaron ${idsACancelar.length} citas debido a cambios en el horario global de la empresa.`,
+                );
             }
         }
 

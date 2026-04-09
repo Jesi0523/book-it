@@ -1,6 +1,10 @@
 const logger = require("../config/logger");
 const Servicio = require("../models/servicioModel");
 const Cita = require("../models/citaModel");
+const Empleado = require("../models/empleadoModel");
+
+const mongoose = require("mongoose");
+
 const {
     calcularHorariosDisponibles,
 } = require("../helpers/disponibilidadHelper");
@@ -73,12 +77,33 @@ const getDisponibilidad = async (req, res) => {
             });
         }
 
+        if (!mongoose.Types.ObjectId.isValid(empleadoId)) {
+            return res.status(400).json({
+                ok: false,
+                msg: "El ID del empleado no tiene un formato válido.",
+            });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(servicioId)) {
+            return res.status(400).json({
+                ok: false,
+                msg: "El ID del servicio no tiene un formato válido.",
+            });
+        }
+
         // obtener el servicio para saver la duracion
         const servicio = await Servicio.findById(servicioId);
         if (!servicio) {
             return res
                 .status(404)
                 .json({ ok: false, msg: "Servicio no encontrado" });
+        }
+
+        const empleado = await Empleado.findById(empleadoId);
+        if (!empleado) {
+            return res
+                .status(404)
+                .json({ ok: false, msg: "Empleado no encontrado" });
         }
 
         // si no tiene duracion por x razon se asumen 30

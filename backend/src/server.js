@@ -33,6 +33,7 @@ const empresaRoutes = require("./routes/empresaRoutes");
 const empleadoRoutes = require("./routes/empleadoRoutes");
 const suspensionRoutes = require("./routes/suspensionRoutes");
 const citasRoutes = require("./routes/citaRoutes");
+const reporteRoutes = require("./routes/reporteRoutes");
 
 // importar rutas
 app.use("/api/auth", usuarioRoutes);
@@ -41,6 +42,7 @@ app.use("/api/empresa", empresaRoutes);
 app.use("/api/empleados", empleadoRoutes);
 app.use("/api/suspensiones", suspensionRoutes);
 app.use("/api/citas", citasRoutes);
+app.use("/api/reportes", reporteRoutes);
 
 // PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
 if (process.env.NODE_ENV === "production") {

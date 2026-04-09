@@ -15,10 +15,16 @@ const suspensionSchema = new mongoose.Schema(
         todoElDia: {
             type: Boolean,
             default: true,
-            required: true
+            required: true,
         },
         horaInicio: {
             type: String,
+            default: function () {
+                if (this.todoElDia === true) {
+                    return "00:00";
+                }
+                return undefined;
+            },
             // Solo es obligatorio si "todoElDia" es falso
             required: function () {
                 return this.todoElDia === false;
@@ -29,6 +35,12 @@ const suspensionSchema = new mongoose.Schema(
             // Solo es obligatorio si "todoElDia" es falso
             required: function () {
                 return this.todoElDia === false;
+            },
+            default: function () {
+                if (this.todoElDia === true) {
+                    return "23:59";
+                }
+                return undefined;
             },
         },
         activo: {

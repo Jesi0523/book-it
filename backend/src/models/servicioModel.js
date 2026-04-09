@@ -7,6 +7,8 @@
 */
 
 const mongoose = require("mongoose");
+const imagenSchema = require("./imagenModel");
+
 const servicioSchema = new mongoose.Schema(
     {
         nombre: {
@@ -22,11 +24,11 @@ const servicioSchema = new mongoose.Schema(
             required: true,
         },
         duracion: {
-        type: Number,
-        default: 30,
+            type: Number,
+            default: 30,
         },
-        fotoURL: {
-            type: String,
+        foto: {
+            type: imagenSchema,
             required: true,
         },
         activo: {

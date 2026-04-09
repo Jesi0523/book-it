@@ -1,9 +1,16 @@
 import { useState } from "react";
-import { Box, Typography, IconButton } from "@mui/material";
-import { Man, Woman } from "@mui/icons-material";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Man from '@mui/icons-material/Man';
+import Woman from '@mui/icons-material/Woman';
 
-const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px solid #6C63FF'}) => 
-{
+const GenderSelect = ({ 
+  label = "Sexo", 
+  background = '#0c0c18', 
+  border = '1.5px solid #6C63FF',
+  height = { xs: '60px', md: '80px' } 
+}) => {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -12,7 +19,7 @@ const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px 
       borderRadius: '30px',
       padding: '4px 12px',
       position: 'relative',
-      height: '80px', 
+      height: height,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -22,27 +29,26 @@ const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px 
       <Typography sx={{
         color: 'primary.main',
         fontWeight: 'bold',
-        fontSize: '14px',
+        fontSize: { xs: '12px', md: '14px' },
         position: 'absolute',
-        top: 8,
-        left: 20,
+        top: { xs: 4, md: 8 }, 
+        left: { xs: 16, md: 20 },
       }}>
         {label}
       </Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1.5, mt: 1.5 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: { xs: 0.5, md: 1.5 }, mt: { xs: 2, md: 1.5 } }}>
         <IconButton 
           onClick={() => setSelected('M')}
           sx={{ 
-            // Color del icono
             color: selected === 'M' ? 'primary.main' : 'rgba(255, 255, 255, 0.2)',
             backgroundColor: selected === 'M' ? 'rgba(255, 157, 64, 0.15)' : 'rgba(255, 255, 255, 0.05)',
             borderRadius: '12px',
-            padding: '6px',
+            padding: { xs: '4px', md: '6px' }, 
             '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
           }}
         >
-          <Man fontSize="medium" />
+          <Man sx={{ fontSize: { xs: '1.2rem', md: '1.5rem' } }} />
         </IconButton>
         
         <IconButton 
@@ -51,11 +57,11 @@ const GenderSelect = ({ label = "Sexo", background = '#0c0c18', border = '1.5px 
             color: selected === 'F' ? 'primary.main' : 'rgba(255, 255, 255, 0.2)',
             backgroundColor: selected === 'F' ? 'rgba(255, 157, 64, 0.15)' : 'rgba(255, 255, 255, 0.05)',
             borderRadius: '12px',
-            padding: '6px',
+            padding: { xs: '4px', md: '6px' },
             '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
           }}
         >
-          <Woman fontSize="medium" />
+          <Woman sx={{ fontSize: { xs: '1.2rem', md: '1.5rem' } }} />
         </IconButton>
       </Box>
     </Box>

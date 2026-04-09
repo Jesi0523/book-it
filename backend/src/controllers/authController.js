@@ -1,6 +1,8 @@
+const logger = require("../config/logger");
 const Usuario = require("../models/usuarioModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { matchedData } = require("express-validator");
 const { generarJWT, generarRefreshToken } = require("../helpers/jwt");
 
 // @route   POST /api/usuarios/register
@@ -8,21 +10,14 @@ const { generarJWT, generarRefreshToken } = require("../helpers/jwt");
 // @access  Public
 const registrarUsuario = async (req, res) => {
     try {
-        const { nombre, correo, password, sexo, telefono, fechaNacimiento } =
-            req.body; // se desestructura el cuerpo para mayor seguridad, a lo que entendi lol
-
-        // crear el nuevo usuario con los datos de req.body
-        let usuario = new Usuario({
-            nombre,
-            correo,
-            password,
-            sexo,
-            telefono,
-            fechaNacimiento,
-        });
+        const data = matchedData(req, { locations: ["body"] });
+        delete data.passwordConfirmacion;
 
         // encriptar la contraseña
-        usuario.password = bcrypt.hashSync(password, 10);
+        data.password = bcrypt.hashSync(data.password, 10);
+
+        // crear el nuevo usuario con los datos de req.body
+        let usuario = new Usuario(data);
 
         //guardar en la base de datos
         await usuario.save();
@@ -49,10 +44,10 @@ const registrarUsuario = async (req, res) => {
 
 const loginUsuario = async (req, res) => {
     try {
-        const { correo, password } = req.body;
+        const data = matchedData(req, { locations: ["body"] });
 
         // checar que el usuario existe
-        let usuario = await Usuario.findOne({ correo });
+        let usuario = await Usuario.findOne({ correo: data.correo });
 
         // si no existe
         if (!usuario) {
@@ -63,7 +58,7 @@ const loginUsuario = async (req, res) => {
         }
 
         // checar que la contraseña sea correcta
-        const esValido = await bcrypt.compare(password, usuario.password);
+        const esValido = await bcrypt.compare(data.password, usuario.password);
 
         // si no es valida
         if (!esValido) {

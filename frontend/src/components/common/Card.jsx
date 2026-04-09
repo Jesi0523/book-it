@@ -1,4 +1,5 @@
-import { Paper, Box } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 
 const Card = ({ 
   children, 

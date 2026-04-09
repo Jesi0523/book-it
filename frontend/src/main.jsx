@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { Toaster } from "react-hot-toast";
-
 import App from "./App.jsx";
 import theme from "./theme/theme";
 import "@/styles/global.css";

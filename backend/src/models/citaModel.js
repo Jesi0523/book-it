@@ -61,11 +61,11 @@ const citaSchema = new mongoose.Schema(
 
         datosCliente: {
             // es por si es para un tercero
-            nombre: { type: String },
-            edad: { type: Number },
-            sexo: { type: String },
-            telefono: { type: String },
-            correo: { type: String },
+            nombre: { type: String, required: true },
+            edad: { type: Number, required: true },
+            sexo: { type: String, required: true },
+            telefono: { type: String, required: true },
+            correo: { type: String, required: true },
         },
     },
     { timestamps: true }, // Crea 'createdAt' y 'updatedAt' solitos

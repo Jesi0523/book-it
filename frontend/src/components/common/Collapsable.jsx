@@ -3,7 +3,10 @@
 // entonces decidí manejar la estructura del header y body en archivos separados que están en la 
 // carpeta de collapsable.
 // *************************************************************************************************
-import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Collapsable = ({ headerContent, children,

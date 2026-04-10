@@ -36,11 +36,11 @@ const employsDummy = [
   },
 ];
 const hoursDummy = [
-  '09:00-10:00am',
-  '10:30-11:30am',
-  '12:00-13:00pm',
-  '13:00-14:00pm',
-  '15:00-16:00pm',
+  '09:00-10:00',
+  '10:30-11:30',
+  '12:00-13:00',
+  '13:00-14:00',
+  '15:00-16:00',
 ];
 // ****************************
 
@@ -302,7 +302,7 @@ function BookAppointment() {
           >
             <Text children='Febrero 11, 2026' size='18' align='center' />
             <Text
-              children='Horario: 9:00am a 10:00am. '
+              children='Horario: 9:00 a 10:00'
               size='18'
               align='center'
             />

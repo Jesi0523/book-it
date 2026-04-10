@@ -106,12 +106,6 @@ function MainPage() {
             color='primary.main'
             size='20'
           />
-          <Text
-            children='Descripción breve'
-            align='center'
-            color='text.primary'
-            size='18'
-          />
         </Box>
 
         <Swiper

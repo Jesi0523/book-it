@@ -47,7 +47,7 @@ const dummyEmpleados = [
     info: 'Especialista en servicios de belleza con 5 años de experiencia.',
     foto: avatar1,
     schedule:
-      'Lunes: 08:00am - 20:00pm\nMartes: 08:00am - 20:00pm\nMiércoles: 08:00am - 20:00pm\nJueves: 08:00am - 20:00pm\nViernes: 08:00am - 20:00pm\nSábado: 13:00pm - 17:00pm\nDomingo: Descanso',
+      'Lunes: 08:00 - 20:00\nMartes: 08:00 - 20:00\nMiércoles: 08:00 - 20:00\nJueves: 08:00 - 20:00\nViernes: 08:00 - 20:00\nSábado: 13:00 - 17:00\nDomingo: Descanso',
     services: [dummyServicios[0], dummyServicios[1], dummyServicios[4]],
   },
   {
@@ -59,7 +59,7 @@ const dummyEmpleados = [
     info: 'Atención al cliente y gestión de citas.',
     foto: avatar2,
     schedule:
-      'Lunes: 09:00am - 18:00pm\nMartes: 09:00am - 18:00pm\nMiércoles: 09:00am - 18:00pm\nJueves: 09:00am - 18:00pm\nViernes: 09:00am - 18:00pm\nSábado: 09:00am - 18:00pm\nDomingo: Descanso',
+      'Lunes: 09:00 - 18:00\nMartes: 09:00 - 18:00\nMiércoles: 09:00 - 18:00\nJueves: 09:00 - 18:00\nViernes: 09:00 - 18:00\nSábado: 09:00 - 18:00\nDomingo: Descanso',
     services: [dummyServicios[2], dummyServicios[3]],
   },
   {
@@ -71,7 +71,7 @@ const dummyEmpleados = [
     info: 'Experta en cuidado de la piel y tratamientos faciales. Siempre dispuesta a brindar el mejor servicio a sus clientes.',
     foto: avatar1,
     schedule:
-      'Lunes: 10:00am - 19:00pm\nMartes: 10:00am - 19:00pm\nMiércoles: Descanso\nJueves: 10:00am - 19:00pm\nViernes: 10:00am - 19:00pm\nSábado: 10:00am - 15:00pm\nDomingo: Descanso',
+      'Lunes: 10:00 - 19:00\nMartes: 10:00 - 19:00\nMiércoles: Descanso\nJueves: 10:00 - 19:00\nViernes: 10:00 - 19:00\nSábado: 10:00 - 15:00pm\nDomingo: Descanso',
     services: [dummyServicios[2], dummyServicios[3], dummyServicios[4]],
   },
   {
@@ -83,7 +83,7 @@ const dummyEmpleados = [
     info: 'Especialista en cortes modernos y estilismo para todo tipo de eventos sociales y casuales.',
     foto: avatar2,
     schedule:
-      'Lunes: Descanso\nMartes: 08:00am - 17:00pm\nMiércoles: 08:00am - 17:00pm\nJueves: 08:00am - 17:00pm\nViernes: 08:00am - 17:00pm\nSábado: 08:00am - 17:00pm\nDomingo: 09:00am - 14:00pm',
+      'Lunes: Descanso\nMartes: 08:00 - 17:00pm\nMiércoles: 08:00 - 17:00pm\nJueves: 08:00 - 17:00pm\nViernes: 08:00 - 17:00pm\nSábado: 08:00 - 17:00pm\nDomingo: 09:00 - 14:00pm',
     services: [dummyServicios[0], dummyServicios[1]],
   },
 ];

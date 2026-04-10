@@ -67,7 +67,7 @@ const clientDummy = [
 const appointmentsInfo = [
   {
     service: 'Servicio 1',
-    date: 'Febrero 11, 2026 9:00am a 10:00am.',
+    date: 'Febrero 11, 2026 9:00 a 10:00.',
     price: '$4000',
     status: statusAppointment[2],
     employ: employsDummy[1],
@@ -75,7 +75,7 @@ const appointmentsInfo = [
   },
   {
     service: 'Servicio 2',
-    date: 'Marzo 1, 2026 13:00am a 14:00am.',
+    date: 'Marzo 1, 2026 13:00 a 14:00.',
     price: '$500',
     status: statusAppointment[1],
     employ: employsDummy[2],

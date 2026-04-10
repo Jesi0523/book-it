@@ -55,6 +55,14 @@ const generarBloquesRango = (startMins, endMins) => {
   return bloques;
 };
 
+const opcionesTiempo = Array.from({ length: 48 }, (_, i) => {
+  const h = Math.floor(i / 2)
+    .toString()
+    .padStart(2, '0');
+  const m = i % 2 === 0 ? '00' : '30';
+  return `${h}:${m}`;
+});
+
 const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
   // Responsive
   const theme = useTheme();
@@ -129,10 +137,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          alignItems: { xs: 'stretch', md: 'center' },
-          gap: { xs: 2.5, md: 2 },
+          flexDirection: { xs: 'column', md: 'row' }, 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          gap: 3,
           mb: 4,
+          width: '100%',
         }}
       >
         {/* Titulo y dia */}
@@ -140,8 +150,10 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
             gap: 2,
+            width: { xs: '100%', md: 'auto' },
           }}
         >
           {/* Titulo */}
@@ -157,10 +169,14 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                 sx: {
                   backgroundColor: '#1b1c37',
                   color: 'white',
-                  '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 183, 77, 0.2)' },
-                  '& .Mui-selected': { backgroundColor: 'rgba(255, 183, 77, 0.4) !important' }
-                }
-              }
+                  '& .MuiMenuItem-root:hover': {
+                    backgroundColor: 'rgba(255, 183, 77, 0.2)',
+                  },
+                  '& .Mui-selected': {
+                    backgroundColor: 'rgba(255, 183, 77, 0.4) !important',
+                  },
+                },
+              },
             }}
             sx={{
               minWidth: '130px',
@@ -179,106 +195,124 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
           </Select>
         </Box>
 
-        {/* Rango de horas */}
+        {/* Horas y Botones */}
         <Box
           sx={{
             display: 'flex',
+            flexWrap: 'wrap',
             alignItems: 'center',
-            justifyContent: { xs: 'space-between', md: 'flex-start' },
+            justifyContent: 'center',
             gap: 2,
+            width: { xs: '100%', md: 'auto' },
           }}
         >
-          {/* Hora 1 */}
-          <TextField
-            type='time'
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            size='small'
-            inputProps={{ step: 1800 }}
-            sx={{
-              flex: { xs: 1, md: 'none' },
-              backgroundColor: '#1b1c37',
-              borderRadius: '8px',
-              '& input': {
-                color: 'white',
-                padding: '8px 14px',
-                textAlign: 'center',
-              },
-              '& fieldset': { border: 'none' },
-              '& input::-webkit-calendar-picker-indicator': {
-                filter: 'invert(1)',
-              },
-            }}
-          />
-
-          <Text children='hasta' color='white' size='16px' />
-
-          {/* Hora 2 */}
-          <TextField
-            type='time'
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
-            size='small'
-            inputProps={{ step: 1800 }}
-            sx={{
-              flex: { xs: 1, md: 'none' },
-              backgroundColor: '#1b1c37',
-              borderRadius: '8px',
-              '& input': {
-                color: 'white',
-                padding: '8px 14px',
-                textAlign: 'center',
-              },
-              '& fieldset': { border: 'none' },
-              '& input::-webkit-calendar-picker-indicator': {
-                filter: 'invert(1)',
-              },
-            }}
-          />
-        </Box>
-
-        {/* Boton aplicar y eliminar */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: { xs: 'space-evenly', md: 'flex-start' },
-            width: { xs: '100%', md: 'auto' }, 
-            gap: 2,
-            ml: { xs: 0, md: 'auto' },
-          }}
-        >
-          {/* Aplicar */}
-          <MainButton
-            size={{ xs: '14px', md: '14px' }}
-            onClick={handleAplicar}
-            sx={{
-              backgroundColor: '#ffb74d',
-              color: '#000',
-              display: 'flex',
-              gap: 1,
-              m: 0,
-            }}
-          >
-            <CheckIcon fontSize='small' /> Aplicar
-          </MainButton>
-
-          {/* Eliminar */}
-          <Tooltip title='Limpiar horario del dia seleccionado'>
-            <IconButton
-              onClick={handleLimpiarDia}
+          {/* Rango de horas */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+            {/* Hora 1 */}
+            <Select
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              size='small'
               sx={{
-                color: '#ffb74d',
-                border: '1px solid rgba(255, 183, 77, 0.5)',
-                borderRadius: '50%',
-                p: '9px',
-                flexShrink: 0,
-                '&:hover': { backgroundColor: 'rgba(255, 183, 77, 0.1)' },
+                width: '92px',
+                backgroundColor: '#1b1c37',
+                borderRadius: '8px',
+                color: 'white',
+                '& fieldset': { border: 'none' },
+                '& .MuiSelect-select': {
+                  padding: '8px 14px',
+                  textAlign: 'center',
+                },
+                '& .MuiSvgIcon-root': { color: '#ffb74d' },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: '#1b1c37',
+                    color: 'white',
+                    maxHeight: 300,
+                  },
+                },
               }}
             >
-              <DeleteOutlineIcon fontSize='small' />
-            </IconButton>
-          </Tooltip>
+              {opcionesTiempo.map((t) => (
+                <MenuItem key={t} value={t}>
+                  {t}
+                </MenuItem>
+              ))}
+            </Select>
+
+            <Text children='hasta' color='white' size='16px' />
+
+            {/* Hora 2 */}
+            <Select
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+              size='small'
+              sx={{
+                width: '92px',
+                backgroundColor: '#1b1c37',
+                borderRadius: '8px',
+                color: 'white',
+                '& fieldset': { border: 'none' },
+                '& .MuiSelect-select': {
+                  padding: '8px 14px',
+                  textAlign: 'center',
+                },
+                '& .MuiSvgIcon-root': { color: '#ffb74d' },
+              }}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: '#1b1c37',
+                    color: 'white',
+                    maxHeight: 300,
+                  },
+                },
+              }}
+            >
+              {opcionesTiempo.map((t) => (
+                <MenuItem key={t} value={t}>
+                  {t}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+
+          {/* Boton aplicar y eliminar */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {/* Aplicar */}
+            <MainButton
+              size={{ xs: '14px', md: '14px' }}
+              onClick={handleAplicar}
+              sx={{
+                backgroundColor: '#ffb74d',
+                color: '#000',
+                display: 'flex',
+                gap: 1,
+                m: 0,
+              }}
+            >
+              <CheckIcon fontSize='small' /> Aplicar
+            </MainButton>
+
+            {/* Eliminar */}
+            <Tooltip title='Limpiar horario del dia seleccionado'>
+              <IconButton
+                onClick={handleLimpiarDia}
+                sx={{
+                  color: '#ffb74d',
+                  border: '1px solid rgba(255, 183, 77, 0.5)',
+                  borderRadius: '50%',
+                  p: '9px',
+                  flexShrink: 0,
+                  '&:hover': { backgroundColor: 'rgba(255, 183, 77, 0.1)' },
+                }}
+              >
+                <DeleteOutlineIcon fontSize='small' />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
       </Box>
 

@@ -62,7 +62,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       {/* Fecha y estado de la cita */}
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'center', sm: 'center' }, gap: 2, mb: 3 }}>
         <Box sx={{ borderBottom: `1px solid ${colorNaranja}`, pb: 0.5, width: 'fit-content' }}>
-          <Text children={appointment.dateStr || 'Febrero 11, 2026 9:00am a 10:00am.'} color={colorNaranja} size='16px' />
+          <Text children={appointment.dateStr || 'Febrero 11, 2026 9:00 a 10:00.'} color={colorNaranja} size='16px' />
         </Box>
         
         <Select

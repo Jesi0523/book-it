@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-
+import { useLocation } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
@@ -71,6 +71,9 @@ const imageDummy = [
 // ***********************************
 
 function MainPage() {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
   return (
     <ClientLayout>
       {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
@@ -235,9 +238,21 @@ function MainPage() {
           width: '100%',
         }}
       >
-        <MainButton href='/book-appointment'>
-          Agenda tu cita <CalendarIcon />
-        </MainButton>
+        {isLanding ? (
+          // Landing Page
+          <>
+            <MainButton href='/login'>
+              Agenda tu cita <CalendarIcon />
+            </MainButton>
+          </>
+        ) : (
+          // Main Page
+          <>
+            <MainButton href='/book-appointment'>
+              Agenda tu cita <CalendarIcon />
+            </MainButton>
+          </>
+        )}
       </Box>
 
       {/* ****** footer *****  */}

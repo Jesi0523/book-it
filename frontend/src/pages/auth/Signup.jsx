@@ -22,7 +22,7 @@ function Signup() {
   const navigate = useNavigate();
 
   const handleContinue = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -78,7 +78,7 @@ function Signup() {
           ¿Ya tienes una cuenta?{" "}
           <MuiLink
             component={RouterLink}
-            to="/"
+            to="/login"
             sx={{
               color: "primary.main",
               fontWeight: "bold",

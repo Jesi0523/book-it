@@ -26,7 +26,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       {/* Auth */}
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<MainPage />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       {/* Usuario */}

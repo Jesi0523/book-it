@@ -10,7 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '@/components/navigation/Sidebar';
 
 // Logo
-import logo from '@/assets/principal/Logo1.webp';
+import logo from '@/assets/logo/Logo1.webp';
 
 // Anchos del sidebar en PC
 const drawerWidthExpanded = 260;

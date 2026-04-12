@@ -8,7 +8,7 @@ import ClientLayout from '@/layouts/ClientLayout';
 import Title from '@/components/common/Title';
 import Collapsable from '@/components/common/Collapsable';
 // |  formulario
-import Combobox from '@/components/formulario/Combobox';
+import Combobox from '@/components/form/Combobox';
 // |  collapsable
 import AppointmentHeader from '@/components/collapsable/Header/AppointmentHeader';
 import AppointmentBody from '@/components/collapsable/Body/AppointmentBody';
@@ -84,20 +84,23 @@ const appointmentsInfo = [
 ];
 // ****************************
 
-function MySchedule() 
-{
+function MySchedule() {
   return (
     <ClientLayout>
       <Box
         sx={{
           py: { xs: 2, md: 5 },
-          px: { xs: 1, md: 20 },
+          px: { xs: 1, md: 5 },
           width: '95%',
-          maxWidth: '1250px',
+          maxWidth: '1000px',
           mx: 'auto',
         }}
       >
-        <Grid container sx={{display: 'flex', alignItems: 'center' }} rowSpacing={{ xs: 2, md: 0 }}>
+        <Grid
+          container
+          sx={{ display: 'flex', alignItems: 'center' }}
+          rowSpacing={{ xs: 2, md: 0 }}
+        >
           <Grid size={{ xs: 12, md: 7 }}>
             <Title
               children='Mis citas'
@@ -114,7 +117,13 @@ function MySchedule()
             />
           </Grid>
         </Grid>
-        <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
+        <hr
+          style={{
+            border: 'none',
+            height: '1px',
+            backgroundColor: '#cbd4ff6e',
+          }}
+        />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 3 }}>
           {appointmentsInfo.map((appointment, index) => {
             return (

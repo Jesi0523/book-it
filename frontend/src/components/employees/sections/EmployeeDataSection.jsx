@@ -5,23 +5,33 @@ import Avatar from '@mui/material/Avatar';
 
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
-import TextInput from '@/components/formulario/TextInput';
-import DateInput from '@/components/formulario/DateInput';
+import TextInput from '@/components/form/TextInput';
+import DateInput from '@/components/form/DateInput';
 
 // Icono
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
-const EmployeeDataSection = ({ formData, handleInputChange, handleDateChange, handlePhotoChange }) => {
-
+const EmployeeDataSection = ({
+  formData,
+  handleInputChange,
+  handleDateChange,
+  handlePhotoChange,
+}) => {
   return (
     <Grid container spacing={4}>
-      
       {/* Foto y nombre */}
       <Grid size={{ xs: 12, md: 5 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          
           {/* Foto */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, mb: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 2,
+              mb: 1,
+            }}
+          >
             <Avatar
               src={formData.foto}
               sx={{
@@ -30,15 +40,22 @@ const EmployeeDataSection = ({ formData, handleInputChange, handleDateChange, ha
                 border: `1px solid #ced0ffa6`,
               }}
             />
-            <MainButton 
-              component="label" 
-              size={{ xs: '12px', md: '14px' }} 
-              sx={{ backgroundColor: '#ffb74d', color: '#000', display: 'flex', gap: 1, alignItems: 'center', cursor: 'pointer' }}
+            <MainButton
+              component='label'
+              size={{ xs: '12px', md: '14px' }}
+              sx={{
+                backgroundColor: '#ffb74d',
+                color: '#000',
+                display: 'flex',
+                gap: 1,
+                alignItems: 'center',
+                cursor: 'pointer',
+              }}
             >
-              <UploadFileIcon fontSize="small" /> Subir foto
+              <UploadFileIcon fontSize='small' /> Subir foto
               <input
-                type="file"
-                accept="image/*"
+                type='file'
+                accept='image/*'
                 onChange={handlePhotoChange}
                 style={{ display: 'none' }}
               />
@@ -58,14 +75,15 @@ const EmployeeDataSection = ({ formData, handleInputChange, handleDateChange, ha
 
       {/* Correo, fecha y telefono */}
       <Grid size={{ xs: 12, md: 7 }}>
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          height: '100%', 
-          justifyContent: 'space-between',
-          gap: { xs: 4, md: 0 } 
-        }}>
-          
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            justifyContent: 'space-between',
+            gap: { xs: 4, md: 0 },
+          }}
+        >
           {/* Correo */}
           <TextInput
             label='Correo electrónico'
@@ -92,7 +110,6 @@ const EmployeeDataSection = ({ formData, handleInputChange, handleDateChange, ha
             onChange={handleInputChange}
             placeholder='81 1111 1111'
           />
-          
         </Box>
       </Grid>
 
@@ -108,12 +125,11 @@ const EmployeeDataSection = ({ formData, handleInputChange, handleDateChange, ha
             rows={5}
             placeholder='Escriba la información del empleado'
             sx={{
-              '& .MuiOutlinedInput-root': { borderRadius: '16px' }
+              '& .MuiOutlinedInput-root': { borderRadius: '16px' },
             }}
           />
         </Box>
       </Grid>
-
     </Grid>
   );
 };

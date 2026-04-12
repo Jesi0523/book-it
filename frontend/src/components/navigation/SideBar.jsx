@@ -18,7 +18,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 // Logos
-import logo from '@/assets/principal/Logo1.webp';
+import logo from '@/assets/logo/Logo1.webp';
 
 // Opciones
 const menuItems = [

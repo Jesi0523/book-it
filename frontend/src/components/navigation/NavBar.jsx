@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import NavOptions from '@/components/navigation/options/NavOptions';
 
 // ************** imagenes **************
-import logo from '@/assets/principal/Logo1.webp';
+import logo from '@/assets/logo/Logo1.webp';
 
 // ************** iconos **************
 import MenuIcon from '@mui/icons-material/Menu';
@@ -46,13 +46,29 @@ function NavBar() {
     >
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          <Link href='/main'>
-            <img
-              src={logo}
-              alt='Logo'
-              style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
-            />
-          </Link>
+          {isLanding ? (
+            // Landing Page
+            <>
+              <Link href='/'>
+                <img
+                  src={logo}
+                  alt='Logo'
+                  style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
+                />
+              </Link>
+            </>
+          ) : (
+            // Main Page
+            <>
+              <Link href='/main'>
+                <img
+                  src={logo}
+                  alt='Logo'
+                  style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
+                />
+              </Link>
+            </>
+          )}
 
           {/* ****** Display de las opciones *****  */}
           {/* C E L U L A R, T A B L E T S, E T C  */}

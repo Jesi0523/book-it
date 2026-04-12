@@ -10,8 +10,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 // Componentes propios
-import CalendarCombobox from '@/components/formulario/CalendarCombobox';
-import CalendarDateInput from '@/components/formulario/CalendarDateInput';
+import CalendarCombobox from '@/components/form/CalendarCombobox';
+import CalendarDateInput from '@/components/form/CalendarDateInput';
 import AppointmentModal from '@/components/appointment/AppointmentModal';
 
 // Fotos prueba

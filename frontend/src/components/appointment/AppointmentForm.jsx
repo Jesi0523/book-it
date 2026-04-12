@@ -8,9 +8,9 @@ import Calendar from '@/components/common/Calendar';
 import MainButton from '@/components/common/MainButton';
 import Text from '@/components/common/Text';
 // | formulario
-import Combobox from '@/components/formulario/Combobox';
-import TextInput from '@/components/formulario/TextInput';
-import GenderSelect from '@/components/formulario/GenderSelect';
+import Combobox from '@/components/form/Combobox';
+import TextInput from '@/components/form/TextInput';
+import GenderSelect from '@/components/form/GenderSelect';
 // ************** media dummy **************
 // |  Imagenes
 import photo from '@/assets/dummy/perfil-1.jpg';
@@ -49,9 +49,9 @@ function AppointmentForm() {
     <Box
       sx={{
         py: { xs: 2, md: 5 },
-        px: { xs: 1, md: 15 },
+        px: { xs: 1, md: 0 },
         width: '95%',
-        maxWidth: '1600px',
+        maxWidth: '1050px',
         mx: 'auto',
       }}
     >
@@ -62,7 +62,7 @@ function AppointmentForm() {
       {/* Agendar cita */}
       <Grid container sx={{ height: '100%', p: 2 }}>
         <Grid
-          size={{ xs: 12, md: 4 }}
+          size={{ xs: 12, md: 6 }}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -73,7 +73,7 @@ function AppointmentForm() {
         </Grid>
 
         <Grid
-          size={{ xs: 12, md: 8 }}
+          size={{ xs: 12, md: 6 }}
           sx={{
             p: { xs: 0.5, md: 5 },
             py: { xs: 2, md: 6 },
@@ -208,17 +208,18 @@ function AppointmentForm() {
         ></Title>
         <Box
           sx={{
-            p: { xs: 1.5, md: 3 },
+            p: { xs: 1.5, md: 4 },
             my: 3,
             background: linearDegraded,
             borderRadius: '15px',
             display: 'flex',
             flexDirection: 'column',
-            gap: { xs: 1, md: 5 },
+            gap: { xs: 2, md: 4 }, // Separación entre la Fila 1 y la Fila 2
           }}
         >
-          <Grid container spacing={{ xs: 1, md: 5 }}>
-            <Grid size={{ xs: 12, md: 6 }}>
+          {/* --- FILA 1: Nombre, Edad, Teléfono --- */}
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid size={{ xs: 12, md: 5 }}>
               <TextInput
                 label='Nombre Completo'
                 placeholder='Ingrese su nombre'
@@ -226,6 +227,7 @@ function AppointmentForm() {
                 border={colorBorder}
               />
             </Grid>
+
             <Grid size={{ xs: 4, md: 2 }}>
               <TextInput
                 label='Edad'
@@ -233,10 +235,18 @@ function AppointmentForm() {
                 type='number'
                 background={linearDegraded}
                 border={colorBorder}
+                sx={{
+                  // Rescate para la Edad: Mantenemos el padding arriba/abajo, 
+                  // pero reducimos drásticamente los lados (a 5px) para que quepa "Ej: 18"
+                  "& .MuiInputBase-input": {
+                    padding: "28px 5px 10px 5px !important", 
+                    textAlign: "center"
+                  }
+                }}
               />
             </Grid>
 
-            <Grid size={{ xs: 8, md: 4 }}>
+            <Grid size={{ xs: 8, md: 5 }}>
               <TextInput
                 label='Número telefónico'
                 type='number'
@@ -246,19 +256,21 @@ function AppointmentForm() {
               />
             </Grid>
           </Grid>
+
+          {/* --- FILA 2: Sexo, Correo (CENTRADA) --- */}
           <Grid
             container
-            spacing={{ xs: 1, md: 5 }}
+            spacing={{ xs: 2, md: 3 }}
             sx={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
+              justifyContent: 'center', // Esto centra perfectamente toda la fila
             }}
           >
-            <Grid size={{ xs: 4, md: 2 }}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <GenderSelect background={linearDegraded} border={colorBorder} />
             </Grid>
-            <Grid size={{ xs: 8, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextInput
                 label='Correo electrónico'
                 type='email'
@@ -268,6 +280,7 @@ function AppointmentForm() {
               />
             </Grid>
           </Grid>
+
         </Box>
       </Box>
 

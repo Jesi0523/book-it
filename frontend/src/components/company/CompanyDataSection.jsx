@@ -4,71 +4,97 @@ import Grid from '@mui/material/Grid';
 
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
-import TextInput from '@/components/formulario/TextInput';
+import TextInput from '@/components/form/TextInput';
 
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
-const CompanyDataSection = ({ formData, handleInputChange, handleLogoChange }) => {
+const CompanyDataSection = ({
+  formData,
+  handleInputChange,
+  handleLogoChange,
+}) => {
   return (
-    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
+    <Box
+      sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}
+    >
       <Grid container spacing={4}>
-        
         {/* Logo y boton */}
         <Grid size={{ xs: 12, md: 3 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}>
-            
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              height: '100%',
+            }}
+          >
             {/* Cuadro del logo */}
             <Box
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
-                background: 'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
+                background:
+                  'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 overflow: 'hidden',
-                boxShadow: 'inset 0px 0px 10px rgba(0,0,0,0.1)'
+                boxShadow: 'inset 0px 0px 10px rgba(0,0,0,0.1)',
               }}
             >
               {formData.logo ? (
-                <img src={formData.logo} alt="Logo Empresa" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img
+                  src={formData.logo}
+                  alt='Logo Empresa'
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
               ) : (
-                <InsertPhotoIcon sx={{ fontSize: 80, color: 'white', opacity: 0.8 }} />
+                <InsertPhotoIcon
+                  sx={{ fontSize: 80, color: 'white', opacity: 0.8 }}
+                />
               )}
             </Box>
 
             {/* Boton subir logo */}
-            <MainButton 
-              component="label" 
+            <MainButton
+              component='label'
               fullWidth
-              size={{ xs: '14px', md: '16px' }} 
-              sx={{ backgroundColor: '#ffb74d', color: '#000', display: 'flex', gap: 1, alignItems: 'center', cursor: 'pointer', borderRadius: '50px' }}
+              size={{ xs: '14px', md: '16px' }}
+              sx={{
+                backgroundColor: '#ffb74d',
+                color: '#000',
+                display: 'flex',
+                gap: 1,
+                alignItems: 'center',
+                cursor: 'pointer',
+                borderRadius: '50px',
+              }}
             >
-              <UploadFileIcon fontSize="small" /> Subir logo
+              <UploadFileIcon fontSize='small' /> Subir logo
               <input
-                type="file"
-                accept="image/*"
+                type='file'
+                accept='image/*'
                 onChange={handleLogoChange}
                 style={{ display: 'none' }}
               />
             </MainButton>
-
           </Box>
         </Grid>
 
         {/* Seccion derecha */}
         <Grid size={{ xs: 12, md: 9 }}>
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            height: '100%', 
-            justifyContent: 'space-between',
-            gap: { xs: 4, md: 0 } 
-          }}>
-            
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%',
+              justifyContent: 'space-between',
+              gap: { xs: 4, md: 0 },
+            }}
+          >
             <TextInput
               label='Nombre'
               name='nombre'
@@ -93,7 +119,6 @@ const CompanyDataSection = ({ formData, handleInputChange, handleLogoChange }) =
               onChange={handleInputChange}
               placeholder='Ejemplo'
             />
-
           </Box>
         </Grid>
 
@@ -105,14 +130,14 @@ const CompanyDataSection = ({ formData, handleInputChange, handleLogoChange }) =
             value={formData.descripcion}
             onChange={handleInputChange}
             multiline
-            rows={5} 
+            rows={5}
             placeholder='Ejemplo'
-            sx={{ 
+            sx={{
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
-                alignItems: 'flex-start'
-              }
-            }} 
+                alignItems: 'flex-start',
+              },
+            }}
           />
         </Grid>
 
@@ -135,7 +160,6 @@ const CompanyDataSection = ({ formData, handleInputChange, handleLogoChange }) =
             placeholder='Ejemplo'
           />
         </Grid>
-
       </Grid>
     </Box>
   );

@@ -10,7 +10,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Sidebar from '@/components/navigation/Sidebar';
 
 // Logo
-import logo from '@/assets/principal/Logo1.webp';
+import logo from '@/assets/logo/Logo1.webp';
 
 // Anchos del sidebar en PC
 const drawerWidthExpanded = 260;
@@ -137,7 +137,7 @@ const AdminLayout = ({ children }) => {
         sx={{
           flexGrow: 1,
           py: {xs:0, md:5},
-          px: {xs:0, md:15},
+          px: {xs:0, md:5},
           width: { xs: '100%', md: `calc(100% - ${drawerWidthCollapsed}px)` },
           mt: { xs: '64px', md: 0 },
         }}

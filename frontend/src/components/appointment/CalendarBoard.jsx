@@ -10,8 +10,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 // Componentes propios
-import CalendarCombobox from '@/components/formulario/CalendarCombobox';
-import CalendarDateInput from '@/components/formulario/CalendarDateInput';
+import CalendarCombobox from '@/components/form/CalendarCombobox';
+import CalendarDateInput from '@/components/form/CalendarDateInput';
 import AppointmentModal from '@/components/appointment/AppointmentModal';
 
 // Fotos prueba
@@ -39,7 +39,7 @@ const dummyCitas = [
     duracionEnBloques: 2,
     title: 'Servicio 1',
     client: 'Cliente',
-    timeStr: '07:30 - 08:30am',
+    timeStr: '07:30 - 08:30',
   },
   {
     id: 104,
@@ -48,7 +48,7 @@ const dummyCitas = [
     duracionEnBloques: 3,
     title: 'Servicio 2',
     client: 'Ana Gomez',
-    timeStr: '10:00 - 11:30am',
+    timeStr: '10:00 - 11:30',
   },
   {
     id: 102,
@@ -57,7 +57,7 @@ const dummyCitas = [
     duracionEnBloques: 2,
     title: 'Servicio 10',
     client: 'Cliente',
-    timeStr: '08:00 - 09:00am',
+    timeStr: '08:00 - 09:00',
   },
   {
     id: 103,
@@ -66,18 +66,18 @@ const dummyCitas = [
     duracionEnBloques: 1,
     title: 'Servicio 3',
     client: 'Juan P.',
-    timeStr: '09:00 - 09:30am',
+    timeStr: '09:00 - 09:30',
   },
 ];
 
 const horariosSemanalesDB = {
   0: { abierto: false, horaInicio: 0, horaFin: 0 }, // Domingo (Cerrado)
-  1: { abierto: true,  horaInicio: 7, horaFin: 20 }, // Lunes
-  2: { abierto: true,  horaInicio: 7, horaFin: 20 }, // Martes
-  3: { abierto: true,  horaInicio: 7, horaFin: 20 }, // Miercoles
-  4: { abierto: true,  horaInicio: 7, horaFin: 20 }, // Jueves
-  5: { abierto: true,  horaInicio: 7, horaFin: 17.5 }, // Viernes
-  6: { abierto: true,  horaInicio: 7, horaFin: 14 }, // Sabado
+  1: { abierto: true, horaInicio: 7, horaFin: 20 }, // Lunes
+  2: { abierto: true, horaInicio: 7, horaFin: 20 }, // Martes
+  3: { abierto: true, horaInicio: 7, horaFin: 20 }, // Miercoles
+  4: { abierto: true, horaInicio: 7, horaFin: 20 }, // Jueves
+  5: { abierto: true, horaInicio: 7, horaFin: 17.5 }, // Viernes
+  6: { abierto: true, horaInicio: 7, horaFin: 14 }, // Sabado
 };
 
 // Horarios de cada dia
@@ -101,7 +101,7 @@ const generarHorariosDelDia = (fecha) => {
     };
     slots.push(`${formatearHora(t)}-${formatearHora(t + 0.5)}`);
   }
-  
+
   return { slots, horaInicio, horaFin };
 };
 
@@ -316,226 +316,236 @@ const CalendarBoard = () => {
             sx={{
               overflowX: 'auto',
               width: '100%',
-              position: 'relative',
-              display: 'grid',
-              gridTemplateColumns: `120px repeat(${empleadosAMostrar.length}, minmax(200px, 1fr))`,
-              minWidth: '100%',
+              background: '#121229',
+              borderRadius: '8px',
+              border: `1px solid ${colorBorde}`,
             }}
           >
-            {/* Fila de empleados */}
             <Box
               sx={{
-                borderRight: `1px solid ${colorBorde}`,
-                borderBottom: `1px solid ${colorBorde}`,
-                position: 'sticky',
-                left: 0,
-                top: 0,
-                zIndex: 10,
-                background: '#1b1c37',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-evenly',
-                height: '100px',
-                outline: '1px solid #1b1c37',
+                display: 'inline-grid',
+                position: 'relative',
+                minWidth: '100%',
+                gridTemplateColumns: `120px repeat(${empleadosAMostrar.length}, minmax(200px, 1fr))`,
               }}
             >
-              {/* Botones para cambiar empleado */}
-              <IconButton
-                onClick={() => desplazarScroll('izquierda')}
-                sx={{ color: 'white' }}
-              >
-                <ArrowBackIosNewIcon fontSize='small' />
-              </IconButton>
-              <IconButton
-                onClick={() => desplazarScroll('derecha')}
-                sx={{ color: 'white' }}
-              >
-                <ArrowForwardIosIcon fontSize='small' />
-              </IconButton>
-            </Box>
-
-            {/* Nombre de los empleados */}
-            {empleadosAMostrar.map((emp) => (
+              {/* Fila de empleados */}
               <Box
-                key={emp.id}
                 sx={{
-                  p: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
                   borderRight: `1px solid ${colorBorde}`,
                   borderBottom: `1px solid ${colorBorde}`,
-                  height: '100px',
+                  position: 'sticky',
+                  left: 0,
+                  top: 0,
+                  zIndex: 10,
                   background: '#1b1c37',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-evenly',
+                  height: '100px',
+                  outline: '1px solid #1b1c37',
                 }}
               >
-                <Avatar src={emp.foto} sx={{ width: 40, height: 40, mb: 1 }} />
-                <Typography
+                {/* Botones para cambiar empleado */}
+                <IconButton
+                  onClick={() => desplazarScroll('izquierda')}
+                  sx={{ color: 'white' }}
+                >
+                  <ArrowBackIosNewIcon fontSize='small' />
+                </IconButton>
+                <IconButton
+                  onClick={() => desplazarScroll('derecha')}
+                  sx={{ color: 'white' }}
+                >
+                  <ArrowForwardIosIcon fontSize='small' />
+                </IconButton>
+              </Box>
+
+              {/* Nombre de los empleados */}
+              {empleadosAMostrar.map((emp) => (
+                <Box
+                  key={emp.id}
                   sx={{
-                    color: '#ffb74d',
-                    fontSize: '0.8rem',
-                    textAlign: 'center',
-                    fontFamily: "'Montserrat', sans-serif",
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    width: '100%',
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    borderRight: `1px solid ${colorBorde}`,
+                    borderBottom: `1px solid ${colorBorde}`,
+                    height: '100px',
+                    background: '#1b1c37',
                   }}
                 >
-                  {emp.name}
-                </Typography>
-              </Box>
-            ))}
-
-            {/* Columna de horarios */}
-            {horariosDelDia.map((horario) => {
-              const horaInicioCeldita = horario.split('-')[0];
-              return (
-                <React.Fragment key={horario}>
-                  <Box
+                  <Avatar
+                    src={emp.foto}
+                    sx={{ width: 40, height: 40, mb: 1 }}
+                  />
+                  <Typography
                     sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderRight: `1px solid ${colorBorde}`,
-                      borderBottom: `1px solid ${colorBorde}`,
-                      position: 'sticky',
-                      left: 0,
-                      zIndex: 5,
-                      background: '#1b1c37',
-                      outline: '1px solid #1b1c37',
-                      boxShadow: '3px 0 8px rgba(0,0,0,0.15)',
-                      height: '80px',
+                      color: '#ffb74d',
+                      fontSize: '0.8rem',
+                      textAlign: 'center',
+                      fontFamily: "'Montserrat', sans-serif",
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      width: '100%',
                     }}
                   >
-                    <Typography
+                    {emp.name}
+                  </Typography>
+                </Box>
+              ))}
+
+              {/* Columna de horarios */}
+              {horariosDelDia.map((horario) => {
+                const horaInicioCeldita = horario.split('-')[0];
+                return (
+                  <React.Fragment key={horario}>
+                    <Box
                       sx={{
-                        color: '#ffb74d',
-                        fontSize: '0.8rem',
-                        fontFamily: "'Montserrat', sans-serif",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRight: `1px solid ${colorBorde}`,
+                        borderBottom: `1px solid ${colorBorde}`,
+                        position: 'sticky',
+                        left: 0,
+                        zIndex: 5,
+                        background: '#1b1c37',
+                        outline: '1px solid #1b1c37',
+                        boxShadow: '3px 0 8px rgba(0,0,0,0.15)',
+                        height: '80px',
                       }}
                     >
-                      {horario}
-                    </Typography>
-                  </Box>
-
-                  {empleadosAMostrar.map((emp) => {
-                    const cita = dummyCitas.find(
-                      (a) =>
-                        a.empId === emp.id && a.start === horaInicioCeldita,
-                    );
-                    return (
-                      <Box
-                        key={`${emp.id}-${horario}`}
+                      <Typography
                         sx={{
-                          borderRight: `1px solid ${colorBorde}`,
-                          borderBottom: `1px solid ${colorBorde}`,
-                          position: 'relative',
-                          height: '80px',
-                          background: 'transparent',
+                          color: '#ffb74d',
+                          fontSize: '0.8rem',
+                          fontFamily: "'Montserrat', sans-serif",
                         }}
                       >
-                        {cita && (
-                          <Box
-                            onClick={() => handleAbrirModal(cita, emp)}
-                            sx={{
-                              cursor: 'pointer',
-                              position: 'absolute',
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              height: `${cita.duracionEnBloques * 80}px`,
-                              background: colorFondoAppt,
-                              zIndex: 1,
-                              p: 1,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              overflow: 'hidden',
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                color: 'white',
-                                fontWeight: 'bold',
-                                fontSize: '0.9rem',
-                                fontFamily: "'Montserrat', sans-serif",
-                                whiteSpace: 'nowrap',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                              }}
-                            >
-                              {cita.title}
-                            </Typography>
-                            <Typography
-                              sx={{
-                                color: 'rgba(255,255,255,0.7)',
-                                fontSize: '0.7rem',
-                                whiteSpace: 'nowrap',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                              }}
-                            >
-                              {cita.client}
-                            </Typography>
-                            <Typography
-                              sx={{
-                                color: 'rgba(255,255,255,0.7)',
-                                fontSize: '0.7rem',
-                                mt: 'auto',
-                                whiteSpace: 'nowrap',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                              }}
-                            >
-                              {cita.timeStr}
-                            </Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    );
-                  })}
-                </React.Fragment>
-              );
-            })}
+                        {horario}
+                      </Typography>
+                    </Box>
 
-            {/* Linea de la hora actual */}
-            {isToday && isTimeWithinBounds && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: `${100 + topOffset}px`,
-                  left: '120px',
-                  right: 0,
-                  height: '2px',
-                  backgroundColor: '#ffb74d',
-                  zIndex: 2,
-                  pointerEvents: 'none',
-                }}
-              >
+                    {empleadosAMostrar.map((emp) => {
+                      const cita = dummyCitas.find(
+                        (a) =>
+                          a.empId === emp.id && a.start === horaInicioCeldita,
+                      );
+                      return (
+                        <Box
+                          key={`${emp.id}-${horario}`}
+                          sx={{
+                            borderRight: `1px solid ${colorBorde}`,
+                            borderBottom: `1px solid ${colorBorde}`,
+                            position: 'relative',
+                            height: '80px',
+                            background: 'transparent',
+                          }}
+                        >
+                          {cita && (
+                            <Box
+                              onClick={() => handleAbrirModal(cita, emp)}
+                              sx={{
+                                cursor: 'pointer',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                height: `${cita.duracionEnBloques * 80}px`,
+                                background: colorFondoAppt,
+                                zIndex: 1,
+                                p: 1,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                overflow: 'hidden',
+                              }}
+                            >
+                              <Typography
+                                sx={{
+                                  color: 'white',
+                                  fontWeight: 'bold',
+                                  fontSize: '0.9rem',
+                                  fontFamily: "'Montserrat', sans-serif",
+                                  whiteSpace: 'nowrap',
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                }}
+                              >
+                                {cita.title}
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  color: 'rgba(255,255,255,0.7)',
+                                  fontSize: '0.7rem',
+                                  whiteSpace: 'nowrap',
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                }}
+                              >
+                                {cita.client}
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  color: 'rgba(255,255,255,0.7)',
+                                  fontSize: '0.7rem',
+                                  mt: 'auto',
+                                  whiteSpace: 'nowrap',
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                }}
+                              >
+                                {cita.timeStr}
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
+                      );
+                    })}
+                  </React.Fragment>
+                );
+              })}
+
+              {/* Linea de la hora actual */}
+              {isToday && isTimeWithinBounds && (
                 <Box
                   sx={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    backgroundColor: '#ffb74d',
                     position: 'absolute',
-                    top: '-4px',
-                    left: '-5px',
+                    top: `${100 + topOffset}px`,
+                    left: '120px',
+                    right: 0,
+                    height: '2px',
+                    backgroundColor: '#ffb74d',
+                    zIndex: 2,
+                    pointerEvents: 'none',
                   }}
-                />
-              </Box>
-            )}
+                >
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: '50%',
+                      backgroundColor: '#ffb74d',
+                      position: 'absolute',
+                      top: '-4px',
+                      left: '-5px',
+                    }}
+                  />
+                </Box>
+              )}
+            </Box>
           </Box>
         )}
       </Box>
 
       {/* Detalles de la cita */}
-      <AppointmentModal 
-        open={modalOpen} 
-        onClose={() => setModalOpen(false)} 
-        appointment={citaSeleccionada} 
+      <AppointmentModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        appointment={citaSeleccionada}
       />
-
     </Box>
   );
 };

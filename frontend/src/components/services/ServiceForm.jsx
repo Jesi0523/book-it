@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
-import TextInput from '@/components/formulario/TextInput';
+import TextInput from '@/components/form/TextInput';
 
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';

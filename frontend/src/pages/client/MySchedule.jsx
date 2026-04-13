@@ -8,7 +8,7 @@ import ClientLayout from '@/layouts/ClientLayout';
 import Title from '@/components/common/Title';
 import Collapsable from '@/components/common/Collapsable';
 // |  formulario
-import Combobox from '@/components/formulario/Combobox';
+import Combobox from '@/components/form/Combobox';
 // |  collapsable
 import AppointmentHeader from '@/components/collapsable/Header/AppointmentHeader';
 import AppointmentBody from '@/components/collapsable/Body/AppointmentBody';
@@ -67,7 +67,7 @@ const clientDummy = [
 const appointmentsInfo = [
   {
     service: 'Servicio 1',
-    date: 'Febrero 11, 2026 9:00am a 10:00am.',
+    date: 'Febrero 11, 2026 9:00 a 10:00.',
     price: '$4000',
     status: statusAppointment[2],
     employ: employsDummy[1],
@@ -75,7 +75,7 @@ const appointmentsInfo = [
   },
   {
     service: 'Servicio 2',
-    date: 'Marzo 1, 2026 13:00am a 14:00am.',
+    date: 'Marzo 1, 2026 13:00 a 14:00.',
     price: '$500',
     status: statusAppointment[1],
     employ: employsDummy[2],
@@ -84,20 +84,23 @@ const appointmentsInfo = [
 ];
 // ****************************
 
-function ClientSchedule() 
-{
+function MySchedule() {
   return (
     <ClientLayout>
       <Box
         sx={{
           py: { xs: 2, md: 5 },
-          px: { xs: 1, md: 20 },
+          px: { xs: 1, md: 5 },
           width: '95%',
-          maxWidth: '1250px',
+          maxWidth: '1000px',
           mx: 'auto',
         }}
       >
-        <Grid container sx={{display: 'flex', alignItems: 'center' }} rowSpacing={{ xs: 2, md: 0 }}>
+        <Grid
+          container
+          sx={{ display: 'flex', alignItems: 'center' }}
+          rowSpacing={{ xs: 2, md: 0 }}
+        >
           <Grid size={{ xs: 12, md: 7 }}>
             <Title
               children='Mis citas'
@@ -114,7 +117,13 @@ function ClientSchedule()
             />
           </Grid>
         </Grid>
-        <hr style={{ border: 'none', height: '1px', backgroundColor: '#cbd4ff6e'}} />
+        <hr
+          style={{
+            border: 'none',
+            height: '1px',
+            backgroundColor: '#cbd4ff6e',
+          }}
+        />
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 3 }}>
           {appointmentsInfo.map((appointment, index) => {
             return (
@@ -138,4 +147,4 @@ function ClientSchedule()
   );
 }
 
-export default ClientSchedule;
+export default MySchedule;

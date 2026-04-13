@@ -1,46 +1,84 @@
-import { Routes, Route } from "react-router-dom";
+import { Suspense, lazy } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
-import NotFound from "@/pages/NotFound.jsx";
-import Login from "@/pages/auth/Login.jsx"; 
-import Signup from "@/pages/auth/Signup.jsx";
-import MainPage  from "@/pages/client/MainPage";
-import BookAppointment from "@/pages/client/BookAppointment";
-import ClientSchedule from "@/pages/client/ClientSchedule";
-import Profile from '@/pages/client/Profile';
-import AppointmentCalendar from "@/pages/admin/AppointmentCalendar";
-import AdminBookAppointment from "@/pages/admin/AdminBookAppointment";
-import Employees from "@/pages/admin/Employees";
-import Services from "@/pages/admin/Services";
-import CompanyInfo from "@/pages/admin/CompanyInfo";
-import Suspensions from "@/pages/admin/Suspensions";
-import Reports from "@/pages/admin/Reports";
+// Auth
+const Login = lazy(() => import('@/pages/auth/Login.jsx'));
+const Signup = lazy(() => import('@/pages/auth/Signup.jsx'));
+
+// Client
+const MainPage = lazy(() => import('@/pages/client/MainPage'));
+const BookAppointment = lazy(() => import('@/pages/client/BookAppointment'));
+const MySchedule = lazy(() => import('@/pages/client/MySchedule'));
+const Profile = lazy(() => import('@/pages/client/Profile'));
+
+// Admin
+const AppointmentCalendar = lazy(
+  () => import('@/pages/admin/AppointmentCalendar'),
+);
+const AdminBookAppointment = lazy(
+  () => import('@/pages/admin/AdminBookAppointment'),
+);
+const Employees = lazy(() => import('@/pages/admin/Employees'));
+const Services = lazy(() => import('@/pages/admin/Services'));
+const CompanyInfo = lazy(() => import('@/pages/admin/CompanyInfo'));
+const Suspensions = lazy(() => import('@/pages/admin/Suspensions'));
+const Reports = lazy(() => import('@/pages/admin/Reports'));
+
+// Error
+const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Auth */}
-      <Route path="/" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+    // Cargando pantallas
+    <Suspense
+      fallback={
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          }}
+        >
+          <CircularProgress color='primary' />
+        </Box>
+      }
+    >
+      <Routes>
+        {/* Auth */}
+        <Route path='/' element={<MainPage />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
 
-      {/* Usuario */}
-      <Route path="/main" element ={<MainPage />} />
-      <Route path="/bookAppointment" element ={<BookAppointment />} />
-      <Route path="/clientSchedule" element ={<ClientSchedule />} />
-      <Route path="/profile" element ={<Profile />} />
-      
-      {/* Admin */}
-      <Route path="/appointmentCalendar" element ={<AppointmentCalendar />} />
-      <Route path="/adminBookAppointment" element ={<AdminBookAppointment />} />
-      <Route path="/employees" element ={<Employees />} />
-      <Route path="/services" element ={<Services />} />
-      <Route path="/companyInfo" element ={<CompanyInfo />} />
-      <Route path="/suspensions" element ={<Suspensions />} />
-      <Route path="/reports" element ={<Reports />} />
+        {/* Usuario */}
+        <Route path='/main' element={<MainPage />} />
+        <Route path='/book-appointment' element={<BookAppointment />} />
+        <Route path='/my-schedule' element={<MySchedule />} />
+        <Route path='/profile' element={<Profile />} />
 
-      {/* Not Found */}
-      <Route path="*" element={<NotFound />} />
+        {/* Admin */}
+        <Route
+          path='/admin/appointment-calendar'
+          element={<AppointmentCalendar />}
+        />
+        <Route
+          path='/admin/book-appointment'
+          element={<AdminBookAppointment />}
+        />
+        <Route path='/admin/employees' element={<Employees />} />
+        <Route path='/admin/services' element={<Services />} />
+        <Route path='/admin/company-info' element={<CompanyInfo />} />
+        <Route path='/admin/suspensions' element={<Suspensions />} />
+        <Route path='/admin/reports' element={<Reports />} />
 
-    </Routes>
+        {/* Error */}
+        <Route path='/404' element={<NotFound />} />
+        <Route path='*' element={<Navigate to='/404' replace />} />
+      </Routes>
+    </Suspense>
   );
 };
 

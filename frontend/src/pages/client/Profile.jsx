@@ -8,10 +8,10 @@ import ClientLayout from '@/layouts/ClientLayout';
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
 // |  formulario
-import TextInput from '@/components/formulario/TextInput';
-import DateInput from '@/components/formulario/DateInput';
-import GenderSelect from '@/components/formulario/GenderSelect';
-import PasswordInput from '@/components/formulario/PasswordInput';
+import TextInput from '@/components/form/TextInput';
+import DateInput from '@/components/form/DateInput';
+import GenderSelect from '@/components/form/GenderSelect';
+import PasswordInput from '@/components/form/PasswordInput';
 
 function Profile() {
   return (
@@ -19,9 +19,9 @@ function Profile() {
       <Box
         sx={{
           py: { xs: 2, md: 5 },
-          px: { xs: 2, md: 20 },
+          px: { xs: 2, md: 5 },
           width: '95%',
-          maxWidth: '1250px',
+          maxWidth: '1000px',
           mx: 'auto',
         }}
       >
@@ -41,7 +41,7 @@ function Profile() {
           <TextInput label='Nombre' placeholder='Ingrese su nombre' />
 
           <Grid container spacing={2}>
-            <Grid 
+            <Grid
               size={{ xs: 12, md: 6 }}
               sx={{
                 display: 'flex',
@@ -57,22 +57,21 @@ function Profile() {
               />
             </Grid>
 
-            <Grid 
-              size={{ xs: 12, md: 6 }}>
-              <Grid 
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Grid
                 container
                 sx={{
                   display: 'flex',
                   flexDirection: { xs: 'row', md: 'column' },
-                  gap: 2, 
+                  gap: 2,
                   alignItems: 'flex-end',
-                  flexWrap: { xs: 'nowrap', md: 'wrap' } 
+                  flexWrap: { xs: 'nowrap', md: 'wrap' },
                 }}
               >
                 <Grid sx={{ width: { xs: '35%', md: '100%' } }}>
-                  <GenderSelect height={{ xs: '62px', md: '85px' }}/>
+                  <GenderSelect height={{ xs: '62px', md: '85px' }} />
                 </Grid>
-                
+
                 <Grid sx={{ flexGrow: 1, width: { xs: '60%', md: '100%' } }}>
                   <TextInput
                     label='Número telefónico'
@@ -84,16 +83,14 @@ function Profile() {
             </Grid>
           </Grid>
 
-            <Grid container spacing={2}>
-              <Grid
-                size={{xs: 12, md: 6}}>
-                  <PasswordInput></PasswordInput>
-              </Grid>
-              <Grid
-                size={{xs: 12, md: 6}}>
-                  <PasswordInput label='Confirmar contraseña'></PasswordInput>
-              </Grid>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <PasswordInput></PasswordInput>
             </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <PasswordInput label='Confirmar contraseña'></PasswordInput>
+            </Grid>
+          </Grid>
         </Box>
 
         <Box

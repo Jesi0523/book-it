@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-
+import { useLocation } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
@@ -71,6 +71,9 @@ const imageDummy = [
 // ***********************************
 
 function MainPage() {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
   return (
     <ClientLayout>
       {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
@@ -105,12 +108,6 @@ function MainPage() {
             align='center'
             color='primary.main'
             size='20'
-          />
-          <Text
-            children='Descripción breve'
-            align='center'
-            color='text.primary'
-            size='18'
           />
         </Box>
 
@@ -148,30 +145,42 @@ function MainPage() {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
+          py: { xs: 0, md: 2 },
         }}
       >
         <Grid
           container
-          spacing={{ xs: 5, md: 10 }}
+          spacing={{ xs: 5, md: 4, lg: 10 }}
           sx={{
-            p: { xs: 5, md: 15 },
-            maxWidth: '1536px',
+            p: { xs: 5, md: 6, lg: 10 },
+            maxWidth: '1300px',
             width: '100%',
           }}
         >
           <Grid
             size={{ xs: 12, md: 4 }}
-            sx={{ display: 'flex', justifyContent: 'center' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
             <Box
               component='img'
               src={mainPhoto}
-              sx={{ height: { xs: '180px', md: '220px' }, padding: '2%' }}
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '250px', md: '100%' },
+                height: 'auto',
+              }}
             />
           </Grid>
           <Grid
             size={{ xs: 12, md: 8 }}
-            sx={{ display: 'flex', alignItems: 'center' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             <Text
               align='justify'
@@ -196,12 +205,22 @@ function MainPage() {
         <Box
           sx={{
             width: '100%',
-            maxWidth: '1536px',
-            px: { xs: 2, md: 6 },
+            maxWidth: '1300px',
+            px: { xs: 6, md: 8, lg: 12 },
+            position: 'relative', 
+            '.swiper': {
+              position: 'static', 
+            },
             '.swiper-button-next, .swiper-button-prev': {
               color: 'text.secondary',
               transition: '0.2s ease-in-out',
               '&:hover': { color: 'text.primary', transform: 'scale(1.1)' },
+            },
+            '.swiper-button-prev': {
+              left: { xs: '5px', md: '10px', lg: '20px' }, 
+            },
+            '.swiper-button-next': {
+              right: { xs: '5px', md: '10px', lg: '20px' }, 
             },
           }}
         >
@@ -209,7 +228,6 @@ function MainPage() {
             modules={[Navigation]}
             spaceBetween={0}
             navigation={true}
-            // lo de abajo es para el responsive
             breakpoints={{
               0: { slidesPerView: 1 },
               600: { slidesPerView: 2 },
@@ -241,9 +259,21 @@ function MainPage() {
           width: '100%',
         }}
       >
-        <MainButton href='/bookAppointment'>
-          Agenda tu cita <CalendarIcon />
-        </MainButton>
+        {isLanding ? (
+          // Landing Page
+          <>
+            <MainButton href='/login'>
+              Agenda tu cita <CalendarIcon />
+            </MainButton>
+          </>
+        ) : (
+          // Main Page
+          <>
+            <MainButton href='/book-appointment'>
+              Agenda tu cita <CalendarIcon />
+            </MainButton>
+          </>
+        )}
       </Box>
 
       {/* ****** footer *****  */}

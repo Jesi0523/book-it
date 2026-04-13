@@ -11,44 +11,73 @@ import Text from '@/components/common/Text';
 import CloseIcon from '@mui/icons-material/Close';
 
 const SuspensionList = ({ 
-  mesFiltro, setMesFiltro, 
+  mesFiltro, setMesFiltro,
+  anioFiltro, setAnioFiltro, 
   listaSuspensiones, handleEliminarSuspension, 
   selectMenuProps, selectEstilos 
 }) => {
   const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  
+  const anios = [2024, 2025, 2026, 2027, 2028, 2029, 2030]; 
 
   return (
     <Box sx={{ border: '1px solid #787ff6', borderRadius: '16px', p: { xs: 2, md: 4 } }}>
       
+      {/* Seccion superior */}
       <Box sx={{ 
         display: 'flex', 
-        flexDirection: { xs: 'column', sm: 'row' }, 
+        flexDirection: { xs: 'column', md: 'row' }, 
         justifyContent: 'space-between', 
-        alignItems: { xs: 'stretch', sm: 'center' }, 
+        alignItems: { xs: 'stretch', md: 'center' }, 
         gap: 2, 
         mb: 3 
       }}>
-        <Text children="Lista de horarios suspendidos:" color="#ffb74d" size={22} />
+        <Text children="Lista de horarios suspendidos:" color="#ffb74d" size="22px" />
         
-        <Select
-          value={mesFiltro}
-          onChange={(e) => setMesFiltro(e.target.value)}
-          MenuProps={selectMenuProps}
-          sx={{ 
-            ...selectEstilos, 
-            minWidth: '150px',
-            width: { xs: '100%', sm: 'auto' }
-          }}
-        >
-          {meses.map(mes => (
-            <MenuItem key={mes} value={mes}>{mes}</MenuItem>
-          ))}
-        </Select>
+        {/* Opciones mes y año */}
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2, 
+          width: { xs: '100%', md: 'auto' } 
+        }}>
+          {/* Mes */}
+          <Select
+            value={mesFiltro}
+            onChange={(e) => setMesFiltro(e.target.value)}
+            MenuProps={selectMenuProps}
+            sx={{ 
+              ...selectEstilos, 
+              flex: 1,
+              minWidth: { md: '140px' } 
+            }}
+          >
+            {meses.map(mes => (
+              <MenuItem key={mes} value={mes}>{mes}</MenuItem>
+            ))}
+          </Select>
+
+          {/* Año */}
+          <Select
+            value={anioFiltro}
+            onChange={(e) => setAnioFiltro(e.target.value)}
+            MenuProps={selectMenuProps}
+            sx={{ 
+              ...selectEstilos, 
+              flex: 1,
+              minWidth: { md: '100px' } 
+            }}
+          >
+            {anios.map(anio => (
+              <MenuItem key={anio} value={anio}>{anio}</MenuItem>
+            ))}
+          </Select>
+        </Box>
       </Box>
 
+      {/* Lista de suspensiones */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {listaSuspensiones.length === 0 ? (
-          <Text children="No hay suspensiones registradas en este mes." color="rgba(255,255,255,0.5)" align="center" />
+          <Text children="No hay suspensiones registradas en este periodo." color="rgba(255,255,255,0.5)" align="center" />
         ) : (
           listaSuspensiones.map((susp) => (
             <Box key={susp.id} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -56,7 +85,7 @@ const SuspensionList = ({
                 flexGrow: 1, backgroundColor: '#1b1c37', borderRadius: '50px',
                 px: { xs: 2, md: 3 }, py: 1.5, display: 'flex', alignItems: 'center'
               }}>
-                <Text children={susp.texto} color="white" size={16} />
+                <Text children={susp.texto} color="white" size="16px" />
               </Box>
               <IconButton
                 onClick={() => handleEliminarSuspension(susp.id)}

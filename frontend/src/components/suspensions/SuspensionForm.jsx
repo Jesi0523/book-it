@@ -7,9 +7,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
 import Calendar from '@/components/common/Calendar';
-
+import BaseDialog from '@/components/common/BaseDialog';
 // Iconos
 import CheckIcon from '@mui/icons-material/Check';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // <---------- Funcion ---------->
 const opcionesTiempo = Array.from({ length: 48 }, (_, i) => {
@@ -36,6 +37,14 @@ const SuspensionForm = ({
   selectMenuProps,
   selectEstilos,
 }) => {
+  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
+  const handleOpenSaveDialog = () => { setOpenSaveDialog(true);};
+  const handleCloseSaveDialog = (hasAccepted) => 
+  {
+    setOpenSaveDialog(false);
+    if(hasAccepted){{handleAplicar}}
+  }; 
+ 
   return (
     <Box
       sx={{
@@ -176,7 +185,7 @@ const SuspensionForm = ({
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
             <MainButton
               size='16px'
-              onClick={handleAplicar}
+              onClick={handleOpenSaveDialog} 
               sx={{
                 backgroundColor: '#ffb74d',
                 color: '#000',
@@ -190,6 +199,15 @@ const SuspensionForm = ({
           </Box>
         </Box>
       </Box>
+      <BaseDialog
+        id="save-suspension-data"
+        open={openSaveDialog}
+        onClose={handleCloseSaveDialog}
+        title={"Atención"}
+        icon={<AdvertismentIcon/>}
+        content={
+        <> Está a punto de añadir una suspensión <br/> <b>¿desea continuar?</b></>}
+      />
     </Box>
   );
 };

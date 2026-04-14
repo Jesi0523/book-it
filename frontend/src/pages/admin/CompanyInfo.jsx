@@ -10,6 +10,10 @@ import MainButton from '@/components/common/MainButton';
 import CompanyDataSection from '@/components/company/CompanyDataSection'; 
 import ScheduleSection from '@/components/common/ScheduleSection'; 
 import CompanyGallerySection from '@/components/company/CompanyGallerySection';
+import BaseDialog from '@/components/common/BaseDialog';
+
+// Iconos
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const CompanyInfo = () => {
   // ESTADOS
@@ -26,6 +30,17 @@ const CompanyInfo = () => {
   const [mainImageFile, setMainImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
   const [galleryFiles, setGalleryFiles] = useState([]);
+
+  // Consts para modal de confirmación
+    const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
+    const handleOpenSaveDialog = () => { setOpenSaveDialog(true); console.log(isEditing)};
+    const handleCloseSaveDialog = (hasAccepted) => 
+    {
+      setOpenSaveDialog(false);
+      if(hasAccepted){handleSave;}; 
+    };
+  
+
 
   // FUNCIONES
 
@@ -102,12 +117,22 @@ const CompanyInfo = () => {
 
         {/* Boton guardar */}
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <MainButton size={{ xs: '16px', md: '18px' }} onClick={handleSave} sx={{ backgroundColor: '#ffb74d', color: '#000', px: 8 }}>
+          <MainButton 
+            size={{ xs: '16px', md: '18px' }}
+            onClick={handleOpenSaveDialog} 
+            sx={{ backgroundColor: '#ffb74d', color: '#000', px: 8 }}>
             Guardar
           </MainButton>
         </Box>
-
       </Box>
+      <BaseDialog
+        id="save-company-data"
+        open={openSaveDialog}
+        onClose={handleCloseSaveDialog}
+        title={"Atención"}
+        icon={<AdvertismentIcon/>}
+        content={<>Actualizará los datos de la empresa<br/><b>¿desea continuar?</b></>}
+      />
     </AdminLayout>
   );
 };

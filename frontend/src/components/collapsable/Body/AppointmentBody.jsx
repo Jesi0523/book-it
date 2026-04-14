@@ -2,11 +2,15 @@ import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+// ****************************
 import Title from '@/components/common/Title'
 import Text from '@/components/common/Text'
+
 import BaseDialog from '@/components/common/BaseDialog'
+
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
+// ****************************
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 

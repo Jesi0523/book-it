@@ -13,7 +13,8 @@ import DateInput from '@/components/form/DateInput';
 import GenderSelect from '@/components/form/GenderSelect';
 import PasswordInput from '@/components/form/PasswordInput';
 
-function Profile() {
+function Profile() 
+{
   return (
     <ClientLayout>
       <Box

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
@@ -6,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
+import Text from '@/components/common/Text'
 import Collapsable from '@/components/common/Collapsable';
 // |  formulario
 import Combobox from '@/components/form/Combobox';
@@ -30,6 +32,7 @@ const statusAppointment = [
 import photo from '@/assets/dummy/perfil-1.jpg';
 import photo2 from '@/assets/dummy/perfil-2.jpg';
 import photo3 from '@/assets/dummy/perfil-3.jpg';
+import { isCancel } from 'axios';
 // |  Datos
 const orderByDummy = [
   'Ordenar por antiguedad',
@@ -66,25 +69,37 @@ const clientDummy = [
 ];
 const appointmentsInfo = [
   {
+    index: 1,
     service: 'Servicio 1',
     date: 'Febrero 11, 2026 9:00 a 10:00.',
     price: '$4000',
     status: statusAppointment[2],
     employ: employsDummy[1],
     client: clientDummy[0],
+    isCanceled: false
   },
   {
+    index: 2,
     service: 'Servicio 2',
     date: 'Marzo 1, 2026 13:00 a 14:00.',
     price: '$500',
     status: statusAppointment[1],
     employ: employsDummy[2],
     client: clientDummy[1],
+    isCanceled: false
   },
 ];
 // ****************************
 
-function MySchedule() {
+function MySchedule() 
+{
+  const [appointments, setAppointments] = React.useState(appointmentsInfo);
+  const handleDelete = (indexToDelete) => 
+  {
+    const updatedAppointments = appointments.filter((_, index) => index !== indexToDelete);
+    setAppointments(updatedAppointments);
+  };
+
   return (
     <ClientLayout>
       <Box
@@ -124,23 +139,33 @@ function MySchedule() {
             backgroundColor: '#cbd4ff6e',
           }}
         />
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 3 }}>
-          {appointmentsInfo.map((appointment, index) => {
-            return (
-              <Collapsable
-                key={index}
-                headerContent={
-                  <AppointmentHeader
-                    title={appointment.service}
-                    date={appointment.date}
-                    price={appointment.price}
-                  />
-                }
-              >
-                <AppointmentBody appointment={appointment} />
-              </Collapsable>
-            );
-          })}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap:1, my: 5 }}>
+          {appointments.length === 0 ? 
+          (
+            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', color:'secondary.blueShade', gap: {xs:0 ,md:2}, mx:{xs:2}}}>
+              <CloseIcon fontSize='large'/>
+              <Text size={18} color="secondary.blueShade" align='center'>No cuenta con citas agendadas actualmente</Text>
+            </Box>
+          ) : 
+          (
+            appointments.map((appointment, index) => 
+            {
+              return (
+                  <Collapsable
+                    key={index}
+                    headerContent={
+                      <AppointmentHeader
+                        title={appointment.service}
+                        date={appointment.date}
+                        price={appointment.price}
+                      />
+                    }
+                  >
+                    <AppointmentBody appointment={appointment} onConfirmCancel={() => handleDelete(index)}/>
+                  </Collapsable>
+              );
+            })
+          )}
         </Box>
       </Box>
     </ClientLayout>

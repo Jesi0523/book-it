@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -13,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 // ************** componentes propios :3 **************
 // |  navigation
 import NavOptions from '@/components/navigation/options/NavOptions';
+import BaseDialog from '@/components/common/BaseDialog';
 
 // ************** imagenes **************
 import logo from '@/assets/logo/Logo1.webp';
@@ -26,6 +28,7 @@ import UserIcon from '@mui/icons-material/AccountCircleOutlined';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -36,8 +39,17 @@ function NavBar() {
     setAnchorElNav(null);
   };
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const isLanding = currentPath === '/';
+
+  const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
+  const handleOpenSessionDialog = () => { setOpenSessionDialog(true);};
+  const handleCloseSessionDialog = (hasAccepted) => 
+  {
+    setOpenSessionDialog(false);
+    if(hasAccepted){navigate('/login');}; 
+  };
 
   return (
     <AppBar
@@ -263,18 +275,38 @@ function NavBar() {
                 </Typography>
               </Box>
 
-              {/* TODO: Desplegar modal de confirmación */}
               <Box sx={{ flexGrow: 0 }}>
-                <NavOptions
-                  icon={<LogoutIcon />}
-                  text='Cerrar Sesión'
-                  link='/login'
-                ></NavOptions>
+                <Button
+                  onClick={handleOpenSessionDialog}
+                  sx={{ 
+                    display: 'flex',
+                    flexDirection: 'column',
+                    fontSize: '0.6rem',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 'normal',
+                    color: 'secondary.main',
+                    transition: '0.2s ease-in-out',
+                    '&:hover': {
+                        backgroundColor: '#ffffff00',
+                        color: 'secondary.blueShade'
+                    }
+                  }} 
+                >
+                  <LogoutIcon /> Cerrar sesión
+                </Button>
               </Box>
             </>
           )}
         </Toolbar>
       </Container>
+      <BaseDialog
+        id="close-admin-session"
+        open={openSessionDialog}
+        onClose={handleCloseSessionDialog}
+        title={"Advertencia"}
+        icon={<AdvertismentIcon/>}
+        content={<> Está a punto de cerrar sesión<br/> <b>¿desea continuar?</b></>}
+      />
     </AppBar>
   );
 }

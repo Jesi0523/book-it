@@ -6,10 +6,12 @@ import MenuItem from '@mui/material/MenuItem';
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
 import TextInput from '@/components/form/TextInput';
+import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Opciones para la duracion de un servicio hasta 6 horas max
 const opcionesDuracion = Array.from(
@@ -17,7 +19,7 @@ const opcionesDuracion = Array.from(
   (_, i) => `${(i + 1) * 30} minutos`,
 );
 
-const ServiceForm = ({ service, onCancel, onSave }) => {
+const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -66,6 +68,16 @@ const ServiceForm = ({ service, onCancel, onSave }) => {
     }
   };
 
+  // Consts para modal de confirmación
+  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
+  const handleOpenSaveDialog = () => { setOpenSaveDialog(true); console.log(isEditing)};
+  const handleCloseSaveDialog = (hasAccepted) => 
+  {
+    setOpenSaveDialog(false);
+    if(hasAccepted){handleSubmit;}; 
+  };
+
+
   const handleSubmit = () => {
     onSave({ ...service, ...formData });
   };
@@ -96,7 +108,7 @@ const ServiceForm = ({ service, onCancel, onSave }) => {
                 width: '100%',
                 aspectRatio: '1 / 1',
                 background:
-                  'linear-gradient(180deg, #87CEEB 0%, #a8e6cf 50%, #90EE90 100%)',
+                  'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
@@ -235,12 +247,21 @@ const ServiceForm = ({ service, onCancel, onSave }) => {
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <MainButton
           size={{ xs: '16px', md: '18px' }}
-          onClick={handleSubmit}
+          onClick={handleOpenSaveDialog}
           sx={{ backgroundColor: '#ffb74d', color: '#000', px: 8 }}
         >
           Guardar
         </MainButton>
       </Box>
+      <BaseDialog
+        id="save-service-data"
+        open={openSaveDialog}
+        onClose={handleCloseSaveDialog}
+        title={"Advertencia"}
+        icon={<AdvertismentIcon/>}
+        content={ isEditing ? <>Agregará el servicio: <br/><b>{formData.nombre}</b><br/>¿desea continuar? </>
+         : <>Editará el servicio: <br/><b>{formData.nombre}</b><br/>¿desea continuar?</>}
+      />
     </Box>
   );
 };

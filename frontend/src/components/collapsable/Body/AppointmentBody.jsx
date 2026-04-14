@@ -114,7 +114,7 @@ const AppointmentBody = ({appointment, onConfirmCancel}) =>
                     {/* Cancelar cita */}
                     <Grid size={{xs: 12, md: 6}}>
                         <Box sx={{display: 'flex', justifyContent: {xs: 'center', md: 'flex-end'} }}>
-                            <MainButton size={{xs:'12px', md:'16px'}} onClick={handleOpenCancelDialog} ><CloseIcon /> Cancelar cita</MainButton>
+                            <MainButton size={{xs:'12px', md:'16px'}} onClick={handleOpenCancelDialog}><CloseIcon /> Cancelar cita</MainButton>
                         </Box>
                     </Grid>
                 </Grid>

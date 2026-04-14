@@ -13,10 +13,12 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 // Componentes propios
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog'
 
 // Iconos
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Dias de la semana
 const diasSemana = [
@@ -72,6 +74,17 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
+
+  // Const para el modal de confirmación -> si elimina el horario de un día
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const handleOpenDeleteDialog = () => { setOpenDeleteDialog(true); };
+  const handleCloseDeleteDialog = (hasAccepted) => 
+  {
+    setOpenDeleteDialog(false);
+    if(hasAccepted){handleLimpiarDia()};
+  };
+
+
 
   // <-------- UseEffects -------->
   useEffect(() => {
@@ -299,7 +312,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             {/* Eliminar */}
             <Tooltip title='Limpiar horario del dia seleccionado'>
               <IconButton
-                onClick={handleLimpiarDia}
+                onClick={handleOpenDeleteDialog}
                 sx={{
                   color: '#ffb74d',
                   border: '1px solid rgba(255, 183, 77, 0.5)',
@@ -421,6 +434,22 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
           </Box>
         </Box>
       )}
+
+      {/* Modal de confirmación */}
+       <BaseDialog
+          id="delete-schedule"
+          open={openDeleteDialog}
+          onClose={handleCloseDeleteDialog}
+          title={"Advertencia"}
+          fontSizeContent={18}
+          icon={<AdvertismentIcon/>}
+          content={
+            <>
+              Está a punto de eliminar el horario del día:<br />
+              <b>{selectedDay}</b><br />
+              ¿Desea continuar?
+          </>}
+        />
     </Box>
   );
 };

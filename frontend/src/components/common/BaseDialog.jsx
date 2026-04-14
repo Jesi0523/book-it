@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/ClearRounded';
 import ContinueIcon from '@mui/icons-material/CheckRounded';
 
 // --------------------------------------
-function BaseDialog({onClose, open, title,icon,content,...other}) 
+function BaseDialog({onClose, open, title,icon,content, fontSizeContent = 20,...other}) 
 {
     const linearDegraded= 'linear-gradient(180deg, #2c2e69 0%, #2d2e5c 100%)';
 
@@ -49,7 +49,7 @@ function BaseDialog({onClose, open, title,icon,content,...other})
 
             <DialogContent dividers
                 sx={{
-                fontWeight: '400', textAlign: 'center', fontSize: 20,
+                fontWeight: '400', textAlign: 'center', fontSize: fontSizeContent,
                 color: 'text.primary'
             }}>
                 {content}

@@ -144,7 +144,6 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
             {/* Boton eliminar servicio */}
             <IconButton
               onClick={() => handleOpenDeleteDialog(service)}
-              // onClick={() => onServiceToggle(service)} 
               sx={{
                 backgroundColor: '#ffb74d',
                 color: '#000',

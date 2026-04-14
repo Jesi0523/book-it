@@ -125,7 +125,7 @@ const AppointmentBody = ({appointment, onConfirmCancel}) =>
                 onClose={handleCloseCancelDialog}
                 title={"Advertencia"}
                 icon={<AdvertismentIcon/>}
-                content={"Está a punto de cancelar una cita, ¿desea continuar?"}
+                content={<> Está a punto de cancelar una cita <br/><b>¿desea continuar?</b></>}
             />
         </Box>
     </>

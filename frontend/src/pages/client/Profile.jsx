@@ -126,7 +126,7 @@ function Profile()
         onClose={handleCloseSaveDialog}
         title={"Advertencia"}
         icon={<AdvertismentIcon/>}
-        content={"Está a punto de cambiar sus datos personales, ¿desea continuar?"}
+        content={<> Está a punto de cambiar sus datos personales <br/> <b>¿desea continuar?</b></>}
       />
     </ClientLayout>
   );

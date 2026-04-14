@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -6,9 +6,11 @@ import IconButton from '@mui/material/IconButton';
 
 // Componentes propios
 import Text from '@/components/common/Text';
+import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import CloseIcon from '@mui/icons-material/Close';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const SuspensionList = ({ 
   mesFiltro, setMesFiltro,
@@ -17,8 +19,18 @@ const SuspensionList = ({
   selectMenuProps, selectEstilos 
 }) => {
   const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-  
+
   const anios = [2024, 2025, 2026, 2027, 2028, 2029, 2030]; 
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [actualSuspenction, setActualSuspenction] = useState(listaSuspensiones[0] || '');
+  const [suspenctionName, setSuspectionName] = React.useState("");
+  const handleOpenDeleteDialog = (index, texto) => { setOpenDeleteDialog(true); setActualSuspenction(index); setSuspectionName(texto)};
+  const handleCloseDeleteDialog = (hasAccepted) => 
+  {
+    setOpenDeleteDialog(false);
+    if(hasAccepted){{handleEliminarSuspension(actualSuspenction)}}
+  }; 
+   
 
   return (
     <Box sx={{ border: '1px solid #787ff6', borderRadius: '16px', p: { xs: 2, md: 4 } }}>
@@ -87,8 +99,9 @@ const SuspensionList = ({
               }}>
                 <Text children={susp.texto} color="white" size="16px" />
               </Box>
+
               <IconButton
-                onClick={() => handleEliminarSuspension(susp.id)}
+                onClick={() => handleOpenDeleteDialog(susp.id, susp.texto)}
                 sx={{
                   backgroundColor: '#ffb74d', color: '#000',
                   width: { xs: '40px', md: '45px' },
@@ -103,6 +116,16 @@ const SuspensionList = ({
           ))
         )}
       </Box>
+      <BaseDialog
+        id="delete-suspension"
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        title={"Advertencia"}
+        fontSizeContent={18}
+        icon={<AdvertismentIcon/>}
+        content={
+        <> Está a punto de eliminar la suspensión del día: <br/> <b>{suspenctionName}</b> <br/>¿desea continuar?</>}
+      />
     </Box>
   );
 };

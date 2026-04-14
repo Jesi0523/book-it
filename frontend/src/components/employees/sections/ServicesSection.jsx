@@ -6,20 +6,32 @@ import IconButton from '@mui/material/IconButton';
 
 // Componentes propios
 import Text from '@/components/common/Text';
+import BaseDialog from '@/components/common/BaseDialog'
 
 // Iconos
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const ServicesSection = ({ availableServices, selectedServices, onServiceToggle }) => {
   // Estados
   const [selectedValue, setSelectedValue] = useState(availableServices[0] || '');
+  const [actualService, setActualService] = useState(availableServices[0] || '');
 
   // Funcion agregar servicio
   const handleAdd = () => {
     if (selectedValue && !selectedServices.includes(selectedValue)) {
       onServiceToggle(selectedValue);
     }
+  };
+
+  // Const para el modal de confirmación -> si elimina un servicio
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const handleOpenDeleteDialog = (service) => { setOpenDeleteDialog(true); setActualService(service);};
+  const handleCloseDeleteDialog = (hasAccepted) => 
+  {
+    setOpenDeleteDialog(false);
+    if(hasAccepted){onServiceToggle(actualService);};
   };
 
   return (
@@ -131,7 +143,7 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
 
             {/* Boton eliminar servicio */}
             <IconButton
-              onClick={() => onServiceToggle(service)} 
+              onClick={() => handleOpenDeleteDialog(service)}
               sx={{
                 backgroundColor: '#ffb74d',
                 color: '#000',
@@ -139,6 +151,7 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
                 height: '45px',
                 flexShrink: 0,
                 '&:hover': { backgroundColor: '#e0a040' }
+
               }}
             >
               <CloseIcon sx={{ fontWeight: 'bold' }}/>
@@ -146,7 +159,20 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
           </Box>
         ))}
       </Box>
-
+      {/* NOTA: quitar esto si les resulta molesto  */}
+      <BaseDialog
+        id="delete-service"
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        title={"Advertencia"}
+        icon={<AdvertismentIcon/>}
+        content={
+          <>
+            Está a punto de eliminar el servicio:<br />
+            <b>{actualService}</b><br />
+            ¿Desea continuar?
+        </>}
+      />
     </Box>
   );
 };

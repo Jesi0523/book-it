@@ -1,14 +1,29 @@
+import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+// ****************************
 import Title from '@/components/common/Title'
 import Text from '@/components/common/Text'
+
+import BaseDialog from '@/components/common/BaseDialog'
+
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
+// ****************************
 import CloseIcon from '@mui/icons-material/CloseRounded';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
-const AppointmentBody = ({appointment}) => {
+const AppointmentBody = ({appointment, onConfirmCancel}) => 
+{
     const linearDegraded= 'linear-gradient(180deg, #11122b 0%, #1c1e51d3 100%)';
+    const [openCancelDialog, setOpenCancelDialog] = React.useState(false);
+    const handleOpenCancelDialog = () => { setOpenCancelDialog(true);};
+    const handleCloseCancelDialog = (hasAccepted) => 
+    {
+        setOpenCancelDialog(false);
+        if(hasAccepted) onConfirmCancel();
+    };
     
     return(
     <>
@@ -99,12 +114,19 @@ const AppointmentBody = ({appointment}) => {
                     {/* Cancelar cita */}
                     <Grid size={{xs: 12, md: 6}}>
                         <Box sx={{display: 'flex', justifyContent: {xs: 'center', md: 'flex-end'} }}>
-                            <MainButton size={{xs:'12px', md:'16px'}}><CloseIcon /> Cancelar cita</MainButton>
+                            <MainButton size={{xs:'12px', md:'16px'}} onClick={handleOpenCancelDialog}><CloseIcon /> Cancelar cita</MainButton>
                         </Box>
                     </Grid>
                 </Grid>
-
             </Box>
+            <BaseDialog
+                id="cancel-appointment"
+                open={openCancelDialog}
+                onClose={handleCloseCancelDialog}
+                title={"Advertencia"}
+                icon={<AdvertismentIcon/>}
+                content={<> Está a punto de cancelar una cita <br/><b>¿desea continuar?</b></>}
+            />
         </Box>
     </>
     )

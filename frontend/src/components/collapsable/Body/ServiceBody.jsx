@@ -6,13 +6,22 @@ import Grid from '@mui/material/Grid';
 import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Componentes propios
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog'
 
-const ServiceBody = ({ service, onEdit }) => {
+const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
   const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)'; 
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const handleOpenDeleteDialog = () => { setOpenDeleteDialog(true);};
+  const handleCloseDeleteDialog = (hasAccepted) => 
+  {
+      setOpenDeleteDialog(false);
+      if(hasAccepted) onDeleteConfirm();
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}>
@@ -74,11 +83,25 @@ const ServiceBody = ({ service, onEdit }) => {
         <MainButton 
           size={{ xs: '14px', md: '16px' }} 
           sx={{ backgroundColor: '#ffb74d', display: 'flex', gap: 1, alignItems: 'center' }}
+          onClick={handleOpenDeleteDialog} 
         >
           <CloseIcon fontSize="medium" sx={{ fontWeight: 'bold' }} /> Eliminar servicio
+
         </MainButton>
       </Box>
-
+      <BaseDialog
+        id="delete-service"
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        title={"Advertencia"}
+        icon={<AdvertismentIcon/>}
+        content={
+        <> 
+          Está a punto de borrar el servicio: 
+          <br/><b>{service.nombre}<br /></b>
+          ¿desea continuar?
+        </>}
+      />
     </Box>
   );
 };

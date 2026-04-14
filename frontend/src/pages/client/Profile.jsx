@@ -1,5 +1,7 @@
+import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
 
 // ************** componentes propios :3 **************
 // |  layout
@@ -7,13 +9,27 @@ import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog';
 // |  formulario
 import TextInput from '@/components/form/TextInput';
 import DateInput from '@/components/form/DateInput';
 import GenderSelect from '@/components/form/GenderSelect';
 import PasswordInput from '@/components/form/PasswordInput';
+// |  iconos
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
-function Profile() {
+function Profile() 
+{
+  const navigate = useNavigate();
+  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
+  const handleOpenSaveDialog = () => { setOpenSaveDialog(true);};
+  const handleCloseSaveDialog = (hasAccepted) => 
+  {
+    setOpenSaveDialog(false);
+    if(hasAccepted){navigate('/login');}; 
+    //NOTA: lo moví a log in porque un profe había mencionado que luego de hacer modificaciones
+    // sacaramos al usuario para que volviera a iniciar sesión por seguridad :3
+  };
   return (
     <ClientLayout>
       <Box
@@ -101,9 +117,17 @@ function Profile() {
             m: 2,
           }}
         >
-          <MainButton href='/main' children={'Guardar'} />
+          <MainButton onClick={handleOpenSaveDialog}  children={'Guardar'} />
         </Box>
       </Box>
+      <BaseDialog
+        id="save-client-data"
+        open={openSaveDialog}
+        onClose={handleCloseSaveDialog}
+        title={"Advertencia"}
+        icon={<AdvertismentIcon/>}
+        content={<> Está a punto de cambiar sus datos personales <br/> <b>¿desea continuar?</b></>}
+      />
     </ClientLayout>
   );
 }

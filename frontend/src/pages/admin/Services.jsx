@@ -63,10 +63,18 @@ const Services = () => {
   //   Estados
   const [busqueda, setBusqueda] = useState('');
   const [servicioEditando, setServicioEditando] = useState(null);
+  const [services, setServices] = React.useState(dummyServicios);
 
-  const serviciosFiltrados = dummyServicios.filter((serv) =>
+  const serviciosFiltrados = services.filter((serv) =>
     serv.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
+
+    // Funcion eliminar servicio
+  const handleDelete = (index) => 
+  {
+    const updatedServices = services.filter((service) => service.id !== index);
+    setServices(updatedServices);
+  };
 
   // Funcion guardar servicio
   const handleSaveService = (serviceData) => {
@@ -138,6 +146,7 @@ const Services = () => {
                 service={servicioEditando}
                 onCancel={() => setServicioEditando(null)}
                 onSave={handleSaveService}
+                isEditing={servicioEditando.id === 'nuevo' ? true : false}
               />
             </Box>
           </Box>
@@ -207,7 +216,7 @@ const Services = () => {
 
             {/* Lista de servicios */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {serviciosFiltrados.length > 0 ? (
+              {serviciosFiltrados.length > 0 ?(
                 serviciosFiltrados.map((servicio) => (
                   <Collapsable
                     key={servicio.id}
@@ -216,6 +225,7 @@ const Services = () => {
                     <ServiceBody
                       service={servicio}
                       onEdit={setServicioEditando}
+                      onDeleteConfirm={() => handleDelete(servicio.id)}
                     />
                   </Collapsable>
                 ))

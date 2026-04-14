@@ -5,7 +5,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
+import { useLocation, Link as RouterLink,useNavigate } from 'react-router-dom';
+
+import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -16,6 +18,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Logos
 import logo from '@/assets/logo/Logo1.webp';
@@ -33,6 +36,15 @@ const menuItems = [
 
 const Sidebar = ({ isExpanded = true }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
+  const handleOpenSessionDialog = () => { setOpenSessionDialog(true);};
+  const handleCloseSessionDialog = (hasAccepted) => 
+  {
+    setOpenSessionDialog(false);
+    if(hasAccepted){navigate('/login');}; 
+  };
+
 
   return (
     <Box sx={{ 
@@ -120,8 +132,7 @@ const Sidebar = ({ isExpanded = true }) => {
       {/* Cerrar sesion */}
       <Box sx={{ p: 2 }}>
         <ListItemButton
-          component={RouterLink}
-          to="/"
+          onClick={handleOpenSessionDialog}
           sx={{
             height: '48px', 
             width: isExpanded ? '100%' : '48px',
@@ -159,6 +170,14 @@ const Sidebar = ({ isExpanded = true }) => {
           />
         </ListItemButton>
       </Box>
+      <BaseDialog
+        id="close-admin-session"
+        open={openSessionDialog}
+        onClose={handleCloseSessionDialog}
+        title={"Advertencia"}
+        icon={<AdvertismentIcon/>}
+        content={<> Está a punto de cerrar sesión<br/> <b>¿desea continuar?</b></>}
+      />
     </Box>
   );
 };

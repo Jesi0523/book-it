@@ -10,6 +10,7 @@ import ClientLayout from '@/layouts/ClientLayout';
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
 import BaseDialog from '@/components/common/BaseDialog';
+import InfoDialog from '@/components/common/InfoDialog';
 // |  formulario
 import TextInput from '@/components/form/TextInput';
 import DateInput from '@/components/form/DateInput';
@@ -18,18 +19,30 @@ import PasswordInput from '@/components/form/PasswordInput';
 // |  iconos
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
-function Profile() 
-{
+function Profile() {
   const navigate = useNavigate();
+
   const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const handleOpenSaveDialog = () => { setOpenSaveDialog(true);};
-  const handleCloseSaveDialog = (hasAccepted) => 
-  {
+  const [openInfoDialog, setOpenInfoDialog] = React.useState(false);
+
+  const handleOpenSaveDialog = () => {
+    setOpenSaveDialog(true);
+  };
+
+  const handleCloseSaveDialog = (hasAccepted) => {
     setOpenSaveDialog(false);
-    if(hasAccepted){navigate('/login');}; 
+    if (hasAccepted) {
+      setOpenInfoDialog(true);
+    }
+  };
+
+  const handleCloseInfoDialog = () => {
+    setOpenInfoDialog(false);
+    navigate('/login');
     //NOTA: lo moví a log in porque un profe había mencionado que luego de hacer modificaciones
     // sacaramos al usuario para que volviera a iniciar sesión por seguridad :3
   };
+
   return (
     <ClientLayout>
       <Box
@@ -117,17 +130,32 @@ function Profile()
             m: 2,
           }}
         >
-          <MainButton onClick={handleOpenSaveDialog}  children={'Guardar'} />
+          <MainButton onClick={handleOpenSaveDialog} children={'Guardar'} />
         </Box>
       </Box>
+
       <BaseDialog
-        id="save-client-data"
+        id='save-client-data'
         open={openSaveDialog}
         onClose={handleCloseSaveDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={<> Está a punto de cambiar sus datos personales <br/> <b>¿desea continuar?</b></>}
+        title={'Advertencia'}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            {' '}
+            Está a punto de cambiar sus datos personales <br />{' '}
+            <b>¿Desea continuar?</b>
+          </>
+        }
       />
+
+      <InfoDialog
+        open={openInfoDialog}
+        onClose={handleCloseInfoDialog}
+        title="Perfil Actualizado"
+        content="Tus datos se guardaron correctamente. Por seguridad, es necesario que inicies sesión de nuevo con tus credenciales actualizadas."
+      />
+      
     </ClientLayout>
   );
 }

@@ -176,7 +176,7 @@ const Sidebar = ({ isExpanded = true }) => {
         onClose={handleCloseSessionDialog}
         title={"Advertencia"}
         icon={<AdvertismentIcon/>}
-        content={<> Está a punto de cerrar sesión<br/> <b>¿desea continuar?</b></>}
+        content={<> Está a punto de cerrar sesión<br/> <b>¿Desea continuar?</b></>}
       />
     </Box>
   );

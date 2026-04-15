@@ -10,7 +10,7 @@ const Signup = lazy(() => import('@/pages/auth/Signup.jsx'));
 // Client
 const MainPage = lazy(() => import('@/pages/client/MainPage'));
 const BookAppointment = lazy(() => import('@/pages/client/BookAppointment'));
-const MySchedule = lazy(() => import('@/pages/client/MySchedule'));
+const MyAppointments = lazy(() => import('@/pages/client/MyAppointments'));
 const Profile = lazy(() => import('@/pages/client/Profile'));
 
 // Admin
@@ -56,7 +56,7 @@ const AppRoutes = () => {
         {/* Usuario */}
         <Route path='/main' element={<MainPage />} />
         <Route path='/book-appointment' element={<BookAppointment />} />
-        <Route path='/my-schedule' element={<MySchedule />} />
+        <Route path='/my-appointments' element={<MyAppointments />} />
         <Route path='/profile' element={<Profile />} />
 
         {/* Admin */}

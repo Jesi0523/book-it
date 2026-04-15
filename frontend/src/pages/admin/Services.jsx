@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
+import toast from 'react-hot-toast';
 
 // Iconos
 import SearchIcon from '@mui/icons-material/Search';
@@ -69,11 +70,25 @@ const Services = () => {
     serv.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
 
-    // Funcion eliminar servicio
-  const handleDelete = (index) => 
-  {
+  // Funcion eliminar servicio
+  const handleDelete = (index) => {
     const updatedServices = services.filter((service) => service.id !== index);
     setServices(updatedServices);
+
+    toast.success('Servicio eliminado del catálogo.', {
+      id: 'service-delete-toast',
+      duration: 3000,
+      style: {
+        borderRadius: '10px',
+        background: '#1b1c37', 
+        color: '#fff',
+        border: '1px solid #757575',
+      },
+      iconTheme: {
+        primary: '#757575',
+        secondary: '#fff',
+      },
+    });
   };
 
   // Funcion guardar servicio
@@ -216,7 +231,7 @@ const Services = () => {
 
             {/* Lista de servicios */}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {serviciosFiltrados.length > 0 ?(
+              {serviciosFiltrados.length > 0 ? (
                 serviciosFiltrados.map((servicio) => (
                   <Collapsable
                     key={servicio.id}

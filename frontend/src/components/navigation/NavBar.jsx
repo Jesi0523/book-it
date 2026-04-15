@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -44,11 +44,14 @@ function NavBar() {
   const isLanding = currentPath === '/';
 
   const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
-  const handleOpenSessionDialog = () => { setOpenSessionDialog(true);};
-  const handleCloseSessionDialog = (hasAccepted) => 
-  {
+  const handleOpenSessionDialog = () => {
+    setOpenSessionDialog(true);
+  };
+  const handleCloseSessionDialog = (hasAccepted) => {
     setOpenSessionDialog(false);
-    if(hasAccepted){navigate('/login');}; 
+    if (hasAccepted) {
+      navigate('/login');
+    }
   };
 
   return (
@@ -160,10 +163,10 @@ function NavBar() {
                     <MenuItem
                       key='schedule'
                       component='a'
-                      href='/my-schedule'
+                      href='/my-appointments'
                       sx={{
                         color:
-                          currentPath === '/my-schedule'
+                          currentPath === '/my-appointments'
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -226,9 +229,9 @@ function NavBar() {
                 />
                 <NavOptions
                   icon={<CalendarIcon />}
-                  link='/my-schedule'
+                  link='/my-appointments'
                   text='Mis citas'
-                  isActive={currentPath === '/my-schedule'}
+                  isActive={currentPath === '/my-appointments'}
                 />
                 <NavOptions
                   icon={<UserIcon />}
@@ -278,7 +281,7 @@ function NavBar() {
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   onClick={handleOpenSessionDialog}
-                  sx={{ 
+                  sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     fontSize: '0.6rem',
@@ -287,10 +290,10 @@ function NavBar() {
                     color: 'secondary.main',
                     transition: '0.2s ease-in-out',
                     '&:hover': {
-                        backgroundColor: '#ffffff00',
-                        color: 'secondary.blueShade'
-                    }
-                  }} 
+                      backgroundColor: '#ffffff00',
+                      color: 'secondary.blueShade',
+                    },
+                  }}
                 >
                   <LogoutIcon /> Cerrar sesión
                 </Button>
@@ -300,12 +303,18 @@ function NavBar() {
         </Toolbar>
       </Container>
       <BaseDialog
-        id="close-admin-session"
+        id='close-admin-session'
         open={openSessionDialog}
         onClose={handleCloseSessionDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={<> Está a punto de cerrar sesión<br/> <b>¿desea continuar?</b></>}
+        title={'Advertencia'}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            {' '}
+            Está a punto de cerrar sesión
+            <br /> <b>¿Desea continuar?</b>
+          </>
+        }
       />
     </AppBar>
   );

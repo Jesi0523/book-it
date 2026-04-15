@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
-import Text from '@/components/common/Text'
+import Text from '@/components/common/Text';
 import Collapsable from '@/components/common/Collapsable';
 // |  formulario
 import Combobox from '@/components/form/Combobox';
@@ -73,10 +73,10 @@ const appointmentsInfo = [
     service: 'Servicio 1',
     date: 'Febrero 11, 2026 9:00 a 10:00.',
     price: '$4000',
-    status: statusAppointment[2],
+    status: statusAppointment[0],
     employ: employsDummy[1],
     client: clientDummy[0],
-    isCanceled: false
+    isCanceled: false,
   },
   {
     index: 2,
@@ -86,18 +86,18 @@ const appointmentsInfo = [
     status: statusAppointment[1],
     employ: employsDummy[2],
     client: clientDummy[1],
-    isCanceled: false
+    isCanceled: false,
   },
 ];
 // ****************************
 
-function MySchedule() 
-{
+function MyAppointments() {
   const [appointments, setAppointments] = React.useState(appointmentsInfo);
-  const handleDelete = (indexToDelete) => 
-  {
-    const updatedAppointments = appointments.filter((_, index) => index !== indexToDelete);
-    setAppointments(updatedAppointments);
+  const handleCancel = (index) => {
+    const newAppointments = [...appointments];
+    newAppointments[index].status = statusAppointment[2];
+
+    setAppointments(newAppointments);
   };
 
   return (
@@ -139,30 +139,41 @@ function MySchedule()
             backgroundColor: '#cbd4ff6e',
           }}
         />
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap:1, my: 5 }}>
-          {appointments.length === 0 ? 
-          (
-            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', color:'secondary.blueShade', gap: {xs:0 ,md:2}, mx:{xs:2}}}>
-              <CloseIcon fontSize='large'/>
-              <Text size={18} color="secondary.blueShade" align='center'>No cuenta con citas agendadas actualmente</Text>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 5 }}>
+          {appointments.length === 0 ? (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'secondary.blueShade',
+                gap: { xs: 0, md: 2 },
+                mx: { xs: 2 },
+              }}
+            >
+              <CloseIcon fontSize='large' />
+              <Text size={18} color='secondary.blueShade' align='center'>
+                No cuenta con citas agendadas actualmente
+              </Text>
             </Box>
-          ) : 
-          (
-            appointments.map((appointment, index) => 
-            {
+          ) : (
+            appointments.map((appointment, index) => {
               return (
-                  <Collapsable
-                    key={index}
-                    headerContent={
-                      <AppointmentHeader
-                        title={appointment.service}
-                        date={appointment.date}
-                        price={appointment.price}
-                      />
-                    }
-                  >
-                    <AppointmentBody appointment={appointment} onConfirmCancel={() => handleDelete(index)}/>
-                  </Collapsable>
+                <Collapsable
+                  key={index}
+                  headerContent={
+                    <AppointmentHeader
+                      title={appointment.service}
+                      date={appointment.date}
+                      price={appointment.price}
+                    />
+                  }
+                >
+                  <AppointmentBody
+                    appointment={appointment}
+                    onConfirmCancel={() => handleCancel(index)}
+                  />
+                </Collapsable>
               );
             })
           )}
@@ -172,4 +183,4 @@ function MySchedule()
   );
 }
 
-export default MySchedule;
+export default MyAppointments;

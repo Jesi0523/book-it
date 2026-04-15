@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
+import toast from 'react-hot-toast';
 
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
 import TextInput from '@/components/form/TextInput';
-import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Opciones para la duracion de un servicio hasta 6 horas max
 const opcionesDuracion = Array.from(
@@ -28,6 +27,8 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     imagen: null,
     archivoFisico: null,
   });
+
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (service && service.id !== 'nuevo') {
@@ -68,18 +69,37 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     }
   };
 
-  // Consts para modal de confirmación
-  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const handleOpenSaveDialog = () => { setOpenSaveDialog(true); console.log(isEditing)};
-  const handleCloseSaveDialog = (hasAccepted) => 
-  {
-    setOpenSaveDialog(false);
-    if(hasAccepted){handleSubmit;}; 
-  };
-
-
   const handleSubmit = () => {
+    if (isSaving) return;
+    setIsSaving(true);
+
     onSave({ ...service, ...formData });
+
+    const isNew = service.id === 'nuevo';
+
+    const isMobile = window.innerWidth <= 900;
+
+    toast.success(
+      isNew
+        ? 'Servicio agregado correctamente.'
+        : 'Servicio actualizado correctamente.',
+      {
+        id: 'service-save-toast',
+        duration: 3000,
+        style: {
+          borderRadius: '10px',
+          background: '#1b1c37',
+          color: '#fff',
+          border: '1px solid #4caf50',
+        },
+        iconTheme: {
+          primary: '#4caf50',
+          secondary: '#fff',
+        },
+      },
+    );
+
+    setIsSaving(false);
   };
 
   const opcionesSeguras = [...opcionesDuracion];
@@ -247,21 +267,19 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <MainButton
           size={{ xs: '16px', md: '18px' }}
-          onClick={handleOpenSaveDialog}
-          sx={{ backgroundColor: '#ffb74d', color: '#000', px: 8 }}
+          onClick={handleSubmit}
+          disabled={isSaving}
+          sx={{
+            backgroundColor: isSaving ? '#a9a9a9' : '#ffb74d',
+            color: isSaving ? '#666' : '#000',
+            px: 8,
+            cursor: isSaving ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
+          }}
         >
           Guardar
         </MainButton>
       </Box>
-      <BaseDialog
-        id="save-service-data"
-        open={openSaveDialog}
-        onClose={handleCloseSaveDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={ isEditing ? <>Agregará el servicio: <br/><b>{formData.nombre}</b><br/>¿desea continuar? </>
-         : <>Editará el servicio: <br/><b>{formData.nombre}</b><br/>¿desea continuar?</>}
-      />
     </Box>
   );
 };

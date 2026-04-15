@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
@@ -7,6 +9,7 @@ import Title from '@/components/common/Title';
 import Calendar from '@/components/common/Calendar';
 import MainButton from '@/components/common/MainButton';
 import Text from '@/components/common/Text';
+import InfoDialog from '@/components/common/InfoDialog';
 // | formulario
 import Combobox from '@/components/form/Combobox';
 import TextInput from '@/components/form/TextInput';
@@ -45,6 +48,26 @@ const hoursDummy = [
 function AppointmentForm() {
   const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51 100%)';
   const colorBorder = '2px solid #2c2e5bba';
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [openSuccess, setOpenSuccess] = useState(false);
+
+  const handleSchedule = () => {
+    setOpenSuccess(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenSuccess(false);
+
+    if (location.pathname === '/admin/book-appointment') {
+      navigate('/admin/appointment-calendar'); 
+    } else {
+      navigate('/my-appointments'); 
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -236,12 +259,12 @@ function AppointmentForm() {
                 background={linearDegraded}
                 border={colorBorder}
                 sx={{
-                  // Rescate para la Edad: Mantenemos el padding arriba/abajo, 
+                  // Rescate para la Edad: Mantenemos el padding arriba/abajo,
                   // pero reducimos drásticamente los lados (a 5px) para que quepa "Ej: 18"
-                  "& .MuiInputBase-input": {
-                    padding: "28px 5px 10px 5px !important", 
-                    textAlign: "center"
-                  }
+                  '& .MuiInputBase-input': {
+                    padding: '28px 5px 10px 5px !important',
+                    textAlign: 'center',
+                  },
                 }}
               />
             </Grid>
@@ -280,7 +303,6 @@ function AppointmentForm() {
               />
             </Grid>
           </Grid>
-
         </Box>
       </Box>
 
@@ -331,8 +353,15 @@ function AppointmentForm() {
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-        <MainButton>Agendar</MainButton>
+        <MainButton onClick={handleSchedule}>Agendar</MainButton>
       </Box>
+
+      <InfoDialog
+        open={openSuccess}
+        onClose={handleCloseDialog}
+        title='¡Cita Agendada!'
+        content='Tu cita se ha registrado correctamente.'
+      />
     </Box>
   );
 }

@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
+import toast from 'react-hot-toast';
 
 // Iconos
 import SearchIcon from '@mui/icons-material/Search';
@@ -67,7 +68,7 @@ const dummyEmpleados = [
     name: 'Marcela López',
     email: 'marcela.l@correo.com',
     phone: '81 2345 6789',
-    birthdate: '1995-08-20', 
+    birthdate: '1995-08-20',
     info: 'Experta en cuidado de la piel y tratamientos faciales. Siempre dispuesta a brindar el mejor servicio a sus clientes.',
     foto: avatar1,
     schedule:
@@ -90,7 +91,7 @@ const dummyEmpleados = [
 
 // <----------- LOGICA ----------->
 const Employees = () => {
-  // Estados  
+  // Estados
   const [busqueda, setBusqueda] = useState('');
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
 
@@ -101,7 +102,28 @@ const Employees = () => {
 
   // Funcion guardar empleado
   const handleSaveEmployee = (employeeData) => {
-    console.log('Guardando empleado:', employeeData);
+    const isNew = employeeData.id === 'nuevo';
+
+    toast.success(
+      isNew
+        ? 'Empleado agregado exitosamente.'
+        : 'Datos del empleado actualizados.',
+      {
+        id: 'employee-save-toast',
+        duration: 3000,
+        style: {
+          borderRadius: '10px',
+          background: '#1b1c37',
+          color: '#fff',
+          border: '1px solid #4caf50',
+        },
+        iconTheme: {
+          primary: '#4caf50',
+          secondary: '#fff',
+        },
+      },
+    );
+
     setEmpleadoEditando(null);
   };
 

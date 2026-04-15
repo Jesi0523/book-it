@@ -124,7 +124,7 @@ const SuspensionList = ({
         fontSizeContent={18}
         icon={<AdvertismentIcon/>}
         content={
-        <> Está a punto de eliminar la suspensión del día: <br/> <b>{suspenctionName}</b> <br/>¿desea continuar?</>}
+        <> Está a punto de eliminar la suspensión del día: <br/> <b>{suspenctionName}</b> <br/>¿Desea continuar?</>}
       />
     </Box>
   );

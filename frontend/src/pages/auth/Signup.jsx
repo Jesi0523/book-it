@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import MuiLink from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -11,6 +11,7 @@ import Card from '@/components/common/Card';
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
+import InfoDialog from '@/components/common/InfoDialog';
 
 // Formulario
 import TextInput from '@/components/form/TextInput';
@@ -21,7 +22,14 @@ import DateInput from '@/components/form/DateInput';
 function Signup() {
   const navigate = useNavigate();
 
+  const [openSuccess, setOpenSuccess] = useState(false);
+
   const handleContinue = () => {
+    setOpenSuccess(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenSuccess(false);
     navigate('/login');
   };
 
@@ -94,6 +102,13 @@ function Signup() {
           </MuiLink>
         </Text>
       </Card>
+
+      <InfoDialog 
+        open={openSuccess} 
+        onClose={handleCloseDialog}
+        title="¡Registro Exitoso!"
+        content="Tu cuenta ha sido creada."
+      />
     </AuthLayout>
   );
 }

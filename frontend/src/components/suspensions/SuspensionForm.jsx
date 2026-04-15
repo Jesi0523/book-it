@@ -206,7 +206,7 @@ const SuspensionForm = ({
         title={"Atención"}
         icon={<AdvertismentIcon/>}
         content={
-        <> Está a punto de añadir una suspensión <br/> <b>¿desea continuar?</b></>}
+        <> Está a punto de añadir una suspensión. Si hay citas programadas, serán canceladas. <br/> <b>¿Desea continuar?</b></>}
       />
     </Box>
   );

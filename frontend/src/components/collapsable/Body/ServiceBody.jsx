@@ -99,7 +99,7 @@ const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
         <> 
           Está a punto de borrar el servicio: 
           <br/><b>{service.nombre}<br /></b>
-          ¿desea continuar?
+          ¿Desea continuar?
         </>}
       />
     </Box>

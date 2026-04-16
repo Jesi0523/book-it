@@ -1,29 +1,23 @@
+import { Outlet } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import img from "@/assets/auth/bg_auth.webp";
 import logo from "@/assets/logo/Logo1.webp";
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = () => {
   return (
     <Box
       sx={{
         position: "relative",
         minHeight: "100vh",
         width: "100%", 
-
         display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          md: "repeat(12, 1fr)",
-        },
-        alignItems: "center",
-
+        gridTemplateColumns: { xs: "1fr", md: "repeat(12, 1fr)" },
         backgroundImage: `url(${img})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundColor: "rgba(0, 0, 0, 0.4)",
         backgroundBlendMode: "darken",
-
         p: { xs: 2, md: 4 }, 
         boxSizing: "border-box", 
       }}
@@ -45,17 +39,21 @@ const AuthLayout = ({ children }) => {
 
       <Box
         sx={{
-          gridColumn: {
-            xs: "1",
-            md: "2 / span 5",
-            lg: "2 / span 4",
-          },
+          gridColumn: { xs: "1", md: "2 / span 5", lg: "2 / span 4" },
           zIndex: 5,
           display: "flex",
-          justifyContent: "flex-start", 
+          justifyContent: "flex-start",
         }}
       >
-        <Box sx={{ width: "100%", maxWidth: "450px" }}>{children}</Box>
+        <Box 
+          sx={{ 
+            width: "100%", 
+            maxWidth: "450px", 
+            margin: "auto 0"
+          }}
+        >
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -64,7 +64,7 @@ function NavBar() {
           {isLanding ? (
             // Landing Page
             <>
-              <Link href='/'>
+              <Link component={RouterLink} to='/'>
                 <img
                   src={logo}
                   alt='Logo'
@@ -75,7 +75,7 @@ function NavBar() {
           ) : (
             // Main Page
             <>
-              <Link href='/main'>
+              <Link component={RouterLink} to='/main'>
                 <img
                   src={logo}
                   alt='Logo'
@@ -124,11 +124,21 @@ function NavBar() {
             >
               {isLanding
                 ? [
-                    <MenuItem key='login' component='a' href='/login'>
+                    <MenuItem
+                      key='login'
+                      component={RouterLink}
+                      to='/login'
+                      onClick={handleCloseNavMenu}
+                    >
                       <HowToRegIcon />
                       <Typography>Inicia sesión</Typography>
                     </MenuItem>,
-                    <MenuItem key='signup' component='a' href='/signup'>
+                    <MenuItem
+                      key='signup'
+                      component={RouterLink}
+                      to='/signup'
+                      onClick={handleCloseNavMenu}
+                    >
                       <PersonAddIcon />
                       <Typography>Regístrate</Typography>
                     </MenuItem>,
@@ -136,8 +146,9 @@ function NavBar() {
                 : [
                     <MenuItem
                       key='main'
-                      component='a'
-                      href='/main'
+                      component={RouterLink}
+                      to='/main'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/main'
@@ -149,8 +160,9 @@ function NavBar() {
                     </MenuItem>,
                     <MenuItem
                       key='book'
-                      component='a'
-                      href='/book-appointment'
+                      component={RouterLink}
+                      to='/book-appointment'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/book-appointment'
@@ -162,8 +174,9 @@ function NavBar() {
                     </MenuItem>,
                     <MenuItem
                       key='schedule'
-                      component='a'
-                      href='/my-appointments'
+                      component={RouterLink}
+                      to='/my-appointments'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/my-appointments'
@@ -175,8 +188,9 @@ function NavBar() {
                     </MenuItem>,
                     <MenuItem
                       key='profile'
-                      component='a'
-                      href='/profile'
+                      component={RouterLink}
+                      to='/profile'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/profile'

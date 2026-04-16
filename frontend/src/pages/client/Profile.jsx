@@ -4,8 +4,6 @@ import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 
 // ************** componentes propios :3 **************
-// |  layout
-import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
@@ -44,7 +42,7 @@ function Profile() {
   };
 
   return (
-    <ClientLayout>
+    <>
       <Box
         sx={{
           py: { xs: 2, md: 5 },
@@ -156,7 +154,7 @@ function Profile() {
         content="Tus datos se guardaron correctamente. Por seguridad, es necesario que inicies sesión de nuevo con tus credenciales actualizadas."
       />
       
-    </ClientLayout>
+    </>
   );
 }
 export default Profile;

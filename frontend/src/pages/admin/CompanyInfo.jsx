@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import toast from 'react-hot-toast';
 
-// Layout
-import AdminLayout from '@/layouts/AdminLayout';
-
 // Componentes propios
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
@@ -121,86 +118,84 @@ const CompanyInfo = () => {
   };
 
   return (
-    <AdminLayout>
+    <Box
+      sx={{
+        p: { xs: 2, md: 5 },
+        width: '100%',
+        maxWidth: '1000px',
+        mx: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 6,
+      }}
+    >
+      <Box>
+        <Title
+          children='INFORMACIÓN DE LA EMPRESA'
+          size={{ xs: '2rem', md: '2.8rem' }}
+          color='white'
+          align='left'
+        />
+      </Box>
+
+      {/* Datos */}
+      <Box>
+        <CompanyDataSection
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleLogoChange={handleLogoChange}
+        />
+      </Box>
+
+      {/* Horario */}
       <Box
         sx={{
-          p: { xs: 2, md: 5 },
-          width: '100%',
-          maxWidth: '1000px',
-          mx: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 6,
+          p: { xs: 2, md: 4 },
+          borderRadius: '16px',
+          border: `1px solid #787ff6`,
         }}
       >
-        <Box>
-          <Title
-            children='INFORMACIÓN DE LA EMPRESA'
-            size={{ xs: '2rem', md: '2.8rem' }}
-            color='white'
-            align='left'
-          />
-        </Box>
-
-        {/* Datos */}
-        <Box>
-          <CompanyDataSection
-            formData={formData}
-            handleInputChange={handleInputChange}
-            handleLogoChange={handleLogoChange}
-          />
-        </Box>
-
-        {/* Horario */}
-        <Box
-          sx={{
-            p: { xs: 2, md: 4 },
-            borderRadius: '16px',
-            border: `1px solid #787ff6`,
-          }}
-        >
-          <ScheduleSection
-            scheduleMap={scheduleMap}
-            setScheduleMap={setScheduleMap}
-          />
-        </Box>
-
-        {/* Galeria */}
-        <Box
-          sx={{
-            p: { xs: 2, md: 4 },
-            borderRadius: '16px',
-            border: `1px solid #787ff6`,
-          }}
-        >
-          <CompanyGallerySection
-            mainImage={mainImage}
-            onMainImageChange={handleMainImageChange}
-            galleryImages={galleryImages}
-            onGalleryImagesChange={handleGalleryImagesChange}
-            onRemoveGalleryImage={handleRemoveGalleryImage}
-          />
-        </Box>
-
-        {/* Boton guardar */}
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <MainButton
-            size={{ xs: '16px', md: '18px' }}
-            onClick={handleSave}
-            disabled={isSaving} 
-            sx={{
-              backgroundColor: isSaving ? '#a9a9a9' : '#ffb74d',
-              color: isSaving ? '#666' : '#000',
-              px: 8,
-              cursor: isSaving ? 'not-allowed' : 'pointer',
-              transition: 'all 0.3s ease',
-            }}
-          >
-            Guardar
-          </MainButton>
-        </Box>
+        <ScheduleSection
+          scheduleMap={scheduleMap}
+          setScheduleMap={setScheduleMap}
+        />
       </Box>
-    </AdminLayout>
+
+      {/* Galeria */}
+      <Box
+        sx={{
+          p: { xs: 2, md: 4 },
+          borderRadius: '16px',
+          border: `1px solid #787ff6`,
+        }}
+      >
+        <CompanyGallerySection
+          mainImage={mainImage}
+          onMainImageChange={handleMainImageChange}
+          galleryImages={galleryImages}
+          onGalleryImagesChange={handleGalleryImagesChange}
+          onRemoveGalleryImage={handleRemoveGalleryImage}
+        />
+      </Box>
+
+      {/* Boton guardar */}
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <MainButton
+          size={{ xs: '16px', md: '18px' }}
+          onClick={handleSave}
+          disabled={isSaving}
+          sx={{
+            backgroundColor: isSaving ? '#a9a9a9' : '#ffb74d',
+            color: isSaving ? '#666' : '#000',
+            px: 8,
+            cursor: isSaving ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
+          }}
+        >
+          Guardar
+        </MainButton>
+      </Box>
+    </Box>
   );
 };
 

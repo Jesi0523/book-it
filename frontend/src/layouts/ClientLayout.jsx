@@ -1,30 +1,30 @@
+import { Outlet } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import NavBar from '@/components/navigation/NavBar';
 
-const ClientLayout = ({ children }) => 
-{
+const ClientLayout = () => {
   return (
-    <Box 
-      sx={{ 
+    <Box
+      sx={{
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '100vh'
+        minHeight: '100vh',
       }}
     >
       <NavBar />
 
       <Toolbar />
-      
-      <Box 
-        component="main" 
-        sx={{ 
+
+      <Box
+        component='main'
+        sx={{
           display: 'flex',
           flexDirection: 'column',
-          flexGrow: 1
+          flexGrow: 1,
         }}
       >
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );

@@ -3,8 +3,6 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import MuiLink from '@mui/material/Link';
 import Box from '@mui/material/Box';
 
-import AuthLayout from '@/layouts/AuthLayout';
-
 // <---- Componentes ---->
 // Common
 import Card from '@/components/common/Card';
@@ -34,7 +32,7 @@ function Signup() {
   };
 
   return (
-    <AuthLayout>
+    <>
       <Card
         bg='linear-gradient(180deg, #0c0c18 0%, #060511 100%)'
         brRadius='12px'
@@ -103,13 +101,13 @@ function Signup() {
         </Text>
       </Card>
 
-      <InfoDialog 
-        open={openSuccess} 
+      <InfoDialog
+        open={openSuccess}
         onClose={handleCloseDialog}
-        title="¡Registro Exitoso!"
-        content="Tu cuenta ha sido creada."
+        title='¡Registro Exitoso!'
+        content='Tu cuenta ha sido creada.'
       />
-    </AuthLayout>
+    </>
   );
 }
 

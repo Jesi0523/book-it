@@ -1,10 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import toast from 'react-hot-toast';
 
 // ************** componentes propios :3 **************
-// |  layout
-import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
@@ -98,88 +97,101 @@ function MyAppointments() {
     newAppointments[index].status = statusAppointment[2];
 
     setAppointments(newAppointments);
+
+    toast.success('La cita ha sido cancelada.', {
+      id: 'cancel-appointment-toast',
+      duration: 3000,
+      style: {
+        borderRadius: '10px',
+        background: '#1b1c37',
+        color: '#fff',
+        border: '1px solid #757575',
+      },
+      iconTheme: {
+        primary: '#757575',
+        secondary: '#fff',
+      },
+    });
   };
 
   return (
-    <ClientLayout>
-      <Box
-        sx={{
-          py: { xs: 2, md: 5 },
-          px: { xs: 1, md: 5 },
-          width: '95%',
-          maxWidth: '1000px',
-          mx: 'auto',
-        }}
+    <Box
+      sx={{
+        py: { xs: 2, md: 5 },
+        px: { xs: 1, md: 5 },
+        width: '95%',
+        maxWidth: '1000px',
+        mx: 'auto',
+      }}
+    >
+      <Grid
+        container
+        sx={{ display: 'flex', alignItems: 'center' }}
+        rowSpacing={{ xs: 2, md: 0 }}
       >
-        <Grid
-          container
-          sx={{ display: 'flex', alignItems: 'center' }}
-          rowSpacing={{ xs: 2, md: 0 }}
-        >
-          <Grid size={{ xs: 12, md: 7 }}>
-            <Title
-              children='Mis citas'
-              color='text.primary'
-              align={{ xs: 'center', md: 'start' }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Combobox
-              name='Ordenar por:'
-              array={orderByDummy}
-              size='14px'
-              defaultValue={orderByDummy[0]}
-            />
-          </Grid>
+        <Grid size={{ xs: 12, md: 7 }}>
+          <Title
+            children='Mis citas'
+            color='text.primary'
+            align={{ xs: 'center', md: 'start' }}
+          />
         </Grid>
-        <hr
-          style={{
-            border: 'none',
-            height: '1px',
-            backgroundColor: '#cbd4ff6e',
-          }}
-        />
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 5 }}>
-          {appointments.length === 0 ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'secondary.blueShade',
-                gap: { xs: 0, md: 2 },
-                mx: { xs: 2 },
-              }}
-            >
-              <CloseIcon fontSize='large' />
-              <Text size={18} color='secondary.blueShade' align='center'>
-                No cuenta con citas agendadas actualmente
-              </Text>
-            </Box>
-          ) : (
-            appointments.map((appointment, index) => {
-              return (
-                <Collapsable
-                  key={index}
-                  headerContent={
-                    <AppointmentHeader
-                      title={appointment.service}
-                      date={appointment.date}
-                      price={appointment.price}
-                    />
-                  }
-                >
-                  <AppointmentBody
-                    appointment={appointment}
-                    onConfirmCancel={() => handleCancel(index)}
+        <Grid size={{ xs: 12, md: 5 }}>
+          <Combobox
+            name='Ordenar por:'
+            array={orderByDummy}
+            size='14px'
+            defaultValue={orderByDummy[0]}
+          />
+        </Grid>
+      </Grid>
+      <hr
+        style={{
+          border: 'none',
+          height: '1px',
+          backgroundColor: '#cbd4ff6e',
+        }}
+      />
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 5 }}>
+        {appointments.length === 0 ? (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'secondary.blueShade',
+              gap: { xs: 0, md: 2 },
+              mx: { xs: 2 },
+            }}
+          >
+            <CloseIcon fontSize='large' />
+            <Text size={18} color='secondary.blueShade' align='center'>
+              No cuenta con citas agendadas actualmente
+            </Text>
+          </Box>
+        ) : (
+          appointments.map((appointment, index) => {
+            return (
+              <Collapsable
+                key={index}
+                headerContent={
+                  <AppointmentHeader
+                    title={appointment.service}
+                    date={appointment.date}
+                    price={appointment.price}
                   />
-                </Collapsable>
-              );
-            })
-          )}
-        </Box>
+                }
+              >
+                <AppointmentBody
+                  appointment={appointment}
+                  onConfirmCancel={() => handleCancel(index)}
+                />
+              </Collapsable>
+            );
+          })
+        )}
       </Box>
-    </ClientLayout>
+    </Box>
   );
 }
 

@@ -8,8 +8,6 @@ import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 // ************** componentes propios :3 **************
-// |  layout
-import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import MainButton from '@/components/common/MainButton';
 import TextWIcon from '@/components/common/TextWIcon';
@@ -75,7 +73,7 @@ function MainPage() {
   const isLanding = location.pathname === '/';
 
   return (
-    <ClientLayout>
+    <>
       {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
       <Box sx={{ position: 'relative' }}>
         <Box
@@ -262,14 +260,14 @@ function MainPage() {
         {isLanding ? (
           // Landing Page
           <>
-            <MainButton href='/login'>
+            <MainButton to='/login'>
               Agenda tu cita <CalendarIcon />
             </MainButton>
           </>
         ) : (
           // Main Page
           <>
-            <MainButton href='/book-appointment'>
+            <MainButton to='/book-appointment'>
               Agenda tu cita <CalendarIcon />
             </MainButton>
           </>
@@ -319,7 +317,7 @@ function MainPage() {
           </Grid>
         </Grid>
       </Box>
-    </ClientLayout>
+    </>
   );
 }
 

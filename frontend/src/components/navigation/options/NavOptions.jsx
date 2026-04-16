@@ -1,10 +1,12 @@
 import Button from '@mui/material/Button';
+import { Link as RouterLink } from 'react-router-dom';
 
 const NavOptions = ({icon, text, textSize = "0.6rem", textDirection = "column", link, isActive}) => 
 {
     return(
         <Button
-            href= {link} 
+            component={RouterLink}
+            to={link}
             sx={{ 
                 display: 'flex',
                 flexDirection: textDirection,

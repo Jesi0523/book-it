@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
 
-// Layout
-import AdminLayout from '@/layouts/AdminLayout';
-
 // Componentes propios
 import Title from '@/components/common/Title';
 import SuspensionForm from '@/components/suspensions/SuspensionForm';
@@ -75,55 +72,53 @@ const Suspensions = () => {
   };
 
   return (
-    <AdminLayout>
-      <Box
-        sx={{
-          p: { xs: 2, md: 5 },
-          width: '100%',
-          maxWidth: '900px',
-          mx: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
-        <Title
-          children='SUSPENSIÓN DE SERVICIOS'
-          size={{ xs: '2rem', md: '2.6rem' }}
-          color='white'
-          align='center'
-        />
+    <Box
+      sx={{
+        p: { xs: 2, md: 5 },
+        width: '100%',
+        maxWidth: '900px',
+        mx: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 4,
+      }}
+    >
+      <Title
+        children='SUSPENSIÓN DE SERVICIOS'
+        size={{ xs: '2rem', md: '2.6rem' }}
+        color='white'
+        align='center'
+      />
 
-        {/* Crear suspension */}
-        <SuspensionForm
-          fechaSeleccionada={fechaSeleccionada}
-          setFechaSeleccionada={setFechaSeleccionada}
-          tipoSuspension={tipoSuspension}
-          setTipoSuspension={setTipoSuspension}
-          horaInicio={horaInicio}
-          setHoraInicio={setHoraInicio}
-          horaFin={horaFin}
-          setHoraFin={setHoraFin}
-          empleadoSeleccionado={empleadoSeleccionado}
-          setEmpleadoSeleccionado={setEmpleadoSeleccionado}
-          dummyEmpleados={dummyEmpleados}
-          handleAplicar={handleAplicar}
-          selectMenuProps={selectMenuProps}
-          selectEstilos={selectEstilos}
-        />
+      {/* Crear suspension */}
+      <SuspensionForm
+        fechaSeleccionada={fechaSeleccionada}
+        setFechaSeleccionada={setFechaSeleccionada}
+        tipoSuspension={tipoSuspension}
+        setTipoSuspension={setTipoSuspension}
+        horaInicio={horaInicio}
+        setHoraInicio={setHoraInicio}
+        horaFin={horaFin}
+        setHoraFin={setHoraFin}
+        empleadoSeleccionado={empleadoSeleccionado}
+        setEmpleadoSeleccionado={setEmpleadoSeleccionado}
+        dummyEmpleados={dummyEmpleados}
+        handleAplicar={handleAplicar}
+        selectMenuProps={selectMenuProps}
+        selectEstilos={selectEstilos}
+      />
 
-        {/* Lista */}
-        <SuspensionList
-          mesFiltro={mesFiltro}
-          setMesFiltro={setMesFiltro}
-          anioFiltro={anioFiltro}
-          listaSuspensiones={listaSuspensiones}
-          handleEliminarSuspension={handleEliminarSuspension}
-          selectMenuProps={selectMenuProps}
-          selectEstilos={selectEstilos}
-        />
-      </Box>
-    </AdminLayout>
+      {/* Lista */}
+      <SuspensionList
+        mesFiltro={mesFiltro}
+        setMesFiltro={setMesFiltro}
+        anioFiltro={anioFiltro}
+        listaSuspensiones={listaSuspensiones}
+        handleEliminarSuspension={handleEliminarSuspension}
+        selectMenuProps={selectMenuProps}
+        selectEstilos={selectEstilos}
+      />
+    </Box>
   );
 };
 

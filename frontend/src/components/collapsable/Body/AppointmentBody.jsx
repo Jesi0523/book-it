@@ -24,6 +24,9 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
     setOpenCancelDialog(false);
     if (hasAccepted) onConfirmCancel();
   };
+  const showCancelButton =
+    appointment.status.name !== 'Cancelada' &&
+    appointment.status.name !== 'Completada';
 
   return (
     <>
@@ -154,7 +157,13 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
           <Grid
             container
             spacing={{ xs: 2, md: 5 }}
-            sx={{ display: 'flex', alignItems: 'flex-end' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: showCancelButton
+                ? 'flex-start'
+                : { xs: 'flex-start', md: 'center' },
+            }}
           >
             <Grid size={{ xs: 12, md: 6 }}>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
@@ -168,24 +177,23 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
               </Box>
             </Grid>
             {/* Cancelar cita */}
-            {appointment.status.name !== 'Cancelada' &&
-              appointment.status.name !== 'Completada' && (
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: { xs: 'center', md: 'flex-end' },
-                    }}
+            {showCancelButton && (
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: { xs: 'center', md: 'flex-end' },
+                  }}
+                >
+                  <MainButton
+                    size={{ xs: '12px', md: '16px' }}
+                    onClick={handleOpenCancelDialog}
                   >
-                    <MainButton
-                      size={{ xs: '12px', md: '16px' }}
-                      onClick={handleOpenCancelDialog}
-                    >
-                      <CloseIcon /> Cancelar cita
-                    </MainButton>
-                  </Box>
-                </Grid>
-              )}
+                    <CloseIcon /> Cancelar cita
+                  </MainButton>
+                </Box>
+              </Grid>
+            )}
           </Grid>
         </Box>
         <BaseDialog

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import MuiLink from '@mui/material/Link';
 
-import AuthLayout from '@/layouts/AuthLayout';
-
 // <---- Componentes ---->
 
 // Common
@@ -33,51 +31,49 @@ function Login() {
   };
 
   return (
-    <AuthLayout>
-      <Card
-        bg='linear-gradient(180deg, #0c0c18 0%, #060511 100%)'
-        brRadius='12px'
-        showShadow={true}
-      >
-        <Title>Bienvenido de vuelta</Title>
-        <Text size={20}>Inicia sesión para continuar</Text>
+    <Card
+      bg='linear-gradient(180deg, #0c0c18 0%, #060511 100%)'
+      brRadius='12px'
+      showShadow={true}
+    >
+      <Title>Bienvenido de vuelta</Title>
+      <Text size={20}>Inicia sesión para continuar</Text>
 
-        <TextInput
-          type='email'
-          label='Correo electrónico'
-          placeholder='ejemplo@gmail.com'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <PasswordInput
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      <TextInput
+        type='email'
+        label='Correo electrónico'
+        placeholder='ejemplo@gmail.com'
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <PasswordInput
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-        <MainButton size={20} onClick={handleLogin}>
-          Iniciar sesión
-        </MainButton>
+      <MainButton size={20} onClick={handleLogin}>
+        Iniciar sesión
+      </MainButton>
 
-        <Text align='center'>
-          ¿No tienes una cuenta?{' '}
-          <MuiLink
-            component={RouterLink}
-            to='/signup'
-            sx={{
-              color: 'primary.main',
-              fontWeight: 'bold',
-              textDecoration: 'none',
-              '&:hover': {
-                textDecoration: 'underline',
-                color: 'primary.light',
-              },
-            }}
-          >
-            Regístrate
-          </MuiLink>
-        </Text>
-      </Card>
-    </AuthLayout>
+      <Text align='center'>
+        ¿No tienes una cuenta?{' '}
+        <MuiLink
+          component={RouterLink}
+          to='/signup'
+          sx={{
+            color: 'primary.main',
+            fontWeight: 'bold',
+            textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline',
+              color: 'primary.light',
+            },
+          }}
+        >
+          Regístrate
+        </MuiLink>
+      </Text>
+    </Card>
   );
 }
 

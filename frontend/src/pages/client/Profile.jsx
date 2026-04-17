@@ -1,14 +1,13 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 // ************** componentes propios :3 **************
 // |  common
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
 import BaseDialog from '@/components/common/BaseDialog';
-import InfoDialog from '@/components/common/InfoDialog';
 // |  formulario
 import TextInput from '@/components/form/TextInput';
 import DateInput from '@/components/form/DateInput';
@@ -18,10 +17,7 @@ import PasswordInput from '@/components/form/PasswordInput';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 function Profile() {
-  const navigate = useNavigate();
-
   const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const [openInfoDialog, setOpenInfoDialog] = React.useState(false);
 
   const handleOpenSaveDialog = () => {
     setOpenSaveDialog(true);
@@ -30,15 +26,21 @@ function Profile() {
   const handleCloseSaveDialog = (hasAccepted) => {
     setOpenSaveDialog(false);
     if (hasAccepted) {
-      setOpenInfoDialog(true);
+      toast.success('Perfil actualizado correctamente.', {
+        id: 'company-save-toast',
+        duration: 3000,
+        style: {
+          borderRadius: '10px',
+          background: '#1b1c37',
+          color: '#fff',
+          border: '1px solid #4caf50',
+        },
+        iconTheme: {
+          primary: '#4caf50',
+          secondary: '#fff',
+        },
+      });
     }
-  };
-
-  const handleCloseInfoDialog = () => {
-    setOpenInfoDialog(false);
-    navigate('/login');
-    //NOTA: lo moví a log in porque un profe había mencionado que luego de hacer modificaciones
-    // sacaramos al usuario para que volviera a iniciar sesión por seguridad :3
   };
 
   return (
@@ -147,13 +149,6 @@ function Profile() {
         }
       />
 
-      <InfoDialog
-        open={openInfoDialog}
-        onClose={handleCloseInfoDialog}
-        title="Perfil Actualizado"
-        content="Tus datos se guardaron correctamente. Por seguridad, es necesario que inicies sesión de nuevo con tus credenciales actualizadas."
-      />
-      
     </>
   );
 }

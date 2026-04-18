@@ -1,5 +1,6 @@
 // <------------- IMPORTS ------------->
 import React, { useState, useEffect, useRef } from 'react';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
@@ -107,6 +108,8 @@ const generarHorariosDelDia = (fecha) => {
 
 // <------ LOGICA ------>
 const CalendarBoard = () => {
+  const theme = useTheme();
+
   const [fechaActual, setFechaActual] = useState(new Date());
   const [empleadoBuscado, setEmpleadoBuscado] = useState(null);
   const [ahora, setAhora] = useState(new Date());
@@ -168,9 +171,6 @@ const CalendarBoard = () => {
     horaFin,
   } = generarHorariosDelDia(fechaActual);
 
-  const colorBorde = '#2a2b4a';
-  const colorFondoAppt = 'linear-gradient(180deg, #6c74cc 0%, #4f58a3 100%)';
-
   const isToday = fechaActual.toDateString() === ahora.toDateString();
   const currentHourFloat = ahora.getHours() + ahora.getMinutes() / 60;
   const isTimeWithinBounds =
@@ -198,7 +198,7 @@ const CalendarBoard = () => {
         >
           <Typography
             sx={{
-              color: '#ffb74d',
+              color: 'primary.light',
               mb: 1,
               fontSize: '1rem',
               fontFamily: "'Montserrat', sans-serif",
@@ -234,7 +234,7 @@ const CalendarBoard = () => {
         >
           <Typography
             sx={{
-              color: '#ffb74d',
+              color: 'primary.light',
               mb: 1,
               fontSize: '1rem',
               fontFamily: "'Montserrat', sans-serif",
@@ -255,10 +255,11 @@ const CalendarBoard = () => {
       {/* Contenedor del calendario */}
       <Box
         sx={{
-          background: '#121229',
+          bgcolor: 'background.calendarGrid',
           borderRadius: '8px',
           overflow: 'hidden',
-          border: `1px solid ${colorBorde}`,
+          border: (theme) =>
+            `1px solid ${theme.palette.customBorders.inputDefault}`,
         }}
       >
         <Box
@@ -267,8 +268,9 @@ const CalendarBoard = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             p: 2,
-            background: '#202141',
-            borderBottom: `1px solid ${colorBorde}`,
+            background: (theme) => theme.customGradients.searchBar,
+            borderBottom: (theme) =>
+              `1px solid ${theme.palette.customBorders.inputDefault}`,
           }}
         >
           <Typography
@@ -316,9 +318,9 @@ const CalendarBoard = () => {
             sx={{
               overflowX: 'auto',
               width: '100%',
-              background: '#121229',
+              bgcolor: 'background.calendarGrid',
               borderRadius: '8px',
-              border: `1px solid ${colorBorde}`,
+              border: `1px solid` + theme.palette.customBorders.inputDefault,
             }}
           >
             <Box
@@ -332,18 +334,21 @@ const CalendarBoard = () => {
               {/* Fila de empleados */}
               <Box
                 sx={{
-                  borderRight: `1px solid ${colorBorde}`,
-                  borderBottom: `1px solid ${colorBorde}`,
+                  borderRight:
+                    `1px solid` + theme.palette.customBorders.inputDefault,
+                  borderBottom:
+                    `1px solid` + theme.palette.customBorders.inputDefault,
                   position: 'sticky',
                   left: 0,
                   top: 0,
                   zIndex: 10,
-                  background: '#1b1c37',
+                  bgcolor: 'background.serviceChip',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-evenly',
                   height: '100px',
-                  outline: '1px solid #1b1c37',
+                  outline: (theme) =>
+                    '1px solid ' + theme.palette.background.serviceChip,
                 }}
               >
                 {/* Botones para cambiar empleado */}
@@ -370,10 +375,12 @@ const CalendarBoard = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    borderRight: `1px solid ${colorBorde}`,
-                    borderBottom: `1px solid ${colorBorde}`,
+                    borderRight:
+                      `1px solid` + theme.palette.customBorders.inputDefault,
+                    borderBottom:
+                      `1px solid` + theme.palette.customBorders.inputDefault,
                     height: '100px',
-                    background: '#1b1c37',
+                    bgcolor: 'background.serviceChip',
                   }}
                 >
                   <Avatar
@@ -382,7 +389,7 @@ const CalendarBoard = () => {
                   />
                   <Typography
                     sx={{
-                      color: '#ffb74d',
+                      color: 'primary.light',
                       fontSize: '0.8rem',
                       textAlign: 'center',
                       fontFamily: "'Montserrat', sans-serif",
@@ -407,20 +414,25 @@ const CalendarBoard = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        borderRight: `1px solid ${colorBorde}`,
-                        borderBottom: `1px solid ${colorBorde}`,
+                        borderRight:
+                          `1px solid` +
+                          theme.palette.customBorders.inputDefault,
+                        borderBottom:
+                          `1px solid` +
+                          theme.palette.customBorders.inputDefault,
                         position: 'sticky',
                         left: 0,
                         zIndex: 5,
-                        background: '#1b1c37',
-                        outline: '1px solid #1b1c37',
+                        bgcolor: 'background.serviceChip',
+                        outline: (theme) =>
+                          '1px solid ' + theme.palette.background.serviceChip,
                         boxShadow: '3px 0 8px rgba(0,0,0,0.15)',
                         height: '80px',
                       }}
                     >
                       <Typography
                         sx={{
-                          color: '#ffb74d',
+                          color: 'primary.light',
                           fontSize: '0.8rem',
                           fontFamily: "'Montserrat', sans-serif",
                         }}
@@ -438,8 +450,12 @@ const CalendarBoard = () => {
                         <Box
                           key={`${emp.id}-${horario}`}
                           sx={{
-                            borderRight: `1px solid ${colorBorde}`,
-                            borderBottom: `1px solid ${colorBorde}`,
+                            borderRight:
+                              `1px solid` +
+                              theme.palette.customBorders.inputDefault,
+                            borderBottom:
+                              `1px solid` +
+                              theme.palette.customBorders.inputDefault,
                             position: 'relative',
                             height: '80px',
                             background: 'transparent',
@@ -455,7 +471,8 @@ const CalendarBoard = () => {
                                 left: 0,
                                 right: 0,
                                 height: `${cita.duracionEnBloques * 80}px`,
-                                background: colorFondoAppt,
+                                background: (theme) =>
+                                  theme.customGradients.scheduleSelected,
                                 zIndex: 1,
                                 p: 1,
                                 display: 'flex',
@@ -517,7 +534,7 @@ const CalendarBoard = () => {
                     left: '120px',
                     right: 0,
                     height: '2px',
-                    backgroundColor: '#ffb74d',
+                    backgroundColor: 'primary.light',
                     zIndex: 2,
                     pointerEvents: 'none',
                   }}
@@ -527,7 +544,7 @@ const CalendarBoard = () => {
                       width: 10,
                       height: 10,
                       borderRadius: '50%',
-                      backgroundColor: '#ffb74d',
+                      backgroundColor: 'primary.light',
                       position: 'absolute',
                       top: '-4px',
                       left: '-5px',

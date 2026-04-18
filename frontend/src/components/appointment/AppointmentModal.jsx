@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -22,6 +23,8 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import BaseDialog from '@/components/common/BaseDialog';
 
 const AppointmentModal = ({ open, onClose, appointment }) => {
+  const theme = useTheme();
+
   const [estadoCita, setEstadoCita] = useState('Pendiente');
   const [openCancelDialog, setOpenCancelDialog] = useState(false);
 
@@ -35,13 +38,13 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         duration: 3000,
         style: {
           borderRadius: '10px',
-          background: '#1b1c37',
-          color: '#fff',
-          border: '1px solid #757575',
+          background: theme.palette.background.serviceChip,
+          color: theme.palette.text.primary,
+          border: (theme) => theme.palette.customBorders.sidebar,
         },
         iconTheme: {
-          primary: '#757575',
-          secondary: '#fff',
+          primary: theme.palette.text.secondary,
+          secondary: theme.palette.text.primary,
         },
       });
 
@@ -59,9 +62,6 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
 
   if (!appointment) return null;
 
-  const colorTarjeta = '#1b1c37';
-  const colorNaranja = '#ffb74d';
-
   const opcionesEstado = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
 
   return (
@@ -72,12 +72,12 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       fullWidth
       PaperProps={{
         sx: {
-          backgroundColor: '#060511',
+          backgroundColor: 'background.default',
           backgroundImage: 'none',
           borderRadius: '16px',
           p: { xs: 3, md: 4 },
           position: 'relative',
-          border: '1px solid #787ff6',
+          border: (theme) => theme.palette.customBorders.section,
         },
       }}
     >
@@ -98,9 +98,9 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         <IconButton
           onClick={onClose}
           sx={{
-            backgroundColor: colorNaranja,
-            color: '#000',
-            '&:hover': { backgroundColor: '#ffa726' },
+            backgroundColor: 'primary.light',
+            color: 'primary.contrastText',
+            '&:hover': { backgroundColor: 'primary.main' },
             width: 40,
             height: 40,
             flexShrink: 0,
@@ -123,14 +123,14 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       >
         <Box
           sx={{
-            borderBottom: `1px solid ${colorNaranja}`,
+            borderBottom: (theme) => `1px solid ${theme.palette.primary.light}`,
             pb: 0.5,
             width: 'fit-content',
           }}
         >
           <Text
             children={appointment.dateStr || 'Febrero 11, 2026 9:00 a 10:00.'}
-            color={colorNaranja}
+            color='primary.light'
             size='16px'
           />
         </Box>
@@ -140,21 +140,21 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           onChange={(e) => setEstadoCita(e.target.value)}
           IconComponent={() => (
             <ArrowDropDownIcon
-              sx={{ color: colorNaranja, mr: 1, pointerEvents: 'none' }}
+              sx={{ color: 'primary.light', mr: 1, pointerEvents: 'none' }}
             />
           )}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <QueryBuilderIcon sx={{ color: 'white', fontSize: '20px' }} />
               <Text children='Estado:' color='white' size='16px' />
-              <Text children={selected} color={colorNaranja} size='16px' />
+              <Text children={selected} color='primary.light' size='16px' />
             </Box>
           )}
           MenuProps={{
             PaperProps: {
               sx: {
-                backgroundColor: '#00011e',
-                color: 'white',
+                backgroundColor: 'background.modalMenu',
+                color: 'text.primary',
                 borderRadius: '12px',
                 mt: 1,
                 border: '1px solid rgba(255,255,255,0.1)',
@@ -167,14 +167,14 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                 },
                 '& .MuiMenuItem-root.Mui-selected': {
                   backgroundColor: 'rgba(255, 255, 255, 0.15) !important',
-                  color: colorNaranja,
+                  color: 'primary.light',
                   fontWeight: 'bold',
                 },
               },
             },
           }}
           sx={{
-            backgroundColor: colorTarjeta,
+            backgroundColor: 'background.serviceChip',
             borderRadius: '50px',
             width: 'fit-content',
             '& .MuiSelect-select': {
@@ -229,7 +229,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
             textSize='20px'
             titleColor='white'
             textColor='white'
-            background={colorTarjeta}
+            background={theme.palette.background.serviceChip}
             border='none'
           />
         </Box>
@@ -239,7 +239,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       <Box sx={{ mt: 1 }}>
         <Text
           children='Datos del cliente'
-          color={colorNaranja}
+          color='primary.light'
           size='20'
           fontWeight='bold'
         />
@@ -335,8 +335,8 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                     display: 'flex',
                     gap: 1,
                     alignItems: 'center',
-                    backgroundColor: colorNaranja,
-                    color: '#000',
+                    backgroundColor: 'primary.light',
+                    color: 'primary.contrastText',
                   }}
                 >
                   <CloseIcon /> Cancelar cita

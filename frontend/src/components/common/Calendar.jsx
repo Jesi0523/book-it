@@ -1,9 +1,10 @@
+import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 export default function Calendar({ value, onChange }) {
-  const colorBorder = '2px solid #2c2e5bba';
+  const theme = useTheme();
   
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -11,25 +12,25 @@ export default function Calendar({ value, onChange }) {
         value={value}
         onChange={onChange}
         sx={{
-          background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)',
+          background: (theme) => theme.customGradients.calendar,
           borderRadius: '15px',
-          border: colorBorder,
+          border: (theme) => theme.palette.customBorders.calendar,
           boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
 
-          '& .MuiPickersCalendarHeader-root': { color: 'white' },
-          '& .MuiIconButton-root': { color: 'white' },
-          '& .MuiDayCalendar-weekDayLabel': { color: '#a0a3de', fontWeight: 'bold' },
-          '& .MuiPickersDay-root': { color: 'white', fontSize: '1rem' },
+          '& .MuiPickersCalendarHeader-root': { color: 'text.primary' },
+          '& .MuiIconButton-root': { color: 'text.primary' },
+          '& .MuiDayCalendar-weekDayLabel': { color: 'secondary.calendarLabel', fontWeight: 'bold' },
+          '& .MuiPickersDay-root': { color: 'text.primary', fontSize: '1rem' },
           '& .MuiPickersDay-root.Mui-selected': {
-            backgroundColor: '#ffb74d !important',
-            color: '#13154d',
+            backgroundColor: 'primary.light !important',
+            color: 'background.default',
             fontWeight: 'bold',
           },
           '& .MuiPickersDay-root.Mui-selected:hover': {
-            backgroundColor: '#ffa726 !important',
+            backgroundColor: 'primary.main !important',
           },
           '& .MuiPickersDay-today': {
-            borderColor: '#ffb74d !important',
+            border: (theme) => `1px solid ${theme.palette.primary.light} !important`,
           },
         }}
       />

@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box'
 import Text from '@/components/common/Text'
 
@@ -12,16 +13,19 @@ const SimpleInfoDisplay =
     textWeight='400',
     align='start', width='100%',
     flexDirection='row',
-    background= 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)',
-    border='1.5px solid #2c2e5bba'}) =>
+    background,
+    border}) =>
 {
+    const theme = useTheme();
+    const finalBackground = background || theme.customGradients.searchBar; 
+    const finalBorder = border || theme.palette.customBorders.infoDisplay;
 
     const iconDisplay = hasIcon ? icon : '';
     return(
         <Box sx=
         {{
             display: 'flex', flexDirection:flexDirection, alignItems: 'center', justifyContent: 'center', gap: 1,
-            background: background, border: border,
+            background: finalBackground, border: finalBorder,
             width: width, borderRadius: '10px', p:1
         }}>
            {iconDisplay} 

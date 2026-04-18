@@ -18,7 +18,7 @@ const CalendarDateInput = ({ value, onChange }) => {
           fontFamily: "'Montserrat', sans-serif",
           fontSize: '0.9rem',
           '& fieldset': { 
-            borderColor: '#2a2b4a',
+            borderColor: 'customBorders.inputDefault',
             borderWidth: '1px'
           },
           '&:hover fieldset': { 

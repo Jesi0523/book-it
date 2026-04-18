@@ -1,14 +1,20 @@
+import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 
 const Card = ({ 
   children, 
-  bg = '#0c0c18',
+  bg,
   brRadius = '12px', 
   showShadow = false, 
-  shadowColor = '#787ff6',
+  shadowColor,
   offset = 8
 }) => {
+  const theme = useTheme();
+
+  const background = bg || theme.palette.background.paper;
+  const shadow = shadowColor || theme.palette.customShadows.card;
+  
   return (
     <Box 
       sx={{ 
@@ -26,7 +32,7 @@ const Card = ({
             left: -offset,
             width: '100%',
             height: '100%',
-            backgroundColor: shadowColor,
+            backgroundColor: shadow,
             borderRadius: brRadius,
             zIndex: 1,
             opacity: 0.5,
@@ -41,12 +47,12 @@ const Card = ({
           zIndex: 2,
           padding: { xs: 3, sm: 4 },
           width: '100%',
-          background: bg,
+          background: background,
           borderRadius: brRadius,
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
-          border: '1px solid rgba(255, 255, 255, 0.05)', 
+          border: (theme) => theme.palette.customBorders.sidebar, 
         }}
       >
         {children}

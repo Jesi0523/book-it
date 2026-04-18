@@ -13,7 +13,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 // Componentes propios
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
-import BaseDialog from '@/components/common/BaseDialog'
+import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import CheckIcon from '@mui/icons-material/Check';
@@ -77,14 +77,15 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
 
   // Const para el modal de confirmación -> si elimina el horario de un día
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const handleOpenDeleteDialog = () => { setOpenDeleteDialog(true); };
-  const handleCloseDeleteDialog = (hasAccepted) => 
-  {
-    setOpenDeleteDialog(false);
-    if(hasAccepted){handleLimpiarDia()};
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
   };
-
-
+  const handleCloseDeleteDialog = (hasAccepted) => {
+    setOpenDeleteDialog(false);
+    if (hasAccepted) {
+      handleLimpiarDia();
+    }
+  };
 
   // <-------- UseEffects -------->
   useEffect(() => {
@@ -150,8 +151,8 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' }, 
-          alignItems: 'center', 
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'center',
           justifyContent: 'space-between',
           gap: 3,
           mb: 4,
@@ -180,7 +181,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             MenuProps={{
               PaperProps: {
                 sx: {
-                  backgroundColor: '#1b1c37',
+                  bgcolor: 'background.serviceChip',
                   color: 'white',
                   '& .MuiMenuItem-root:hover': {
                     backgroundColor: 'rgba(255, 183, 77, 0.2)',
@@ -193,11 +194,11 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             }}
             sx={{
               minWidth: '130px',
-              backgroundColor: '#1b1c37',
+              bgcolor: 'background.serviceChip',
               color: 'white',
               borderRadius: '8px',
               '& fieldset': { border: 'none' },
-              '& .MuiSvgIcon-root': { color: '#ffb74d' },
+              '& .MuiSvgIcon-root': { color: 'primary.light' },
             }}
           >
             {diasSemana.map((dia) => (
@@ -220,7 +221,14 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
           }}
         >
           {/* Rango de horas */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              flexWrap: 'wrap',
+            }}
+          >
             {/* Hora 1 */}
             <Select
               value={startTime}
@@ -228,7 +236,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               size='small'
               sx={{
                 width: '92px',
-                backgroundColor: '#1b1c37',
+                bgcolor: 'background.serviceChip',
                 borderRadius: '8px',
                 color: 'white',
                 '& fieldset': { border: 'none' },
@@ -236,12 +244,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                   padding: '8px 14px',
                   textAlign: 'center',
                 },
-                '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                '& .MuiSvgIcon-root': { color: 'primary.light' },
               }}
               MenuProps={{
                 PaperProps: {
                   sx: {
-                    backgroundColor: '#1b1c37',
+                    bgcolor: 'background.serviceChip',
                     color: 'white',
                     maxHeight: 300,
                   },
@@ -264,7 +272,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               size='small'
               sx={{
                 width: '92px',
-                backgroundColor: '#1b1c37',
+                bgcolor: 'background.serviceChip',
                 borderRadius: '8px',
                 color: 'white',
                 '& fieldset': { border: 'none' },
@@ -272,12 +280,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                   padding: '8px 14px',
                   textAlign: 'center',
                 },
-                '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                '& .MuiSvgIcon-root': { color: 'primary.light' },
               }}
               MenuProps={{
                 PaperProps: {
                   sx: {
-                    backgroundColor: '#1b1c37',
+                    bgcolor: 'background.serviceChip',
                     color: 'white',
                     maxHeight: 300,
                   },
@@ -299,8 +307,8 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               size={{ xs: '14px', md: '14px' }}
               onClick={handleAplicar}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                backgroundColor: 'primary.light',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 m: 0,
@@ -314,7 +322,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               <IconButton
                 onClick={handleOpenDeleteDialog}
                 sx={{
-                  color: '#ffb74d',
+                  color: 'primary.light',
                   border: '1px solid rgba(255, 183, 77, 0.5)',
                   borderRadius: '50%',
                   p: '9px',
@@ -333,9 +341,9 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
       {bloquesDinamicos.length === 0 ? (
         <Box
           sx={{
-            background: '#171836',
+            bgcolor: 'background.scheduleUnselected',
             borderRadius: '12px',
-            border: `1px solid #060511`,
+            border: (theme) => theme.palette.customBorders.schedule,
             p: 4,
             display: 'flex',
             justifyContent: 'center',
@@ -343,7 +351,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
         >
           <Text
             children='No hay horarios asignados aún. Selecciona un día y aplica un horario.'
-            color='rgba(255,255,255,0.5)'
+            color='text.disabled'
             size='14px'
             align='center'
           />
@@ -354,7 +362,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             overflowX: 'auto',
             width: '100%',
             borderRadius: '12px',
-            border: `1px solid #060511`,
+            border: (theme) => theme.palette.customBorders.schedule,
           }}
         >
           <Box
@@ -367,21 +375,21 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             {/* Fila de dias */}
             <Box
               sx={{
-                background: '#171836',
-                borderBottom: `1px solid #060511`,
-                borderRight: `1px solid #060511`,
+                bgcolor: 'background.scheduleUnselected',
+                borderBottom: (theme) => theme.palette.customBorders.schedule,
+                borderRight: (theme) => theme.palette.customBorders.schedule,
               }}
             />
             {diasAMostrar.map((dia) => (
               <Box
                 key={dia}
                 sx={{
-                  background: '#171836',
+                  bgcolor: 'background.scheduleUnselected',
                   p: 2,
                   display: 'flex',
                   justifyContent: 'center',
-                  borderBottom: `1px solid #060511`,
-                  borderRight: `1px solid #060511`,
+                  borderBottom: (theme) => theme.palette.customBorders.schedule,
+                  borderRight: (theme) => theme.palette.customBorders.schedule,
                 }}
               >
                 <Text children={dia} color='primary.main' size='12px' />
@@ -394,13 +402,13 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                 {/* Columna de la hora */}
                 <Box
                   sx={{
-                    background: '#171836',
+                    bgcolor: 'background.scheduleUnselected',
                     p: 2,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderBottom: `1px solid #060511`,
-                    borderRight: `1px solid #060511`,
+                    borderBottom: (theme) => theme.palette.customBorders.schedule,
+                    borderRight: (theme) => theme.palette.customBorders.schedule,
                   }}
                 >
                   <Text
@@ -420,10 +428,13 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                       key={`${dia}-${bloque}`}
                       sx={{
                         background: isSelected
-                          ? 'linear-gradient(180deg, #6c74cc 0%, #4f58a3 100%)'
-                          : '#171836',
-                        borderBottom: `1px solid #060511`,
-                        borderRight: `1px solid #060511`,
+                          ? (theme) => theme.customGradients.scheduleSelected
+                          : (theme) =>
+                              theme.palette.background.scheduleUnselected,
+                        borderBottom: (theme) =>
+                          theme.palette.customBorders.schedule,
+                        borderRight: (theme) =>
+                          theme.palette.customBorders.schedule,
                         transition: 'background 0.2s',
                       }}
                     />
@@ -436,20 +447,23 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
       )}
 
       {/* Modal de confirmación */}
-       <BaseDialog
-          id="delete-schedule"
-          open={openDeleteDialog}
-          onClose={handleCloseDeleteDialog}
-          title={"Advertencia"}
-          fontSizeContent={18}
-          icon={<AdvertismentIcon/>}
-          content={
-            <>
-              Está a punto de eliminar el horario del día:<br />
-              <b>{selectedDay}</b><br />
-              ¿Desea continuar?
-          </>}
-        />
+      <BaseDialog
+        id='delete-schedule'
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        title={'Advertencia'}
+        fontSizeContent={18}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            Está a punto de eliminar el horario del día:
+            <br />
+            <b>{selectedDay}</b>
+            <br />
+            ¿Desea continuar?
+          </>
+        }
+      />
     </Box>
   );
 };

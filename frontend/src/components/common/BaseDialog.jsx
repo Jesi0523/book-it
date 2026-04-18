@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
 //NOTA: este nada más es para que se respete el tipo de dato, 
 // se puede quitar, pero lo dejé por seguridad 🦭
 import PropTypes from 'prop-types'; 
@@ -16,7 +17,7 @@ import ContinueIcon from '@mui/icons-material/CheckRounded';
 // --------------------------------------
 function BaseDialog({onClose, open, title,icon,content, fontSizeContent = 20,...other}) 
 {
-    const linearDegraded= 'linear-gradient(180deg, #2c2e69 0%, #2d2e5c 100%)';
+    const theme = useTheme();
 
     const handleCancel = () => { onClose(false);};
 
@@ -27,7 +28,7 @@ function BaseDialog({onClose, open, title,icon,content, fontSizeContent = 20,...
             sx={{ 
                 '& .MuiDialog-paper': 
                 {   width: '80%', maxHeight: 435,
-                    background: linearDegraded,
+                    background: theme.customGradients.dialog,
                 } 
 
             }}

@@ -77,8 +77,6 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
 
     const isNew = service.id === 'nuevo';
 
-    const isMobile = window.innerWidth <= 900;
-
     toast.success(
       isNew
         ? 'Servicio agregado correctamente.'
@@ -127,8 +125,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
-                background:
-                  'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
+                background: (theme) => theme.customGradients.imagePlaceholder,
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
@@ -156,7 +153,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               fullWidth
               size={{ xs: '14px', md: '16px' }}
               sx={{
-                backgroundColor: '#ffb74d',
+                backgroundColor: 'primary.light',
                 color: '#000',
                 display: 'flex',
                 gap: 1,
@@ -237,7 +234,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
             value={formData.tiempo}
             onChange={handleInputChange}
             SelectProps={{
-              sx: { '& .MuiSvgIcon-root': { color: '#ffb74d' } },
+              sx: { '& .MuiSvgIcon-root': { color: 'primary.light' } },
               MenuProps: {
                 PaperProps: {
                   sx: {

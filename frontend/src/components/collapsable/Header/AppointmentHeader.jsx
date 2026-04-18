@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Title from '@/components/common/Title'
 import Text from '@/components/common/Text'
@@ -5,6 +6,8 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 
 const AppointmentHeader = ({title, date, price}) =>
 {
+    const theme = useTheme();
+    
     return(
         <Grid container sx={{ width: '100%', px: 1, py: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: 2 }}>
             <Grid sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minWidth: 0 }}>
@@ -14,7 +17,7 @@ const AppointmentHeader = ({title, date, price}) =>
             <Grid sx={{ flexShrink: 0 }}>
                 <SimpleInfoDisplay title='Costo:' text={price} align='center' width='fit-content'
                     textWeight='700' titleSize={{xs:'0.7rem', md:'1rem'}} textColor='secondary.blueShade' 
-                    background='linear-gradient(180deg, #4e5082 0%, #3b3d75d3 100%)'/>
+                    background={theme.customGradients.header}/>
             </Grid>
         </Grid>
     )

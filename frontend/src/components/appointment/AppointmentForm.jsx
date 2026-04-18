@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 // ************** componentes propios :3 **************
 // |  common
@@ -14,6 +15,7 @@ import InfoDialog from '@/components/common/InfoDialog';
 import Combobox from '@/components/form/Combobox';
 import TextInput from '@/components/form/TextInput';
 import GenderSelect from '@/components/form/GenderSelect';
+
 // ************** media dummy **************
 // |  Imagenes
 import photo from '@/assets/dummy/perfil-1.jpg';
@@ -46,9 +48,7 @@ const hoursDummy = [
 // ****************************
 
 function AppointmentForm() {
-  const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51 100%)';
-  const colorBorder = '2px solid #2c2e5bba';
-
+  const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -62,9 +62,9 @@ function AppointmentForm() {
     setOpenSuccess(false);
 
     if (location.pathname === '/admin/book-appointment') {
-      navigate('/admin/appointment-calendar'); 
+      navigate('/admin/appointment-calendar');
     } else {
-      navigate('/my-appointments'); 
+      navigate('/my-appointments');
     }
   };
 
@@ -156,11 +156,12 @@ function AppointmentForm() {
               </Box>
               <Box
                 sx={{
-                  background: linearDegraded,
+                  background: (theme) =>
+                    theme.customGradients.collapsableHeader,
                   height: '56px',
                   width: '100%',
                   borderRadius: '8px',
-                  border: colorBorder,
+                  border: (theme) => theme.palette.customBorders.form,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -233,7 +234,7 @@ function AppointmentForm() {
           sx={{
             p: { xs: 1.5, md: 4 },
             my: 3,
-            background: linearDegraded,
+            background: (theme) => theme.customGradients.collapsableHeader,
             borderRadius: '15px',
             display: 'flex',
             flexDirection: 'column',
@@ -246,8 +247,8 @@ function AppointmentForm() {
               <TextInput
                 label='Nombre Completo'
                 placeholder='Ingrese su nombre'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
 
@@ -256,8 +257,8 @@ function AppointmentForm() {
                 label='Edad'
                 placeholder='Ej: 18'
                 type='number'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
                 sx={{
                   // Rescate para la Edad: Mantenemos el padding arriba/abajo,
                   // pero reducimos drásticamente los lados (a 5px) para que quepa "Ej: 18"
@@ -274,8 +275,8 @@ function AppointmentForm() {
                 label='Número telefónico'
                 type='number'
                 placeholder='Ej: 8101010011'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
           </Grid>
@@ -291,15 +292,18 @@ function AppointmentForm() {
             }}
           >
             <Grid size={{ xs: 12, md: 3 }}>
-              <GenderSelect background={linearDegraded} border={colorBorder} />
+              <GenderSelect
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
+              />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextInput
                 label='Correo electrónico'
                 type='email'
                 placeholder='Ingrese su correo'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
           </Grid>
@@ -318,7 +322,7 @@ function AppointmentForm() {
           sx={{
             p: { xs: 1, md: 3 },
             my: 3,
-            background: linearDegraded,
+            background: (theme) => theme.customGradients.collapsableHeader,
             borderRadius: '15px',
             display: 'flex',
             flexDirection: 'column',
@@ -329,11 +333,12 @@ function AppointmentForm() {
           <Text children='Horario: 9:00 a 10:00' size='18' align='center' />
           <Text children='Empleado 1' size='16' align='center' />
         </Box>
-        <hr
-          style={{
+        <Box
+          component='hr'
+          sx={{
             border: 'none',
             height: '1px',
-            backgroundColor: '#cbd4ff6e',
+            backgroundColor: 'divider',
           }}
         />
         <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>

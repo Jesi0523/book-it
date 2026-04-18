@@ -7,7 +7,6 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircleRounded';
 import Typography from '@mui/material/Typography';
 
 function InfoDialog({ open, onClose, title, icon, content }) {
-  const linearDegraded = 'linear-gradient(180deg, #2c2e69 0%, #2d2e5c 100%)';
 
   return (
     <Dialog
@@ -17,7 +16,7 @@ function InfoDialog({ open, onClose, title, icon, content }) {
         '& .MuiDialog-paper': {
           width: '85%',
           maxWidth: '400px',
-          background: linearDegraded,
+          background: (theme) => theme.customGradients.dialog,
           borderRadius: '20px',
           padding: 1,
         },

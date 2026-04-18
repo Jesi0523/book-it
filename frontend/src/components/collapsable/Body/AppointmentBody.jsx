@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -15,7 +16,8 @@ import CloseIcon from '@mui/icons-material/CloseRounded';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const AppointmentBody = ({ appointment, onConfirmCancel }) => {
-  const linearDegraded = 'linear-gradient(180deg, #11122b 0%, #1c1e51d3 100%)';
+  const theme = useTheme();
+
   const [openCancelDialog, setOpenCancelDialog] = React.useState(false);
   const handleOpenCancelDialog = () => {
     setOpenCancelDialog(true);
@@ -95,7 +97,7 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
         <Title children={'Datos del Cliente'} size={'16'} />
         <Box
           sx={{
-            background: linearDegraded,
+            background: (theme) => theme.customGradients.clientDataCard,
             p: 3,
             m: 1,
             borderRadius: '10px',

@@ -19,13 +19,11 @@ const CompanyGallerySection = ({
   onGalleryImagesChange, 
   onRemoveGalleryImage 
 }) => {
-  const linearDegraded = 'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)';
-
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
       
       {/* Titulo */}
-      <Text children="Galería" color="#ffb74d" size="20" />
+      <Text children="Galería" color="primary.light" size="20" />
 
       {/* Imagen principal */}
       <Grid container spacing={4}>
@@ -39,7 +37,7 @@ const CompanyGallerySection = ({
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1', 
-                background: mainImage ? 'transparent' : linearDegraded,
+                background: mainImage ? 'transparent' : (theme) => theme.customGradients.imagePlaceholder,
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
@@ -60,7 +58,7 @@ const CompanyGallerySection = ({
               component="label" 
               fullWidth
               size={{ xs: '14px', md: '16px' }} 
-              sx={{ backgroundColor: '#ffb74d', color: '#000', display: 'flex', gap: 1, alignItems: 'center', borderRadius: '50px' }}
+              sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', display: 'flex', gap: 1, alignItems: 'center', borderRadius: '50px' }}
             >
               <UploadFileIcon fontSize="small" /> Subir principal
               <input
@@ -88,13 +86,13 @@ const CompanyGallerySection = ({
                 size={{ xs: '12px', md: '14px' }} 
                 sx={{ 
                   backgroundColor: 'transparent', 
-                  border: '1px solid #ffb74d', 
-                  color: '#ffb74d', 
+                  border: (theme) => `1px solid ${theme.palette.primary.light}`, 
+                  color: 'primary.light', 
                   padding: '6px 16px',
                   m: 0,
                   '&:hover': {
-                    backgroundColor: '#ffb74d',
-                    color: '#000'
+                    bgcolor: 'primary.light',
+                    color: 'primary.contrastText'
                   }
                 }}
               >
@@ -113,7 +111,7 @@ const CompanyGallerySection = ({
             <Box
               sx={{
                 flexGrow: 1,
-                backgroundColor: '#1b1c37',
+                backgroundColor: 'background.serviceChip',
                 borderRadius: '16px',
                 p: 2,
                 display: 'flex',
@@ -123,8 +121,8 @@ const CompanyGallerySection = ({
                 minHeight: '200px',
                 justifyContent: galleryImages.length === 0 ? 'center' : 'flex-start',
                 '&::-webkit-scrollbar': { height: '8px' },
-                '&::-webkit-scrollbar-track': { background: 'rgba(255,255,255,0.05)', borderRadius: '10px', margin: '0 10px' },
-                '&::-webkit-scrollbar-thumb': { background: '#ffb74d', borderRadius: '10px' },
+                '&::-webkit-scrollbar-track': { background: (theme) => theme.palette.background.hoverLighter, borderRadius: '10px', margin: '0 10px' },
+                '&::-webkit-scrollbar-thumb': { background: (theme) => theme.palette.primary.light, borderRadius: '10px' },
               }}
             >
               {galleryImages.length === 0 ? (
@@ -151,10 +149,10 @@ const CompanyGallerySection = ({
                         position: 'absolute',
                         top: 8,
                         right: 8,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        backgroundColor: 'background.overlay',
                         color: 'white',
                         padding: '4px',
-                        '&:hover': { backgroundColor: '#ffb74d', color: 'black' }
+                        '&:hover': { bgcolor: 'primary.light', color: 'primary.contrastText' }
                       }}
                     >
                       <CloseIcon fontSize="small" sx={{ fontWeight: 'bold' }} />

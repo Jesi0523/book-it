@@ -57,7 +57,7 @@ function NavBar() {
   return (
     <AppBar
       position='fixed'
-      sx={{ background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)' }}
+      sx={{ background: (theme) => theme.customGradients.navbar }}
     >
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
@@ -107,8 +107,7 @@ function NavBar() {
               sx={{
                 display: { xs: 'block', md: 'none' },
                 '.MuiMenu-paper': {
-                  background:
-                    'linear-gradient(180deg, #1b1c37 100%, #272951 0%)',
+                  background: (theme) => theme.customGradients.menuMobile,
                 },
                 '.MuiMenuItem-root': {
                   display: 'flex',

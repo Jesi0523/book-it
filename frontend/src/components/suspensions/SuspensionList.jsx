@@ -33,7 +33,7 @@ const SuspensionList = ({
    
 
   return (
-    <Box sx={{ border: '1px solid #787ff6', borderRadius: '16px', p: { xs: 2, md: 4 } }}>
+    <Box sx={{ border: (theme) => theme.palette.customBorders.section, borderRadius: '16px', p: { xs: 2, md: 4 } }}>
       
       {/* Seccion superior */}
       <Box sx={{ 
@@ -44,7 +44,7 @@ const SuspensionList = ({
         gap: 2, 
         mb: 3 
       }}>
-        <Text children="Lista de horarios suspendidos:" color="#ffb74d" size="22px" />
+        <Text children="Lista de horarios suspendidos:" color="primary.light" size="22px" />
         
         {/* Opciones mes y año */}
         <Box sx={{ 
@@ -103,7 +103,7 @@ const SuspensionList = ({
               <IconButton
                 onClick={() => handleOpenDeleteDialog(susp.id, susp.texto)}
                 sx={{
-                  backgroundColor: '#ffb74d', color: '#000',
+                  backgroundColor: 'primary.light', color: '#000',
                   width: { xs: '40px', md: '45px' },
                   height: { xs: '40px', md: '45px' }, 
                   flexShrink: 0,

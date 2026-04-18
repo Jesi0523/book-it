@@ -11,9 +11,15 @@ import Text from '@/components/common/Text';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 
-const ServicesSection = ({ availableServices, selectedServices, onServiceToggle }) => {
+const ServicesSection = ({
+  availableServices,
+  selectedServices,
+  onServiceToggle,
+}) => {
   // Estados
-  const [selectedValue, setSelectedValue] = useState(availableServices[0] || '');
+  const [selectedValue, setSelectedValue] = useState(
+    availableServices[0] || '',
+  );
 
   // Funcion agregar servicio
   const handleAdd = () => {
@@ -24,26 +30,33 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-
       {/* Seccion superior */}
-      <Box sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        alignItems: { xs: 'flex-start', md: 'center' },
-        gap: 2
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: { xs: 'flex-start', md: 'center' },
+          gap: 2,
+        }}
+      >
         {/* Titulo */}
         <Box sx={{ minWidth: 'max-content' }}>
-          <Text children="Servicios que realiza" color='#ffb74d' size="18px" />
+          <Text
+            children='Servicios que realiza'
+            color='primary.light'
+            size='18px'
+          />
         </Box>
 
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          width: '100%',
-          gap: 2
-        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+            gap: 2,
+          }}
+        >
           {/* Dropdown/Lista */}
           <Select
             value={selectedValue}
@@ -51,31 +64,33 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
             MenuProps={{
               PaperProps: {
                 sx: {
-                  backgroundColor: '#1b1c37',
+                  bgcolor: 'background.serviceChip',
                   color: 'white',
-                  '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 183, 77, 0.2)' },
-                  '& .Mui-selected': { backgroundColor: 'rgba(255, 183, 77, 0.4) !important' }
-                }
-              }
+                  '& .MuiMenuItem-root:hover': {
+                    bgcolor: 'background.menuHover',
+                  },
+                  '& .Mui-selected': { bgcolor: 'background.menuSelected' },
+                },
+              },
             }}
             sx={{
               flexGrow: 1,
-              backgroundColor: '#1b1c37',
+              bgcolor: 'background.serviceChip',
               color: 'white',
               borderRadius: '50px',
               height: '45px',
               fontFamily: "'Montserrat', sans-serif",
-              '& fieldset': { border: 'none' }, 
-              '& .MuiSvgIcon-root': { color: '#ffb74d' },
-              
-              '& .MuiSelect-select': { 
+              '& fieldset': { border: 'none' },
+              '& .MuiSvgIcon-root': { color: 'primary.light' },
+
+              '& .MuiSelect-select': {
                 display: 'flex',
                 alignItems: 'center',
                 paddingTop: 0,
                 paddingBottom: 0,
                 paddingLeft: '20px',
-                height: '100%'
-              }
+                height: '100%',
+              },
             }}
           >
             {availableServices.map((service) => (
@@ -88,18 +103,18 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
           {/* Boton agregar servicio */}
           <IconButton
             onClick={handleAdd}
-            disabled={selectedServices.includes(selectedValue)} 
+            disabled={selectedServices.includes(selectedValue)}
             sx={{
-              backgroundColor: '#ffb74d',
-              color: '#000',
+              bgcolor: 'primary.light',
+              color: 'primary.contrastText',
               width: '45px',
               height: '45px',
               flexShrink: 0,
-              '&:hover': { backgroundColor: '#e0a040' },
-              '&.Mui-disabled': { 
-                backgroundColor: 'rgba(255, 183, 77, 0.4)', 
-                color: 'rgba(0,0,0,0.4)' 
-              }
+              '&:hover': { bgcolor: 'primary.dark' },
+              '&.Mui-disabled': {
+                bgcolor: 'background.menuSelected',
+                color: 'rgba(0,0,0,0.4)',
+              },
             }}
           >
             <AddIcon />
@@ -110,15 +125,16 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
       {/* Seccion de servicios seleccionados */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 1 }}>
         {selectedServices.map((service) => (
-            
           // Contenedor servicio
-          <Box key={service} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            
+          <Box
+            key={service}
+            sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+          >
             {/* Servicio */}
             <Box
               sx={{
                 flexGrow: 1,
-                backgroundColor: '#1b1c37',
+                bgcolor: 'background.serviceChip',
                 borderRadius: '50px',
                 height: '45px',
                 display: 'flex',
@@ -126,23 +142,22 @@ const ServicesSection = ({ availableServices, selectedServices, onServiceToggle 
                 padding: '0 20px',
               }}
             >
-              <Text children={service} color="white" size="16px" />
+              <Text children={service} color='white' size='16px' />
             </Box>
 
             {/* Boton eliminar servicio */}
             <IconButton
               onClick={() => onServiceToggle(service)}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                bgcolor: 'primary.light',
+                color: 'primary.contrastText',
                 width: '45px',
                 height: '45px',
                 flexShrink: 0,
-                '&:hover': { backgroundColor: '#e0a040' }
-
+                '&:hover': { bgcolor: 'primary.dark' },
               }}
             >
-              <CloseIcon sx={{ fontWeight: 'bold' }}/>
+              <CloseIcon sx={{ fontWeight: 'bold' }} />
             </IconButton>
           </Box>
         ))}

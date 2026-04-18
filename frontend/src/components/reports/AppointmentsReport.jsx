@@ -1,7 +1,15 @@
 import React, { useMemo } from 'react';
 import Box from '@mui/material/Box';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  LabelList,
 } from 'recharts';
 import dayjs from 'dayjs';
 
@@ -12,31 +20,31 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 // Componentes propios
 import Text from '@/components/common/Text';
 
-const coloresBarras = ['#00dced', '#4cc9ff', '#6baaff', '#8589ff', '#8794ff', '#a8b0ff'];
-
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const data = payload[0].payload; 
-    
+    const data = payload[0].payload;
+
     return (
-      <Box sx={{
-        backgroundColor: '#1b1c37',
-        border: '1px solid #787ff6',
-        borderRadius: '8px',
-        p: 2,
-        boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
-      }}>
-        <Text 
-          children={`Semana ${data.numeroSemana}: ${label}`} 
-          color="white" 
-          size={14} 
-          fontWeight="bold" 
+      <Box
+        sx={{
+          backgroundColor: '#1b1c37',
+          border: '1px solid #787ff6',
+          borderRadius: '8px',
+          p: 2,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+        }}
+      >
+        <Text
+          children={`Semana ${data.numeroSemana}: ${label}`}
+          color='white'
+          size={14}
+          fontWeight='bold'
           sx={{ mb: 0.5 }}
         />
-        <Text 
-          children={`Citas : ${payload[0].value}`} 
-          color="#ffb74d" 
-          size={14} 
+        <Text
+          children={`Citas : ${payload[0].value}`}
+          color='#ffb74d'
+          size={14}
         />
       </Box>
     );
@@ -44,57 +52,74 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-
 const AppointmentsReport = ({ mes, anio }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const dataDinamica = useMemo(() => {
-    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const mesesNombres = [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ];
     const mesIndex = mesesNombres.indexOf(mes);
-    
+
     if (mesIndex === -1) return [];
 
     let fechaActual = dayjs(new Date(parseInt(anio), mesIndex, 1));
     const diasEnMes = fechaActual.daysInMonth();
-    
+
     const semanas = [];
     let diaInicio = 1;
     let indexColor = 0;
-    let numeroSemana = 1; 
+    let numeroSemana = 1;
 
     while (diaInicio <= diasEnMes) {
       let diaFin = diaInicio;
       let iteradorFecha = fechaActual.date(diaInicio);
-      
+
       while (iteradorFecha.day() !== 0 && diaFin < diasEnMes) {
         diaFin++;
         iteradorFecha = iteradorFecha.add(1, 'day');
       }
-      
+
       const inicioStr = diaInicio.toString().padStart(2, '0');
       const finStr = diaFin.toString().padStart(2, '0');
-      const etiqueta = diaInicio === diaFin ? inicioStr : `${inicioStr}-${finStr}`;
-      
+      const etiqueta =
+        diaInicio === diaFin ? inicioStr : `${inicioStr}-${finStr}`;
+
       semanas.push({
         semana: etiqueta,
-        numeroSemana: numeroSemana, 
-        citas: (mes === 'Enero' && anio === '2026') 
-                ? [15, 49, 70, 123, 80][indexColor] || 0
-                : Math.floor(Math.random() * 150) + 10, 
-        color: coloresBarras[indexColor % coloresBarras.length]
+        numeroSemana: numeroSemana,
+        citas:
+          mes === 'Enero' && anio === '2026'
+            ? [15, 49, 70, 123, 80][indexColor] || 0
+            : Math.floor(Math.random() * 150) + 10,
+        color:
+          theme.customCharts.barGradient[
+            indexColor % theme.customCharts.barGradient.length
+          ],
       });
-      
-      diaInicio = diaFin + 1; 
+
+      diaInicio = diaFin + 1;
       indexColor++;
-      numeroSemana++; 
+      numeroSemana++;
     }
-    
+
     return semanas;
   }, [mes, anio]);
 
   const dynamicTicks = useMemo(() => {
-    const maxCitas = Math.max(...dataDinamica.map(d => d.citas), 10);
+    const maxCitas = Math.max(...dataDinamica.map((d) => d.citas), 10);
     let step = maxCitas / 5;
     const magnitude = Math.pow(10, Math.floor(Math.log10(step)));
     step = Math.ceil(step / magnitude) * magnitude;
@@ -102,74 +127,121 @@ const AppointmentsReport = ({ mes, anio }) => {
   }, [dataDinamica]);
 
   return (
-    <Box sx={{ 
-      width: '100%', 
-      height: { xs: '380px', md: '450px' },
-      display: 'flex', 
-      flexDirection: 'column',
-      gap: { xs: 2, md: 3 },
-      pl: { xs: 2, sm: 3, md: 5 } 
-    }}>
-      
+    <Box
+      sx={{
+        width: '100%',
+        height: { xs: '380px', md: '450px' },
+        display: 'flex',
+        flexDirection: 'column',
+        gap: { xs: 2, md: 3 },
+        pl: { xs: 2, sm: 3, md: 5 },
+      }}
+    >
       {/* Titulos de la grafica */}
       <Box sx={{ textAlign: 'center' }}>
-        <Text children="Citas semanales" color="white" size={{ xs: 20, md: 24 }} align="center" />
-        <Text children="Cantidad de citas por semana" color="white" size={{ xs: 14, md: 16 }} align="center" fontWeight="bold" />
+        <Text
+          children='Citas semanales'
+          color='white'
+          size={{ xs: 20, md: 24 }}
+          align='center'
+        />
+        <Text
+          children='Cantidad de citas por semana'
+          color='white'
+          size={{ xs: 14, md: 16 }}
+          align='center'
+          fontWeight='bold'
+        />
       </Box>
 
       {/* Contenedor de la grafica y etiquetas */}
-      <Box sx={{ flexGrow: 1, width: '100%', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-
+      <Box
+        sx={{
+          flexGrow: 1,
+          width: '100%',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         {/* Etiqueta izq (Y) */}
-        <Box sx={{
-          position: 'absolute',
-          left: { xs: '-45px', sm: '-45px', md: '-65px' },
-          top: '50%',
-          transform: 'translateY(-50%) rotate(-90deg)',
-          transformOrigin: 'center',
-          whiteSpace: 'nowrap',
-          zIndex: 10
-        }}>
-           <Text children="Cantidad de citas" color="white" size={{ xs: 12, md: 14 }} fontWeight="bold" />
+        <Box
+          sx={{
+            position: 'absolute',
+            left: { xs: '-45px', sm: '-45px', md: '-65px' },
+            top: '50%',
+            transform: 'translateY(-50%) rotate(-90deg)',
+            transformOrigin: 'center',
+            whiteSpace: 'nowrap',
+            zIndex: 10,
+          }}
+        >
+          <Text
+            children='Cantidad de citas'
+            color='white'
+            size={{ xs: 12, md: 14 }}
+            fontWeight='bold'
+          />
         </Box>
 
         {/* Grafica */}
-        <Box sx={{ flexGrow: 1, minHeight: 0, width: '100%', height: '100%' }}>
-          <ResponsiveContainer width="100%" height="100%" minHeight={100}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            minHeight: 0,
+            width: '100%',
+            height: '100%',
+            '& .recharts-wrapper, & .recharts-surface, & *:focus': { 
+              outline: 'none !important' 
+            },
+          }}
+        >
+          <ResponsiveContainer width='100%' height='100%' minHeight={100}>
             <BarChart
-              data={dataDinamica} 
-              margin={{ top: 20, right: isMobile ? 10 : 30, left: 10, bottom: 0 }}
+              data={dataDinamica}
+              margin={{
+                top: 20,
+                right: isMobile ? 10 : 30,
+                left: 10,
+                bottom: 0,
+              }}
             >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
-              
-              <XAxis 
-                dataKey="semana" 
+              <CartesianGrid
+                strokeDasharray='3 3'
+                vertical={false}
+                stroke='rgba(255,255,255,0.1)'
+              />
+
+              <XAxis
+                dataKey='semana'
                 tick={{ fill: 'white', fontSize: isMobile ? 12 : 14 }}
-                axisLine={false} 
+                axisLine={false}
                 tickLine={false}
-                dy={10} 
+                dy={10}
               />
-              
-              <YAxis 
+
+              <YAxis
                 tick={{ fill: 'white', fontSize: isMobile ? 12 : 14 }}
-                axisLine={false} 
+                axisLine={false}
                 tickLine={false}
-                domain={[0, dynamicTicks[dynamicTicks.length - 1]]} 
-                ticks={dynamicTicks} 
+                domain={[0, dynamicTicks[dynamicTicks.length - 1]]}
+                ticks={dynamicTicks}
               />
-              
-              <Tooltip 
-                content={<CustomTooltip />} 
-                cursor={{ fill: 'rgba(255,255,255,0.05)' }} 
+
+              <Tooltip
+                content={<CustomTooltip />}
+                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
               />
-              
-              <Bar 
-                dataKey="citas" 
-                radius={[8, 8, 0, 0]} 
-                maxBarSize={80}
-              >
-                <LabelList dataKey="citas" position="top" fill="white" fontSize={isMobile ? 14 : 16} fontWeight="bold" />
-                
+
+              <Bar dataKey='citas' radius={[8, 8, 0, 0]} maxBarSize={80}>
+                <LabelList
+                  dataKey='citas'
+                  position='top'
+                  fill='white'
+                  fontSize={isMobile ? 14 : 16}
+                  fontWeight='bold'
+                />
+
                 {dataDinamica.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
@@ -179,12 +251,21 @@ const AppointmentsReport = ({ mes, anio }) => {
         </Box>
 
         {/* Etiqueta abajo (X) */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: isMobile ? 2 : 3 }}>
-           <Text children="Semanas del mes" color="white" size={{ xs: 12, md: 14 }} fontWeight="bold" />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mt: isMobile ? 2 : 3,
+          }}
+        >
+          <Text
+            children='Semanas del mes'
+            color='white'
+            size={{ xs: 12, md: 14 }}
+            fontWeight='bold'
+          />
         </Box>
-
       </Box>
-
     </Box>
   );
 };

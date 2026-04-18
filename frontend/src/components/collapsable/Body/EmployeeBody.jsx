@@ -1,3 +1,4 @@
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,7 +9,7 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
 
 const EmployeeBody = ({ employee, onEdit }) => {
-  const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)';
+  const theme = useTheme();
 
   return (
     <Box
@@ -86,7 +87,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
             />
             <Box
               sx={{
-                background: linearDegraded,
+                background: (theme) => theme.customGradients.searchBar,
                 borderRadius: '16px',
                 p: 3,
                 width: '100%',
@@ -124,7 +125,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
             />
             <Box
               sx={{
-                background: linearDegraded,
+                background: (theme) => theme.customGradients.searchBar,
                 borderRadius: '16px',
                 p: 3,
                 width: '100%',
@@ -168,7 +169,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
         />
         <Box
           sx={{
-            background: linearDegraded,
+            background: (theme) => theme.customGradients.searchBar,
             borderRadius: '16px',
             p: 2,
             width: '100%',
@@ -192,7 +193,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
           size={{ xs: '14px', md: '16px' }}
           onClick={() => onEdit(employee)}
           sx={{
-            backgroundColor: '#ffb74d',
+            backgroundColor: 'primary.light',
             display: 'flex',
             gap: 1,
             alignItems: 'center',

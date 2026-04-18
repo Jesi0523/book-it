@@ -82,7 +82,7 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
         flexDirection: 'column',
         height: '100%',
         width: '260px',
-        background: 'linear-gradient(180deg, #1b1c37 0%, #121229 100%)',
+        background: (theme) => theme.customGradients.sidebar,
         color: 'white',
         overflowX: 'hidden',
       }}

@@ -158,7 +158,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
         sx={{
           p: { xs: 2, md: 4 },
           borderRadius: '16px',
-          border: `1px solid #787ff6`,
+          border: (theme) => theme.palette.customBorders.section,
         }}
       >
         <ScheduleSection
@@ -172,7 +172,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
         sx={{
           p: { xs: 2, md: 4 },
           borderRadius: '16px',
-          border: `1px solid #787ff6`,
+          border: (theme) => theme.palette.customBorders.section,
         }}
       >
         <ServicesSection
@@ -187,7 +187,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
         <MainButton
           size={{ xs: '16px', md: '18px' }}
           onClick={handleSubmit}
-          sx={{ backgroundColor: '#ffb74d', color: '#000', px: 6 }}
+          sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', px: 6 }}
         >
           {employee?.id === 'nuevo' ? 'Agregar' : 'Guardar'}
         </MainButton>

@@ -35,8 +35,7 @@ const CompanyDataSection = ({
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
-                background:
-                  'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
+                background: (theme) => theme.customGradients.imagePlaceholder,
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
@@ -64,8 +63,8 @@ const CompanyDataSection = ({
               fullWidth
               size={{ xs: '14px', md: '16px' }}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                bgcolor: 'primary.light',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 alignItems: 'center',

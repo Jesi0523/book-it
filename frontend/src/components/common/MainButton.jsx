@@ -33,7 +33,7 @@ const MainButton = ({
         {
           borderRadius: '50px',
           backgroundColor: 'primary.main',
-          color: '#000',
+          color: 'primary.contrastText',
           width: 'fit-content',
           margin: 'auto',
           padding: '10px 32px',

@@ -48,14 +48,14 @@ const SuspensionForm = ({
   return (
     <Box
       sx={{
-        border: '1px solid #787ff6',
+        border: (theme) => theme.palette.customBorders.section,
         borderRadius: '16px',
         p: { xs: 2, md: 4 },
       }}
     >
       <Text
         children='Registrar suspensión:'
-        color='#ffb74d'
+        color='primary.light'
         size='22'
         sx={{ mb: { xs: 3, md: 4 }, display: 'block' }}
       />
@@ -127,7 +127,7 @@ const SuspensionForm = ({
                     padding: '10px',
                     textAlign: 'center',
                   },
-                  '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                  '& .MuiSvgIcon-root': { color: 'primary.light' },
                 }}
               >
                 {opcionesTiempo.map((t) => (
@@ -155,7 +155,7 @@ const SuspensionForm = ({
                     padding: '10px',
                     textAlign: 'center',
                   },
-                  '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                  '& .MuiSvgIcon-root': { color: 'primary.light' },
                 }}
               >
                 {opcionesTiempo.map((t) => (
@@ -187,7 +187,7 @@ const SuspensionForm = ({
               size='16px'
               onClick={handleOpenSaveDialog} 
               sx={{
-                backgroundColor: '#ffb74d',
+                backgroundColor: 'primary.light',
                 color: '#000',
                 px: 4,
                 display: 'flex',

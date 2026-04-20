@@ -42,7 +42,9 @@ const SuspensionForm = ({
   const handleCloseSaveDialog = (hasAccepted) => 
   {
     setOpenSaveDialog(false);
-    if(hasAccepted){{handleAplicar}}
+    if (hasAccepted) {
+      handleAplicar();
+    }
   }; 
  
   return (

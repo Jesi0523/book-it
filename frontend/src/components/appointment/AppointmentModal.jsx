@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import toast from 'react-hot-toast';
+import { toastNeutral } from '@/utils/notify';
 
 // Iconos
 import CloseIcon from '@mui/icons-material/Close';
@@ -33,20 +33,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
     setOpenCancelDialog(false);
 
     if (hasAccepted) {
-      toast.success('La cita ha sido cancelada.', {
-        id: 'cancel-appointment-toast',
-        duration: 3000,
-        style: {
-          borderRadius: '10px',
-          background: theme.palette.background.serviceChip,
-          color: theme.palette.text.primary,
-          border: (theme) => theme.palette.customBorders.sidebar,
-        },
-        iconTheme: {
-          primary: theme.palette.text.secondary,
-          secondary: theme.palette.text.primary,
-        },
-      });
+      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
 
       onClose();
     }

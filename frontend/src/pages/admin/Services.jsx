@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import toast from 'react-hot-toast';
+import { toastNeutral } from '@/utils/notify';
 
 // Iconos
 import SearchIcon from '@mui/icons-material/Search';
@@ -63,6 +63,12 @@ const Services = () => {
   const [servicioEditando, setServicioEditando] = useState(null);
   const [services, setServices] = React.useState(dummyServicios);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, [servicioEditando]);
+
   const serviciosFiltrados = services.filter((serv) =>
     serv.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
@@ -72,20 +78,8 @@ const Services = () => {
     const updatedServices = services.filter((service) => service.id !== index);
     setServices(updatedServices);
 
-    toast.success('Servicio eliminado del catálogo.', {
-      id: 'service-delete-toast',
-      duration: 3000,
-      style: {
-        borderRadius: '10px',
-        background: '#1b1c37',
-        color: '#fff',
-        border: '1px solid #757575',
-      },
-      iconTheme: {
-        primary: '#757575',
-        secondary: '#fff',
-      },
-    });
+    toastNeutral('Servicio eliminado del catálogo.', 'service-delete-toast');
+
   };
 
   // Funcion guardar servicio

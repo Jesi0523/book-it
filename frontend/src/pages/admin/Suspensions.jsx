@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import dayjs from 'dayjs';
+import { toastSuccess, toastNeutral } from '@/utils/notify';
 
 // Componentes propios
 import Title from '@/components/common/Title';
@@ -33,17 +34,12 @@ const Suspensions = () => {
 
   // <------------- FUNCIONES ------------->
   const handleAplicar = () => {
-    console.log('Aplicando suspensión:', {
-      fecha: fechaSeleccionada.format('YYYY-MM-DD'),
-      tipo: tipoSuspension,
-      inicio: tipoSuspension === 'horario' ? horaInicio : null,
-      fin: tipoSuspension === 'horario' ? horaFin : null,
-      empleado: empleadoSeleccionado,
-    });
+    toastSuccess('Suspensión registrada correctamente.', 'suspension-save-toast');
   };
 
   const handleEliminarSuspension = (id) => {
     setListaSuspensiones((prev) => prev.filter((susp) => susp.id !== id));
+    toastNeutral('La suspensión ha sido eliminada.', 'suspension-delete-toast');
   };
 
   // Estilos globales de los selects

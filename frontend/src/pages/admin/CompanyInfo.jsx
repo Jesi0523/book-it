@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import toast from 'react-hot-toast';
+import { toastSuccess } from '@/utils/notify';
 
 // Componentes propios
 import Title from '@/components/common/Title';
@@ -84,33 +84,16 @@ const CompanyInfo = () => {
   };
 
   const handleSave = () => {
-    // Si ya está guardando, ignoramos los clics extra
+    // Si ya se esta guardando, se ignoran los clicks extras
     if (isSaving) return;
 
-    // Bloqueamos el botón
+    // Se bloquea el boton
     setIsSaving(true);
 
-    console.log('Guardando información...', {
-      formData,
-      scheduleMap,
-      galeria: { mainImageFile, galleryFiles },
-    });
-
-    // Lanzamos la alerta
-    toast.success('Datos de la empresa actualizados correctamente.', {
-      id: 'company-save-toast',
-      duration: 3000,
-      style: {
-        borderRadius: '10px',
-        background: '#1b1c37',
-        color: '#fff',
-        border: '1px solid #4caf50',
-      },
-      iconTheme: {
-        primary: '#4caf50',
-        secondary: '#fff',
-      },
-    });
+    toastSuccess(
+      'Datos de la empresa actualizados correctamente.',
+      'company-save-toast',
+    );
 
     setTimeout(() => {
       setIsSaving(false);

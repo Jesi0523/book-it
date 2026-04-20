@@ -40,7 +40,7 @@ const AdminLayout = () => {
 
   return (
     <Box
-      sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#060511' }}
+      sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}
     >
       {/* Overlay */}
       <Box
@@ -63,7 +63,7 @@ const AdminLayout = () => {
         position='fixed'
         sx={{
           display: { xs: 'block', md: 'none' },
-          background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)',
+          background: (theme) => theme.customGradients.navbar,
           boxShadow: 'none',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}

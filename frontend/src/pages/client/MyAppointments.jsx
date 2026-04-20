@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import toast from 'react-hot-toast';
+import { toastNeutral } from '@/utils/notify';
 
 // ************** componentes propios :3 **************
 // |  common
@@ -98,20 +98,8 @@ function MyAppointments() {
 
     setAppointments(newAppointments);
 
-    toast.success('La cita ha sido cancelada.', {
-      id: 'cancel-appointment-toast',
-      duration: 3000,
-      style: {
-        borderRadius: '10px',
-        background: '#1b1c37',
-        color: '#fff',
-        border: '1px solid #757575',
-      },
-      iconTheme: {
-        primary: '#757575',
-        secondary: '#fff',
-      },
-    });
+    toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+
   };
 
   return (

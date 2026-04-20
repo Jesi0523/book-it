@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import toast from 'react-hot-toast';
+import { toastSuccess } from '@/utils/notify';
 
 // ************** componentes propios :3 **************
 // |  common
@@ -26,20 +26,7 @@ function Profile() {
   const handleCloseSaveDialog = (hasAccepted) => {
     setOpenSaveDialog(false);
     if (hasAccepted) {
-      toast.success('Perfil actualizado correctamente.', {
-        id: 'company-save-toast',
-        duration: 3000,
-        style: {
-          borderRadius: '10px',
-          background: '#1b1c37',
-          color: '#fff',
-          border: '1px solid #4caf50',
-        },
-        iconTheme: {
-          primary: '#4caf50',
-          secondary: '#fff',
-        },
-      });
+      toastSuccess('Perfil actualizado correctamente.', 'profile-save-toast');
     }
   };
 
@@ -148,7 +135,6 @@ function Profile() {
           </>
         }
       />
-
     </>
   );
 }

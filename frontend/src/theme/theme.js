@@ -16,10 +16,6 @@ const theme = createTheme({
       calendarLabel: '#a0a3de',
       purpleAccent: '#6C63FF', 
     },
-    // Toast
-    success: {
-      main: '#4caf50', 
-    },
     background: {
       default: '#060511', 
       paper: '#0c0c18',

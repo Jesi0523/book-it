@@ -28,7 +28,9 @@ const SuspensionList = ({
   const handleCloseDeleteDialog = (hasAccepted) => 
   {
     setOpenDeleteDialog(false);
-    if(hasAccepted){{handleEliminarSuspension(actualSuspenction)}}
+    if (hasAccepted) {
+      handleEliminarSuspension(actualSuspenction);
+    }
   }; 
    
 

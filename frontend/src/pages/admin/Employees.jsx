@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import toast from 'react-hot-toast';
+import { toastSuccess } from '@/utils/notify';
 
 // Iconos
 import SearchIcon from '@mui/icons-material/Search';
@@ -92,6 +92,12 @@ const Employees = () => {
   const [busqueda, setBusqueda] = useState('');
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, [empleadoEditando]);
+
   // Funcion busqueda empleado
   const empleadosFiltrados = dummyEmpleados.filter((emp) =>
     emp.name.toLowerCase().includes(busqueda.toLowerCase()),
@@ -100,25 +106,11 @@ const Employees = () => {
   // Funcion guardar empleado
   const handleSaveEmployee = (employeeData) => {
     const isNew = employeeData.id === 'nuevo';
-
-    toast.success(
+    toastSuccess(
       isNew
         ? 'Empleado agregado exitosamente.'
-        : 'Datos del empleado actualizados.',
-      {
-        id: 'employee-save-toast',
-        duration: 3000,
-        style: {
-          borderRadius: '10px',
-          background: '#1b1c37',
-          color: '#fff',
-          border: '1px solid #4caf50',
-        },
-        iconTheme: {
-          primary: '#4caf50',
-          secondary: '#fff',
-        },
-      },
+        : 'Datos del empleado actualizados correctamente.',
+      'employee-save-toast',
     );
 
     setEmpleadoEditando(null);

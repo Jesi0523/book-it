@@ -89,7 +89,7 @@ const Combobox = ({
               maxWidth: 300,
             },
             sx: {
-              background: 'linear-gradient(180deg, #1b1c37 100%, #a0a3de 0%)',
+              background: (theme) => theme.customGradients.comboboxMenu,
               color: 'text.primary',
               '& .MuiMenuItem-root': {
                 fontSize: size,

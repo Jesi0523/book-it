@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import MuiLink from '@mui/material/Link';
 
@@ -15,6 +16,8 @@ import TextInput from '@/components/form/TextInput';
 import PasswordInput from '@/components/form/PasswordInput';
 
 function Login() {
+  const theme = useTheme();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -32,7 +35,7 @@ function Login() {
 
   return (
     <Card
-      bg='linear-gradient(180deg, #0c0c18 0%, #060511 100%)'
+      bg={theme.customGradients.mainBackground}
       brRadius='12px'
       showShadow={true}
     >

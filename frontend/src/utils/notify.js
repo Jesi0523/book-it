@@ -1,9 +1,10 @@
 import toast from 'react-hot-toast';
+import theme from '@/theme/theme';
 
 const baseStyle = {
   borderRadius: '10px',
-  background: '#1b1c37',
-  color: '#fff',
+  background: theme.palette.background.serviceChip, // Color de fondo
+  color: theme.palette.text.primary, // Color del texto
   duration: 3000,
 };
 
@@ -13,9 +14,12 @@ export const toastSuccess = (message, toastId) => {
     id: toastId,
     style: {
       ...baseStyle,
-      border: '1px solid #4caf50',
+      border: `1px solid ${theme.palette.success.main}`,
     },
-    iconTheme: { primary: '#4caf50', secondary: '#fff' },
+    iconTheme: {
+      primary: theme.palette.success.main,
+      secondary: theme.palette.text.primary,
+    },
   });
 };
 
@@ -25,8 +29,11 @@ export const toastNeutral = (message, toastId) => {
     id: toastId,
     style: {
       ...baseStyle,
-      border: '1px solid #757575',
+      border: `1px solid ${theme.palette.neutral.main}`,
     },
-    iconTheme: { primary: '#757575', secondary: '#fff' },
+    iconTheme: {
+      primary: theme.palette.neutral.main,
+      secondary: theme.palette.text.primary,
+    },
   });
 };

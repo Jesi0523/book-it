@@ -139,7 +139,7 @@ function MainPage() {
       {/* Info central */}
       <Box
         sx={{
-          background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          background: (theme) => theme.customGradients.mainBackground,
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
@@ -194,7 +194,7 @@ function MainPage() {
       <Box
         sx={{
           width: '100%',
-          background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          background: (theme) => theme.customGradients.mainBackground,
           display: 'flex',
           justifyContent: 'center',
           py: { xs: 6, md: 6 },
@@ -253,7 +253,7 @@ function MainPage() {
           display: 'flex',
           justifyContent: 'center',
           py: 5,
-          background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          background: (theme) => theme.customGradients.mainBackground,
           width: '100%',
         }}
       >
@@ -277,7 +277,7 @@ function MainPage() {
       {/* ****** footer *****  */}
       <Box
         sx={{
-          background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)',
+          background: (theme) => theme.customGradients.navbar,
           p: 3,
           mt: 'auto',
           width: '100%',

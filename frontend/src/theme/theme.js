@@ -11,10 +11,17 @@ const theme = createTheme({
     },
     secondary: {
       main: '#787ff6',
+      light: '#a6aafa',
       blueShade: '#a6aafa',
       brandBlue: '#3f51b5',
       calendarLabel: '#a0a3de',
       purpleAccent: '#6C63FF', 
+    },
+    success: {
+      main: '#4caf50',
+    },
+    neutral: {
+      main: '#757575',
     },
     background: {
       default: '#060511', 
@@ -35,6 +42,9 @@ const theme = createTheme({
       menuHover: 'rgba(255, 183, 77, 0.2)',
       modalMenu: '#00011e',
       calendarGrid: '#121229',
+      whiteSelected: 'rgba(255, 255, 255, 0.2)',
+      whiteHover: 'rgba(255, 255, 255, 0.3)',
+      activeMenuItem: 'rgba(255, 255, 255, 0.08)',
     },
     action: {
       disabledBackground: '#a9a9a9',
@@ -46,6 +56,8 @@ const theme = createTheme({
       secondary: '#B0B0B0',
       placeholder: 'rgba(255, 255, 255, 0.4)',
       disabled: 'rgba(255, 255, 255, 0.5)',
+      muted: 'rgba(255, 255, 255, 0.6)',
+      inactive: 'rgba(255, 255, 255, 0.2)',
     },
     customBorders: {
       calendar: '2px solid #2c2e5bba',
@@ -58,6 +70,7 @@ const theme = createTheme({
       genderSelect: '1.5px solid #6C63FF', 
       sidebar: '1px solid rgba(255, 255, 255, 0.05)', 
       primaryMain: '1px solid rgba(255, 181, 80, 0.5)',
+      inputHover: '1px solid rgba(255, 255, 255, 0.3)',
     },
     customShadows: {
       card: '#787ff6', 
@@ -88,6 +101,7 @@ const theme = createTheme({
     inputField: 'linear-gradient(180deg, #1b1c37 0%, #11122b 100%)',
     menuMobile: 'linear-gradient(180deg, #1b1c37 100%, #272951 0%)',
     sidebar: 'linear-gradient(180deg, #1b1c37 0%, #121229 100%)',
+    comboboxMenu: 'linear-gradient(180deg, #1b1c37 100%, #a0a3de 0%)',
   },
   typography: {
     fontFamily: "'Montserrat', sans-serif",

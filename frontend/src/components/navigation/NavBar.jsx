@@ -303,7 +303,7 @@ function NavBar() {
                     color: 'secondary.main',
                     transition: '0.2s ease-in-out',
                     '&:hover': {
-                      backgroundColor: '#ffffff00',
+                      backgroundColor: 'background.transparent',
                       color: 'secondary.blueShade',
                     },
                   }}

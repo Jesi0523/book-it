@@ -5,7 +5,7 @@ const TextInput = ({
   type = "text",
   placeholder = "lorem ipsum",
   height = "auto",
-  background = "#0c0c18",
+  background,
   border = 'secondary.main',
   borderHover = 'secondary.light',
   sx,
@@ -28,7 +28,7 @@ const TextInput = ({
             height: height,
             color: "white",
             fontFamily: "'Montserrat', sans-serif",
-            background: background,
+            background: background || 'background.paper',
 
             "& fieldset": {
               borderColor: border,
@@ -43,7 +43,7 @@ const TextInput = ({
             },
 
             "& input::placeholder, & textarea::placeholder": {
-              color: "rgba(255, 255, 255, 0.4)",
+              color: "text.placeholder",
               opacity: 1,
             },
 

@@ -130,11 +130,11 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
                 px: 2.5,
                 backgroundColor:
                   location.pathname === item.path
-                    ? 'rgba(255, 255, 255, 0.08)'
+                    ? 'background.activeMenuItem'
                     : 'transparent',
-                borderLeft:
+                borderLeft: (theme) =>
                   location.pathname === item.path
-                    ? '4px solid #ffb74d'
+                    ? `4px solid ${theme.palette.primary.light}`
                     : '4px solid transparent',
               }}
             >
@@ -143,7 +143,10 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
                   minWidth: 0,
                   mr: 3,
                   justifyContent: 'center',
-                  color: location.pathname === item.path ? '#ffb74d' : 'white',
+                  color:
+                    location.pathname === item.path
+                      ? 'primary.light'
+                      : 'text.primary',
                 }}
               >
                 {item.icon}
@@ -181,8 +184,8 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
             px: isExpanded ? 2.5 : 0,
             justifyContent: 'flex-start',
             borderRadius: isExpanded ? '24px' : '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+            backgroundColor: 'background.hoverLighter',
+            '&:hover': { backgroundColor: 'background.hoverLight' },
             transition: 'all 0.3s ease',
             overflow: 'hidden',
           }}

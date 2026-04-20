@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import MuiLink from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -18,6 +19,7 @@ import GenderSelect from '@/components/form/GenderSelect';
 import DateInput from '@/components/form/DateInput';
 
 function Signup() {
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -34,7 +36,7 @@ function Signup() {
   return (
     <>
       <Card
-        bg='linear-gradient(180deg, #0c0c18 0%, #060511 100%)'
+        bg={theme.customGradients.mainBackground}
         brRadius='12px'
         showShadow={true}
         offset={12}

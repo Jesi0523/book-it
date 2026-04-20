@@ -79,7 +79,6 @@ const Services = () => {
     setServices(updatedServices);
 
     toastNeutral('Servicio eliminado del catálogo.', 'service-delete-toast');
-
   };
 
   // Funcion guardar servicio
@@ -117,8 +116,8 @@ const Services = () => {
               onClick={() => setServicioEditando(null)}
               sx={{
                 color: 'white',
-                backgroundColor: 'rgba(255,255,255,0.05)',
-                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+                backgroundColor: 'background.hoverLighter',
+                '&:hover': { backgroundColor: 'background.hoverLight' },
                 width: 40,
                 height: 40,
               }}
@@ -201,8 +200,7 @@ const Services = () => {
               mb: 4,
               '& .MuiOutlinedInput-root': {
                 color: 'white',
-                background:
-                  'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)',
+                background: (theme) => theme.customGradients.searchBar,
                 borderRadius: '50px',
                 fontFamily: "'Montserrat', sans-serif",
                 '& fieldset': { border: 'none' },
@@ -211,7 +209,7 @@ const Services = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position='start'>
-                  <SearchIcon sx={{ color: 'rgba(255,255,255,0.5)' }} />
+                  <SearchIcon sx={{ color: 'text.disabled' }} />
                 </InputAdornment>
               ),
             }}
@@ -235,7 +233,7 @@ const Services = () => {
             ) : (
               <Text
                 children='No se encontraron servicios con ese nombre.'
-                color='rgba(255,255,255,0.5)'
+                color='text.disabled'
                 align='center'
               />
             )}

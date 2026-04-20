@@ -137,7 +137,7 @@ function MyAppointments() {
         style={{
           border: 'none',
           height: '1px',
-          backgroundColor: '#cbd4ff6e',
+          backgroundColor: 'divider',
         }}
       />
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 5 }}>

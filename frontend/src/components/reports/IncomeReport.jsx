@@ -31,8 +31,8 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <Box
         sx={{
-          backgroundColor: '#1b1c37',
-          border: '1px solid #787ff6',
+          backgroundColor: 'background.serviceChip',
+          border: (theme) => theme.palette.customBorders.section,
           borderRadius: '8px',
           p: 2,
           boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
@@ -47,7 +47,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         />
         <Text
           children={`Ingresos : $${formatNumber(payload[0].value)}`}
-          color='#ffb74d'
+          color='primary.light'
           size={14}
         />
       </Box>

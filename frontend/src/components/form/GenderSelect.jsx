@@ -7,8 +7,8 @@ import Woman from '@mui/icons-material/Woman';
 
 const GenderSelect = ({
   label = 'Sexo',
-  background = '#0c0c18',
-  border = '1.5px solid #6C63FF',
+  background,
+  border,
   height = { xs: '60px', md: '80px' },
 }) => {
   const [selected, setSelected] = useState(null);
@@ -16,7 +16,7 @@ const GenderSelect = ({
   return (
     <Box
       sx={{
-        border: border,
+        border: border || ((theme) => theme.palette.customBorders.genderSelect),
         borderRadius: '30px',
         padding: '4px 12px',
         position: 'relative',
@@ -24,7 +24,7 @@ const GenderSelect = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        background: background,
+        background: background || 'background.paper',
         boxSizing: 'border-box',
       }}
     >

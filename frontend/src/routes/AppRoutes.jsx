@@ -41,7 +41,7 @@ const FallbackLoader = () => (
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
-      background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+      background: (theme) => theme.customGradients.mainBackground,
     }}
   >
     <CircularProgress color='primary' />

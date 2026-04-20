@@ -24,8 +24,8 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <Box
         sx={{
-          backgroundColor: '#1b1c37',
-          border: '1px solid #787ff6',
+          backgroundColor: 'background.serviceChip',
+          border: (theme) => theme.palette.customBorders.section,
           borderRadius: '8px',
           p: 2,
           boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         />
         <Text
           children={`Citas realizadas : ${payload[0].value}`}
-          color='#ffb74d'
+          color='primary.light'
           size={14}
         />
       </Box>
@@ -56,11 +56,31 @@ const ProductivityReport = ({ mes, anio }) => {
   const dataDinamica = useMemo(() => {
     if (mes === 'Enero' && anio === '2026') {
       return [
-        { empleado: 'Empleado 1', citas: 5, color: coloresEmpleados[0] },
-        { empleado: 'Empleado 2', citas: 15, color: coloresEmpleados[1] },
-        { empleado: 'Empleado 3', citas: 23, color: coloresEmpleados[2] },
-        { empleado: 'Empleado 4', citas: 16, color: coloresEmpleados[3] },
-        { empleado: 'Empleado 5', citas: 27, color: coloresEmpleados[4] },
+        {
+          empleado: 'Empleado 1',
+          citas: 5,
+          color: theme.customCharts.barMixed[0],
+        },
+        {
+          empleado: 'Empleado 2',
+          citas: 15,
+          color: theme.customCharts.barMixed[1],
+        },
+        {
+          empleado: 'Empleado 3',
+          citas: 23,
+          color: theme.customCharts.barMixed[2],
+        },
+        {
+          empleado: 'Empleado 4',
+          citas: 16,
+          color: theme.customCharts.barMixed[3],
+        },
+        {
+          empleado: 'Empleado 5',
+          citas: 27,
+          color: theme.customCharts.barMixed[4],
+        },
       ];
     }
     return Array.from({ length: 12 }).map((_, index) => ({
@@ -182,7 +202,7 @@ const ProductivityReport = ({ mes, anio }) => {
               borderRadius: '10px',
             },
             '&::-webkit-scrollbar-thumb': {
-              background: '#ffb74d',
+              background: (theme) => theme.palette.primary.light,
               borderRadius: '10px',
             },
             pb: 1,

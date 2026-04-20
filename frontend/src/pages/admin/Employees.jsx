@@ -145,8 +145,8 @@ const Employees = () => {
               onClick={() => setEmpleadoEditando(null)}
               sx={{
                 color: 'white',
-                backgroundColor: 'rgba(255,255,255,0.05)',
-                '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
+                backgroundColor: 'background.hoverLighter',
+                '&:hover': { backgroundColor: 'background.hoverLight' },
                 width: 40,
                 height: 40,
               }}
@@ -225,8 +225,7 @@ const Employees = () => {
               mb: 4,
               '& .MuiOutlinedInput-root': {
                 color: 'white',
-                background:
-                  'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)',
+                background: (theme) => theme.customGradients.searchBar,
                 borderRadius: '50px',
                 fontFamily: "'Montserrat', sans-serif",
                 '& fieldset': { border: 'none' },

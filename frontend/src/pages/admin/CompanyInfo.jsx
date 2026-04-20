@@ -135,7 +135,7 @@ const CompanyInfo = () => {
         sx={{
           p: { xs: 2, md: 4 },
           borderRadius: '16px',
-          border: `1px solid #787ff6`,
+          border: (theme) => theme.palette.customBorders.section,
         }}
       >
         <ScheduleSection
@@ -149,7 +149,7 @@ const CompanyInfo = () => {
         sx={{
           p: { xs: 2, md: 4 },
           borderRadius: '16px',
-          border: `1px solid #787ff6`,
+          border: (theme) => theme.palette.customBorders.section,
         }}
       >
         <CompanyGallerySection
@@ -168,8 +168,10 @@ const CompanyInfo = () => {
           onClick={handleSave}
           disabled={isSaving}
           sx={{
-            backgroundColor: isSaving ? '#a9a9a9' : '#ffb74d',
-            color: isSaving ? '#666' : '#000',
+            backgroundColor: isSaving
+              ? 'action.disabledBackground'
+              : 'primary.light',
+            color: isSaving ? 'action.disabled' : 'primary.contrastText',
             px: 8,
             cursor: isSaving ? 'not-allowed' : 'pointer',
             transition: 'all 0.3s ease',

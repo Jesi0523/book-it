@@ -63,7 +63,7 @@ const Reports = () => {
   const selectMenuProps = {
     PaperProps: {
       sx: {
-        backgroundColor: '#1b1c37',
+        backgroundColor: 'background.serviceChip',
         color: 'white',
         '& .MuiMenuItem-root:hover': {
           backgroundColor: 'rgba(255, 183, 77, 0.2)',
@@ -76,13 +76,13 @@ const Reports = () => {
   };
 
   const selectEstilos = {
-    backgroundColor: '#1b1c37',
+    backgroundColor: 'background.serviceChip',
     color: 'white',
     borderRadius: '50px',
     height: '40px',
     px: 1,
     '& fieldset': { border: 'none' },
-    '& .MuiSvgIcon-root': { color: '#ffb74d' },
+    '& .MuiSvgIcon-root': { color: 'primary.light' },
   };
 
   return (
@@ -121,9 +121,9 @@ const Reports = () => {
               py: 2,
               px: { xs: 2, md: 3 },
               cursor: 'pointer',
-              borderBottom:
+              borderBottom: (theme) =>
                 activeTab === index
-                  ? '3px solid #ffb74d'
+                  ? `3px solid ${theme.palette.primary.light}`
                   : '3px solid transparent',
               transition: 'all 0.3s ease',
               whiteSpace: 'nowrap',
@@ -150,7 +150,7 @@ const Reports = () => {
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Text children='Selecciona un mes' color='#ffb74d' size={20} />
+          <Text children='Selecciona un mes' color='primary.light' size={20} />
           <Select
             value={mesFiltro}
             onChange={(e) => setMesFiltro(e.target.value)}
@@ -166,7 +166,7 @@ const Reports = () => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Text children='Selecciona un año' color='#ffb74d' size={20} />
+          <Text children='Selecciona un año' color='primary.light' size={20} />
           <Select
             value={anioFiltro}
             onChange={(e) => setAnioFiltro(e.target.value)}

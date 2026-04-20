@@ -81,7 +81,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
       isNew
         ? 'Servicio agregado correctamente.'
         : 'Servicio actualizado correctamente.',
-      'service-save-toast'
+      'service-save-toast',
     );
 
     setIsSaving(false);
@@ -141,7 +141,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               size={{ xs: '14px', md: '16px' }}
               sx={{
                 backgroundColor: 'primary.light',
-                color: '#000',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 alignItems: 'center',
@@ -225,13 +225,16 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               MenuProps: {
                 PaperProps: {
                   sx: {
-                    backgroundColor: '#1b1c37',
+                    backgroundColor: (theme) =>
+                      theme.palette.background.serviceChip,
                     color: 'white',
                     '& .MuiMenuItem-root:hover': {
-                      backgroundColor: 'rgba(255, 183, 77, 0.2)',
+                      backgroundColor: (theme) =>
+                        theme.palette.background.menuHover,
                     },
                     '& .Mui-selected': {
-                      backgroundColor: 'rgba(255, 183, 77, 0.4) !important',
+                      backgroundColor: (theme) =>
+                        `${theme.palette.background.menuSelected} !important`,
                     },
                   },
                 },
@@ -254,8 +257,10 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
           onClick={handleSubmit}
           disabled={isSaving}
           sx={{
-            backgroundColor: isSaving ? '#a9a9a9' : '#ffb74d',
-            color: isSaving ? '#666' : '#000',
+            backgroundColor: isSaving
+              ? 'action.disabledBackground'
+              : 'primary.light',
+            color: isSaving ? 'action.disabled' : 'primary.contrastText',
             px: 8,
             cursor: isSaving ? 'not-allowed' : 'pointer',
             transition: 'all 0.3s ease',

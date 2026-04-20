@@ -46,7 +46,7 @@ const Suspensions = () => {
   const selectMenuProps = {
     PaperProps: {
       sx: {
-        backgroundColor: '#1b1c37',
+        backgroundColor: 'background.serviceChip',
         color: 'white',
         '& .MuiMenuItem-root:hover': {
           backgroundColor: 'rgba(255, 183, 77, 0.2)',
@@ -59,12 +59,12 @@ const Suspensions = () => {
   };
 
   const selectEstilos = {
-    backgroundColor: '#1b1c37',
+    backgroundColor: 'background.serviceChip',
     color: 'white',
     borderRadius: '8px',
     height: '45px',
     '& fieldset': { border: 'none' },
-    '& .MuiSvgIcon-root': { color: '#ffb74d' },
+    '& .MuiSvgIcon-root': { color: 'primary.light' },
   };
 
   return (

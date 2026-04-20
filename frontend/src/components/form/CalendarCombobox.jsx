@@ -73,16 +73,16 @@ const CalendarCombobox = ({
           PaperProps: {
             style: { maxHeight: ITEM_HEIGHT * 6 + ITEM_PADDING_TOP },
             sx: {
-              background: '#1b1c37',
+              background: (theme) => theme.palette.background.serviceChip,
               color: 'text.primary',
               '& .MuiMenuItem-root:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'background.hoverLight',
               },
               '& .MuiMenuItem-root.Mui-selected': {
-                backgroundColor: 'rgba(255, 255, 255, 0.2) !important',
+                backgroundColor: (theme) => `${theme.palette.background.whiteSelected} !important`,
               },
               '& .MuiMenuItem-root.Mui-selected:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.3) !important',
+                backgroundColor: (theme) => `${theme.palette.background.whiteHover} !important`,
               },
             },
           },

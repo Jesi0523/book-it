@@ -121,9 +121,9 @@ const SuspensionForm = ({
                 MenuProps={selectMenuProps}
                 sx={{
                   flex: 1,
-                  backgroundColor: '#1b1c37',
+                  backgroundColor: 'background.serviceChip',
                   borderRadius: '8px',
-                  color: 'white',
+                  color: 'text.primary',
                   '& fieldset': { border: 'none' },
                   '& .MuiSelect-select': {
                     padding: '10px',
@@ -149,9 +149,9 @@ const SuspensionForm = ({
                 MenuProps={selectMenuProps}
                 sx={{
                   flex: 1,
-                  backgroundColor: '#1b1c37',
+                  backgroundColor: 'background.serviceChip',
                   borderRadius: '8px',
-                  color: 'white',
+                  color: 'text.primary',
                   '& fieldset': { border: 'none' },
                   '& .MuiSelect-select': {
                     padding: '10px',
@@ -190,7 +190,7 @@ const SuspensionForm = ({
               onClick={handleOpenSaveDialog} 
               sx={{
                 backgroundColor: 'primary.light',
-                color: '#000',
+                color: 'primary.contrastText',
                 px: 4,
                 display: 'flex',
                 gap: 1,

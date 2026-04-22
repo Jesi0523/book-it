@@ -1,9 +1,15 @@
+// React
 import React from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
+
+// Componentes propios
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 
 const NotFound = () => {
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

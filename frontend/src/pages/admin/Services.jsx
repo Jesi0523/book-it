@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastNeutral } from '@/utils/notify';
+
+// MUI
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -8,9 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AddIcon from '@mui/icons-material/Add';
-
-// Layout
-import AdminLayout from '@/layouts/AdminLayout';
 
 // Componentes propios
 import Title from '@/components/common/Title';
@@ -60,13 +62,35 @@ const dummyServicios = [
 ];
 
 const Services = () => {
-  //   Estados
+  // <--------------- ESTADOS --------------->
   const [busqueda, setBusqueda] = useState('');
   const [servicioEditando, setServicioEditando] = useState(null);
+  const [services, setServices] = useState(dummyServicios);
 
-  const serviciosFiltrados = dummyServicios.filter((serv) =>
+  // <--------------- EFFECTS --------------->
+
+  // Scroll hasta arriba al cambiar de ver servicios/agregar o editar
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, [servicioEditando]);
+
+  // <--------------- DERIVADO --------------->
+  // Buscar servicio
+  const serviciosFiltrados = services.filter((serv) =>
     serv.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
+
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion eliminar servicio
+  const handleDelete = (index) => {
+    const updatedServices = services.filter((service) => service.id !== index);
+    setServices(updatedServices);
+
+    toastNeutral('Servicio eliminado del catálogo.', 'service-delete-toast');
+  };
 
   // Funcion guardar servicio
   const handleSaveService = (serviceData) => {
@@ -74,163 +98,161 @@ const Services = () => {
     setServicioEditando(null);
   };
 
+  // <--------------- RENDER --------------->
   return (
-    <AdminLayout>
-      <Box
-        sx={{
-          p: { xs: 2, md: 5 },
-          width: '100%',
-          maxWidth: '1000px',
-          mx: 'auto',
-        }}
-      >
-        {/* Vista datos servicio / Vista lista servicios */}
-        {servicioEditando ? (
-          // Vista datos servicio
-          <Box>
-            {/* Boton de regreso y titulo */}
-            <Box
+    <Box
+      sx={{
+        p: { xs: 2, md: 5 },
+        width: '100%',
+        maxWidth: '1000px',
+        mx: 'auto',
+      }}
+    >
+      {/* Vista datos servicio / Vista lista servicios */}
+      {servicioEditando ? (
+        // Vista datos servicio
+        <Box>
+          {/* Boton de regreso y titulo */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: 4,
+              borderBottom: '2px solid rgba(255,255,255,0.1)',
+              pb: 2,
+            }}
+          >
+            {/* Boton regreso */}
+            <IconButton
+              onClick={() => setServicioEditando(null)}
               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                mb: 4,
-                borderBottom: '2px solid rgba(255,255,255,0.1)',
-                pb: 2,
+                color: 'white',
+                backgroundColor: 'background.hoverLighter',
+                '&:hover': { backgroundColor: 'background.hoverLight' },
+                width: 40,
+                height: 40,
               }}
             >
-              {/* Boton regreso */}
-              <IconButton
-                onClick={() => setServicioEditando(null)}
-                sx={{
-                  color: 'white',
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  '&:hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
-                  width: 40,
-                  height: 40,
-                }}
-              >
-                <ArrowBackIcon />
-              </IconButton>
+              <ArrowBackIcon />
+            </IconButton>
 
-              {/* Titulo */}
-              <Box
-                sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}
-              >
-                <Title
-                  children={
-                    servicioEditando.id === 'nuevo'
-                      ? 'Agregar servicio'
-                      : 'Editar servicio'
-                  }
-                  size={{ xs: '1.8rem', md: '2.2rem' }}
-                  color='white'
-                  align='center'
-                />
-              </Box>
-
-              <Box sx={{ width: 40, flexShrink: 0 }} />
-            </Box>
-
-            {/* Formulario */}
-            <Box sx={{ mt: 5 }}>
-              <ServiceForm
-                service={servicioEditando}
-                onCancel={() => setServicioEditando(null)}
-                onSave={handleSaveService}
+            {/* Titulo */}
+            <Box
+              sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}
+            >
+              <Title
+                children={
+                  servicioEditando.id === 'nuevo'
+                    ? 'Agregar servicio'
+                    : 'Editar servicio'
+                }
+                size={{ xs: '1.8rem', md: '2.2rem' }}
+                color='white'
+                align='center'
               />
             </Box>
+
+            <Box sx={{ width: 40, flexShrink: 0 }} />
           </Box>
-        ) : (
-          // Vista de la lista de servicios
-          <Box>
-            {/* Titulo y boton agregar servicio */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', md: 'row' },
-                justifyContent: 'space-between',
-                alignItems: { xs: 'center', md: 'center' },
-                gap: 2,
-                mb: 4,
-                width: '100%',
-              }}
-            >
-              {/* Titulo */}
-              <Box
-                sx={{ flexGrow: 1, textAlign: { xs: 'center', md: 'left' } }}
-              >
-                <Title
-                  children='Gestión de servicios'
-                  size={{ xs: '1.8rem', md: '2.5rem' }}
-                  color='white'
-                  align={{ xs: 'center', md: 'left' }}
-                />
-              </Box>
 
-              {/* Agregar servicio */}
-              <MainButton
-                size={{ xs: '14px', md: '16px' }}
-                onClick={() => setServicioEditando({ id: 'nuevo' })}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <AddIcon fontSize='small' /> Agregar servicio
-                </Box>
-              </MainButton>
-            </Box>
-
-            {/* Buscar servicio */}
-            <TextField
-              fullWidth
-              placeholder='Buscar servicio por nombre...'
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              sx={{
-                mb: 4,
-                '& .MuiOutlinedInput-root': {
-                  color: 'white',
-                  background:
-                    'linear-gradient(180deg, #2c2e5b 0%, #1c1e51d3 100%)',
-                  borderRadius: '50px',
-                  fontFamily: "'Montserrat', sans-serif",
-                  '& fieldset': { border: 'none' },
-                },
-              }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <SearchIcon sx={{ color: 'rgba(255,255,255,0.5)' }} />
-                  </InputAdornment>
-                ),
-              }}
+          {/* Formulario */}
+          <Box sx={{ mt: 5 }}>
+            <ServiceForm
+              service={servicioEditando}
+              onCancel={() => setServicioEditando(null)}
+              onSave={handleSaveService}
+              isEditing={servicioEditando.id === 'nuevo' ? true : false}
             />
-
-            {/* Lista de servicios */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {serviciosFiltrados.length > 0 ? (
-                serviciosFiltrados.map((servicio) => (
-                  <Collapsable
-                    key={servicio.id}
-                    headerContent={<ServiceHeader service={servicio} />}
-                  >
-                    <ServiceBody
-                      service={servicio}
-                      onEdit={setServicioEditando}
-                    />
-                  </Collapsable>
-                ))
-              ) : (
-                <Text
-                  children='No se encontraron servicios con ese nombre.'
-                  color='rgba(255,255,255,0.5)'
-                  align='center'
-                />
-              )}
-            </Box>
           </Box>
-        )}
-      </Box>
-    </AdminLayout>
+        </Box>
+      ) : (
+        // Vista de la lista de servicios
+        <Box>
+          {/* Titulo y boton agregar servicio */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { xs: 'center', md: 'center' },
+              gap: 2,
+              mb: 4,
+              width: '100%',
+            }}
+          >
+            {/* Titulo */}
+            <Box sx={{ flexGrow: 1, textAlign: { xs: 'center', md: 'left' } }}>
+              <Title
+                children='Gestión de servicios'
+                size={{ xs: '1.8rem', md: '2.5rem' }}
+                color='white'
+                align={{ xs: 'center', md: 'left' }}
+              />
+            </Box>
+
+            {/* Agregar servicio */}
+            <MainButton
+              size={{ xs: '14px', md: '16px' }}
+              onClick={() => setServicioEditando({ id: 'nuevo' })}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <AddIcon fontSize='small' /> Agregar servicio
+              </Box>
+            </MainButton>
+          </Box>
+
+          {/* Buscar servicio */}
+          <TextField
+            fullWidth
+            placeholder='Buscar servicio por nombre...'
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            sx={{
+              mb: 4,
+              '& .MuiOutlinedInput-root': {
+                color: 'white',
+                background: (theme) => theme.customGradients.searchBar,
+                borderRadius: '50px',
+                fontFamily: "'Montserrat', sans-serif",
+                '& fieldset': { border: 'none' },
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <SearchIcon sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          {/* Lista de servicios */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {serviciosFiltrados.length > 0 ? (
+              serviciosFiltrados.map((servicio) => (
+                <Collapsable
+                  key={servicio.id}
+                  headerContent={<ServiceHeader service={servicio} />}
+                >
+                  <ServiceBody
+                    service={servicio}
+                    onEdit={setServicioEditando}
+                    onDeleteConfirm={() => handleDelete(servicio.id)}
+                  />
+                </Collapsable>
+              ))
+            ) : (
+              <Text
+                children='No se encontraron servicios con ese nombre.'
+                color='text.disabled'
+                align='center'
+              />
+            )}
+          </Box>
+        </Box>
+      )}
+    </Box>
   );
 };
 

@@ -1,15 +1,19 @@
+// React
+import { useLocation } from 'react-router-dom';
+
+// MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
+// SWIPER
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+
 // ************** componentes propios :3 **************
-// |  layout
-import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import MainButton from '@/components/common/MainButton';
 import TextWIcon from '@/components/common/TextWIcon';
@@ -30,7 +34,7 @@ import LocationIcon from '@mui/icons-material/LocationOnRounded';
 import PhoneIcon from '@mui/icons-material/PhoneRounded';
 import EmailIcon from '@mui/icons-material/EmailRounded';
 
-//NOTA: Datos de ejemplo, eliminar después
+//NOTA: Datos de ejemplo, eliminar despues
 const serviciesInfoDummy = [
   {
     id: 1,
@@ -71,8 +75,13 @@ const imageDummy = [
 // ***********************************
 
 function MainPage() {
+  // <--------------- CONTEXTO --------------->
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
+  // <--------------- RENDER --------------->
   return (
-    <ClientLayout>
+    <>
       {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
       <Box sx={{ position: 'relative' }}>
         <Box
@@ -99,18 +108,15 @@ function MainPage() {
             flexDirection: 'column',
           }}
         >
+          {/* Empresa */}
           <Title children='Empresa' align='center' color='text.primary' />
+          
+          {/* Slogan */}
           <Text
             children='Slogan'
             align='center'
             color='primary.main'
             size='20'
-          />
-          <Text
-            children='Descripción breve'
-            align='center'
-            color='text.primary'
-            size='18'
           />
         </Box>
 
@@ -144,34 +150,49 @@ function MainPage() {
       {/* Info central */}
       <Box
         sx={{
-          background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          background: (theme) => theme.customGradients.mainBackground,
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
+          py: { xs: 0, md: 2 },
         }}
       >
         <Grid
           container
-          spacing={{ xs: 5, md: 10 }}
+          spacing={{ xs: 5, md: 4, lg: 10 }}
           sx={{
-            p: { xs: 5, md: 15 },
-            maxWidth: '1536px',
+            p: { xs: 5, md: 6, lg: 10 },
+            maxWidth: '1300px',
             width: '100%',
           }}
         >
+          {/* Imagen */}
           <Grid
             size={{ xs: 12, md: 4 }}
-            sx={{ display: 'flex', justifyContent: 'center' }}
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
             <Box
               component='img'
               src={mainPhoto}
-              sx={{ height: { xs: '180px', md: '220px' }, padding: '2%' }}
+              sx={{
+                width: '100%',
+                maxWidth: { xs: '250px', md: '100%' },
+                height: 'auto',
+              }}
             />
           </Grid>
+
+          {/* Descripcion */}
           <Grid
             size={{ xs: 12, md: 8 }}
-            sx={{ display: 'flex', alignItems: 'center' }}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
           >
             <Text
               align='justify'
@@ -187,7 +208,7 @@ function MainPage() {
       <Box
         sx={{
           width: '100%',
-          background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          background: (theme) => theme.customGradients.mainBackground,
           display: 'flex',
           justifyContent: 'center',
           py: { xs: 6, md: 6 },
@@ -196,12 +217,22 @@ function MainPage() {
         <Box
           sx={{
             width: '100%',
-            maxWidth: '1536px',
-            px: { xs: 2, md: 6 },
+            maxWidth: '1300px',
+            px: { xs: 6, md: 8, lg: 12 },
+            position: 'relative', 
+            '.swiper': {
+              position: 'static', 
+            },
             '.swiper-button-next, .swiper-button-prev': {
               color: 'text.secondary',
               transition: '0.2s ease-in-out',
               '&:hover': { color: 'text.primary', transform: 'scale(1.1)' },
+            },
+            '.swiper-button-prev': {
+              left: { xs: '5px', md: '10px', lg: '20px' }, 
+            },
+            '.swiper-button-next': {
+              right: { xs: '5px', md: '10px', lg: '20px' }, 
             },
           }}
         >
@@ -209,7 +240,6 @@ function MainPage() {
             modules={[Navigation]}
             spaceBetween={0}
             navigation={true}
-            // lo de abajo es para el responsive
             breakpoints={{
               0: { slidesPerView: 1 },
               600: { slidesPerView: 2 },
@@ -237,19 +267,31 @@ function MainPage() {
           display: 'flex',
           justifyContent: 'center',
           py: 5,
-          background: 'linear-gradient(180deg, #0c0c18 0%, #060511 100%)',
+          background: (theme) => theme.customGradients.mainBackground,
           width: '100%',
         }}
       >
-        <MainButton href='/bookAppointment'>
-          Agenda tu cita <CalendarIcon />
-        </MainButton>
+        {isLanding ? (
+          // Landing Page
+          <>
+            <MainButton to='/login'>
+              Agenda tu cita <CalendarIcon />
+            </MainButton>
+          </>
+        ) : (
+          // Main Page
+          <>
+            <MainButton to='/book-appointment'>
+              Agenda tu cita <CalendarIcon />
+            </MainButton>
+          </>
+        )}
       </Box>
 
       {/* ****** footer *****  */}
       <Box
         sx={{
-          background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)',
+          background: (theme) => theme.customGradients.navbar,
           p: 3,
           mt: 'auto',
           width: '100%',
@@ -260,19 +302,23 @@ function MainPage() {
         </Box>
         <Grid container sx={{ justifyContent: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }}>
+            {/* Direccion */}
             <TextWIcon
               icon={<LocationIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
               text='Dirección de la empresa'
             />
+            {/* Telefono */}
             <TextWIcon
               icon={<PhoneIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
               text='Teléfono de la empresa'
             />
+            {/* Correo */}
             <TextWIcon
               icon={<EmailIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
               text='Correo electrónico'
             />
           </Grid>
+          {/* Horario */}
           <Grid size={{ xs: 12, md: 6 }}>
             <TextWIcon
               icon={<CalendarIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
@@ -289,7 +335,7 @@ function MainPage() {
           </Grid>
         </Grid>
       </Box>
-    </ClientLayout>
+    </>
   );
 }
 

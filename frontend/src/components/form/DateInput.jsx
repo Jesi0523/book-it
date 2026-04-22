@@ -12,15 +12,17 @@ const DateInput = ({ label = "Fecha de nacimiento" }) => {
         fontSize: '14px',
         '& .MuiOutlinedInput-root': 
         {
-          backgroundColor: '#0c0c18',
+          bgcolor: 'background.paper',
           borderRadius: '35px',
           color: 'white',
           height: '85px',
           '& fieldset': { borderColor: 'secondary.main', borderWidth: '1.5px' },
-          
+          '&:hover fieldset': { 
+            borderColor: 'secondary.blueShade',
+          },
           '& input': 
           {
-            backgroundColor: '#16162b',
+            backgroundColor: 'background.inputInner',
             margin: '24px 15px 5px 15px',
             padding: '8px 0',
             textAlign: 'center',

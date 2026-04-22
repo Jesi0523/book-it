@@ -29,17 +29,16 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
 
 - **src**: Código fuente
     - **assets**: Contenido multimedia
-
-    - **api**: Conectar el frontend con la carpeta de backend
-    - **components**: Componentes reutilizables
-
+    - **api**: Conecta el frontend con la carpeta de backend
+    - **components**: Componentes reutilizables de React que forman parte de la interfaz gráfica
     - **context**: Guarda el estado del usuario, es decir, si esta logueado o no
     - **layouts**: Plantillas que se pueden usar en varias páginas
     - **pages**: Páginas principales de la aplicación
     - **routes**: Ruta de navegación de cada página
-    - **styles**: Estilos globales
-    - **theme**: Configuración de estilos y tema para MUI
-
+    - **styles**: Estilos globales para la estructura base y tipografías del proyecto
+    - **theme**: Configuración de estilos para MUI (paleta de colores, gradientes y bordes)
+    - **utils**: Funciones reutilizables sin interfaz que facilitan las tareas dentro del proyecto.
+  
 ## Backend & Base de Datos
 
 ### Configuración del Entorno
@@ -104,30 +103,12 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
 2. **Instala las dependencias**
 
     ```bash
-    npm install react-router-dom react-hot-toast @mui/material @emotion/react @emotion/styled @mui/icons-material axios react-hook-form zod @hookform/resolvers jwt-decode
+    npm install react-router-dom react-hot-toast @mui/material @emotion/react @emotion/styled @mui/icons-material axios react-hook-form zod @hookform/resolvers jwt-decode swiper @mui/x-date-pickers dayjs recharts
     ```
 
-3. **Instala las librerias**
+3.  **Configura las Variables de Entorno**
 
-- Ejecuten este comando desde el front para instalar el carrusel que se usa para las fotos del main
-
-    ```bash
-    npm install swiper
-    ```
-
-- Ejecuten este comando desde el front para instalar lo necesario para el calendario
-
-    ```bash
-    npm install @mui/x-date-pickers@^8.0.0
-    npm install dayjs
-    ```
-
-    - El primero es para los estilos
-    - El segundo es para el manejo de fechas en cosas como mostrar la fecha recuperada, el parse, etc
-
-4.  **Configura las Variables de Entorno**
-
-    Crea un archivo `.env` dentro de la carpeta **frontend** (pueden usar `.envEjemplo` como base).
+    Crea un archivo `.env` dentro de la carpeta **frontend** y usa las variables que se encuentran en `.envEjemplo`.
 
 ### Ejecución Local
 

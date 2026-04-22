@@ -1,4 +1,11 @@
+// React
 import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastNeutral } from '@/utils/notify';
+
+// MUI
+import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -11,29 +18,57 @@ import MenuItem from '@mui/material/MenuItem';
 import CloseIcon from '@mui/icons-material/Close';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
+import BaseDialog from '@/components/common/BaseDialog';
+
+// <--------------- CONSTANTES --------------->
+const OPCIONES_ESTADO = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
 
 const AppointmentModal = ({ open, onClose, appointment }) => {
-  const [estadoCita, setEstadoCita] = useState('Pendiente');
+  // <--------------- CONTEXTO --------------->
+  const theme = useTheme();
 
+  // <--------------- ESTADOS --------------->
+  const [estadoCita, setEstadoCita] = useState('Pendiente');
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+
+  // <--------------- EFFECTS --------------->
+
+  // Sincroniza el estado local con la cita recibida
   useEffect(() => {
     if (appointment) {
-      setEstadoCita(appointment.status?.name || appointment.status || 'Pendiente');
+      setEstadoCita(
+        appointment.status?.name || appointment.status || 'Pendiente',
+      );
     }
   }, [appointment]);
 
+  // <--------------- FUNCIONES --------------->
+
+  // Abre el dialogo de cancelacion
+  const handleOpenCancelDialog = () => setIsCancelDialogOpen(true);
+
+  // Funcion que cierra el dialogo de cancelar cita
+  const handleCloseCancelDialog = (hasAccepted) => {
+    setIsCancelDialogOpen(false);
+
+    if (hasAccepted) {
+      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+
+      onClose();
+    }
+  };
+
+  // <--------------- EARLY RETURN --------------->
   if (!appointment) return null;
 
-  const colorTarjeta = '#1b1c37';
-  const colorNaranja = '#ffb74d';
-  
-  const opcionesEstado = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
-
+  // <--------------- RENDER --------------->
   return (
     <Dialog
       open={open}
@@ -42,63 +77,113 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       fullWidth
       PaperProps={{
         sx: {
-          backgroundColor: '#060511',
-          backgroundImage: 'none', 
+          backgroundColor: 'background.default',
+          backgroundImage: 'none',
           borderRadius: '16px',
           p: { xs: 3, md: 4 },
           position: 'relative',
-          border: '1px solid #787ff6',
+          border: (theme) => theme.palette.customBorders.section,
         },
       }}
     >
       {/* Titulo y boton de cerrar */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-        <Title children={appointment.title || 'SERVICIO 1'} color='white' size={{ xs: '24px', md: '32px' }} />
-        <IconButton onClick={onClose} sx={{ backgroundColor: colorNaranja, color: '#000', '&:hover': { backgroundColor: '#ffa726' }, width: 40, height: 40, flexShrink: 0 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          mb: 2,
+        }}
+      >
+        {/* Titulo */}
+        <Title
+          children={appointment.title || 'SERVICIO 1'}
+          color='white'
+          size={{ xs: '24px', md: '32px' }}
+        />
+        {/* Boton cerrar */}
+        <IconButton
+          onClick={onClose}
+          sx={{
+            backgroundColor: 'primary.light',
+            color: 'primary.contrastText',
+            '&:hover': { backgroundColor: 'primary.main' },
+            width: 40,
+            height: 40,
+            flexShrink: 0,
+          }}
+        >
           <CloseIcon sx={{ fontSize: '24px', strokeWidth: 2 }} />
         </IconButton>
       </Box>
 
       {/* Fecha y estado de la cita */}
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'center', sm: 'center' }, gap: 2, mb: 3 }}>
-        <Box sx={{ borderBottom: `1px solid ${colorNaranja}`, pb: 0.5, width: 'fit-content' }}>
-          <Text children={appointment.dateStr || 'Febrero 11, 2026 9:00am a 10:00am.'} color={colorNaranja} size='16px' />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'center', sm: 'center' },
+          gap: 2,
+          mb: 3,
+        }}
+      >
+        {/* Fecha */}
+        <Box
+          sx={{
+            borderBottom: (theme) => `1px solid ${theme.palette.primary.light}`,
+            pb: 0.5,
+            width: 'fit-content',
+          }}
+        >
+          <Text
+            children={appointment.dateStr || 'Febrero 11, 2026 9:00 a 10:00.'}
+            color='primary.light'
+            size='16px'
+          />
         </Box>
-        
+
+        {/* Estado de la cita */}
         <Select
           value={estadoCita}
           onChange={(e) => setEstadoCita(e.target.value)}
-          IconComponent={() => <ArrowDropDownIcon sx={{ color: colorNaranja, mr: 1, pointerEvents: 'none' }} />}
+          IconComponent={() => (
+            <ArrowDropDownIcon
+              sx={{ color: 'primary.light', mr: 1, pointerEvents: 'none' }}
+            />
+          )}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <QueryBuilderIcon sx={{ color: 'white', fontSize: '20px' }} />
               <Text children='Estado:' color='white' size='16px' />
-              <Text children={selected} color={colorNaranja} size='16px' />
+              <Text children={selected} color='primary.light' size='16px' />
             </Box>
           )}
           MenuProps={{
             PaperProps: {
               sx: {
-                backgroundColor: '#00011e',
-                color: 'white',
+                backgroundColor: 'background.modalMenu',
+                color: 'text.primary',
                 borderRadius: '12px',
                 mt: 1,
                 border: '1px solid rgba(255,255,255,0.1)',
                 '& .MuiMenuItem-root': {
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: '15px'
+                  fontSize: '15px',
                 },
-                '& .MuiMenuItem-root:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-                '& .MuiMenuItem-root.Mui-selected': { 
-                  backgroundColor: 'rgba(255, 255, 255, 0.15) !important', 
-                  color: colorNaranja,
-                  fontWeight: 'bold'
+                '& .MuiMenuItem-root:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
                 },
-              }
-            }
+                '& .MuiMenuItem-root.Mui-selected': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.15) !important',
+                  color: 'primary.light',
+                  fontWeight: 'bold',
+                },
+              },
+            },
           }}
           sx={{
-            backgroundColor: colorTarjeta,
+            backgroundColor: 'background.serviceChip',
             borderRadius: '50px',
             width: 'fit-content',
             '& .MuiSelect-select': {
@@ -111,80 +196,189 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
             '& fieldset': { border: 'none' },
           }}
         >
-          {opcionesEstado.map((opcion) => (
+          {OPCIONES_ESTADO.map((opcion) => (
             <MenuItem key={opcion} value={opcion}>
               {opcion}
             </MenuItem>
           ))}
         </Select>
-
       </Box>
 
       {/* Empleado y precio */}
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'center', sm: 'center' }, gap: 2, mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'center', sm: 'center' },
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        {/* Empleado */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Avatar src={appointment.employ?.foto} sx={{ width: 40, height: 40 }} />
-          <Text children={appointment.employ?.name || 'Empleado 1'} color='white' size='18px' />
+          <Avatar
+            src={appointment.employee?.foto}
+            sx={{ width: 40, height: 40 }}
+          />
+          <Text
+            children={appointment.employee?.name || 'Empleado 1'}
+            color='white'
+            size='18px'
+          />
         </Box>
+
+        {/* Precio */}
         <Box>
-          <SimpleInfoDisplay title='Costo: ' text={appointment.price || '$$$$'} align='center' width='fit-content' textWeight='bold' titleWeight='normal' titleSize='18px' textSize='20px' titleColor='white' textColor='white' background={colorTarjeta} border='none' />
+          <SimpleInfoDisplay
+            title='Costo: '
+            text={appointment.price || '$$$$'}
+            align='center'
+            width='fit-content'
+            textWeight='bold'
+            titleWeight='normal'
+            titleSize='18px'
+            textSize='20px'
+            titleColor='white'
+            textColor='white'
+            background={theme.palette.background.serviceChip}
+            border='none'
+          />
         </Box>
       </Box>
 
       {/* Datos del cliente */}
       <Box sx={{ mt: 1 }}>
-        <Text children='Datos del cliente' color={colorNaranja} size='20' fontWeight='bold' />
+        <Text
+          children='Datos del cliente'
+          color='primary.light'
+          size='20'
+          fontWeight='bold'
+        />
 
-        <Box sx={{ p: 0, mt: 2, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-          
+        <Box
+          sx={{
+            p: 0,
+            mt: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2.5,
+          }}
+        >
           <Grid container spacing={{ xs: 2, md: 5 }}>
             <Grid size={{ xs: 12, md: 9 }}>
+              {/* Nombre */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                <Text children='Nombre Completo' color='primary.main' size='14' />
-                <SimpleInfoDisplay title={appointment.clientData?.name || appointment.client || 'John Doe'} />
+                <Text
+                  children='Nombre Completo'
+                  color='primary.main'
+                  size='14'
+                />
+                <SimpleInfoDisplay
+                  title={
+                    appointment.clientData?.name ||
+                    appointment.client ||
+                    'John Doe'
+                  }
+                />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
+              {/* Edad */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Edad' color='primary.main' size='14' />
-                <SimpleInfoDisplay title={appointment.clientData?.age || '25'} />
+                <SimpleInfoDisplay
+                  title={appointment.clientData?.age || '25'}
+                />
               </Box>
             </Grid>
           </Grid>
 
           <Grid container spacing={{ xs: 2, md: 5 }}>
             <Grid size={{ xs: 12, md: 5 }}>
+              {/* Sexo */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Sexo' color='primary.main' size='14' />
-                <SimpleInfoDisplay title={appointment.clientData?.gender || 'Masculino'} />
+                <SimpleInfoDisplay
+                  title={appointment.clientData?.gender || 'Masculino'}
+                />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 7 }}>
+              {/* Correo */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                <Text children='Correo electrónico' color='primary.main' size='14' />
-                <SimpleInfoDisplay title={appointment.clientData?.mail || 'jonD@gmail.com'} />
+                <Text
+                  children='Correo electrónico'
+                  color='primary.main'
+                  size='14'
+                />
+                <SimpleInfoDisplay
+                  title={appointment.clientData?.mail || 'jonD@gmail.com'}
+                />
               </Box>
             </Grid>
           </Grid>
 
-          <Grid container spacing={{ xs: 2, md: 5 }} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+          <Grid
+            container
+            spacing={{ xs: 2, md: 5 }}
+            sx={{ display: 'flex', alignItems: 'flex-end' }}
+          >
             <Grid size={{ xs: 12, md: 6 }}>
+              {/* Numero */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                <Text children='Número telefónico' color='primary.main' size='14' />
-                <SimpleInfoDisplay title={appointment.clientData?.phoneNumber || '81 3161 9950'} />
+                <Text
+                  children='Número telefónico'
+                  color='primary.main'
+                  size='14'
+                />
+                <SimpleInfoDisplay
+                  title={appointment.clientData?.phoneNumber || '81 3161 9950'}
+                />
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-end' } }}>
-                <MainButton size={{ xs: '14px', md: '16px' }} sx={{ mt: 1, display: 'flex', gap: 1, alignItems: 'center', backgroundColor: colorNaranja, color: '#000' }}>
+              {/* Boton cancelar cita */}
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: { xs: 'center', md: 'flex-end' },
+                }}
+              >
+                <MainButton
+                  onClick={handleOpenCancelDialog}
+                  size={{ xs: '14px', md: '16px' }}
+                  sx={{
+                    mt: 1,
+                    display: 'flex',
+                    gap: 1,
+                    alignItems: 'center',
+                    backgroundColor: 'primary.light',
+                    color: 'primary.contrastText',
+                  }}
+                >
                   <CloseIcon /> Cancelar cita
                 </MainButton>
               </Box>
             </Grid>
           </Grid>
-
         </Box>
       </Box>
+
+      {/* Dialogo */}
+      <BaseDialog
+        open={isCancelDialogOpen}
+        onClose={handleCloseCancelDialog}
+        title={'Advertencia'}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            {' '}
+            Está a punto de cancelar una cita <br />
+            <b>¿Desea continuar?</b>
+          </>
+        }
+      />
     </Dialog>
   );
 };

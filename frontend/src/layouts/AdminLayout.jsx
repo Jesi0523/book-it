@@ -1,29 +1,34 @@
+// React
 import React, { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+
+// MUI
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
+
+// Icono
 import MenuIcon from '@mui/icons-material/Menu';
 
 // Componentes
 import Sidebar from '@/components/navigation/Sidebar';
 
 // Logo
-import logo from '@/assets/principal/Logo1.webp';
+import logo from '@/assets/logo/Logo1.webp';
 
+// <--------------- CONSTANTES --------------->
 // Anchos del sidebar en PC
 const drawerWidthExpanded = 260;
 const drawerWidthCollapsed = 70;
 
-const AdminLayout = ({ children }) => {
+const AdminLayout = () => {
+  // <--------------- ESTADOS --------------->
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDesktopExpanded, setIsDesktopExpanded] = useState(false);
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
+  // <--------------- EFFECTS --------------->
   // Overlay en PC
   useEffect(() => {
     if (isDesktopExpanded) {
@@ -37,9 +42,16 @@ const AdminLayout = ({ children }) => {
     };
   }, [isDesktopExpanded]);
 
+  // <--------------- FUNCIONES --------------->
+  // Abrir/cerrar menu en cel
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  // <--------------- RENDER --------------->
   return (
     <Box
-      sx={{ display: 'flex', minHeight: '100vh', backgroundColor: '#060511' }}
+      sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}
     >
       {/* Overlay */}
       <Box
@@ -50,7 +62,7 @@ const AdminLayout = ({ children }) => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
           zIndex: 1199,
           opacity: isDesktopExpanded ? 1 : 0,
           visibility: isDesktopExpanded ? 'visible' : 'hidden',
@@ -62,7 +74,7 @@ const AdminLayout = ({ children }) => {
         position='fixed'
         sx={{
           display: { xs: 'block', md: 'none' },
-          background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)',
+          background: (theme) => theme.customGradients.navbar,
           boxShadow: 'none',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}
@@ -105,7 +117,7 @@ const AdminLayout = ({ children }) => {
             },
           }}
         >
-          <Sidebar isExpanded={true} />
+          <Sidebar isExpanded={true} onClose={() => setMobileOpen(false)} />
         </Drawer>
 
         {/* Sidebar desktop */}
@@ -127,7 +139,12 @@ const AdminLayout = ({ children }) => {
           }}
           open
         >
-          <Sidebar isExpanded={isDesktopExpanded} />
+          <Sidebar
+            isExpanded={isDesktopExpanded}
+            onClose={() =>
+              setIsDesktopExpanded(false)
+            }
+          />
         </Drawer>
       </Box>
 
@@ -136,12 +153,13 @@ const AdminLayout = ({ children }) => {
         component='main'
         sx={{
           flexGrow: 1,
-          p: 0,
+          py: { xs: 0, md: 5 },
+          px: { xs: 0, md: 5 },
           width: { xs: '100%', md: `calc(100% - ${drawerWidthCollapsed}px)` },
           mt: { xs: '64px', md: 0 },
         }}
       >
-        {children}
+        <Outlet />
       </Box>
     </Box>
   );

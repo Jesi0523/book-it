@@ -1,3 +1,4 @@
+// MUI
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 
@@ -5,6 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import Text from '@/components/common/Text';
 
 const EmployeeHeader = ({ employee }) => {
+  // <--------------- RENDER --------------->
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', px: 1 }}>
       <Avatar src={employee.foto} sx={{ width: 60, height: 60 }} />

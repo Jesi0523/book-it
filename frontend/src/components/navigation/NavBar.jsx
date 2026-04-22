@@ -1,5 +1,8 @@
-import * as React from 'react';
-import { useLocation, useNavigate} from 'react-router-dom';
+// React
+import React, { useState } from 'react';
+import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
+
+// MUI
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -31,37 +34,54 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 function NavBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+  // <--------------- CONTEXTO --------------->
   const location = useLocation();
   const navigate = useNavigate();
+
+  // <--------------- DERIVADO --------------->
   const currentPath = location.pathname;
   const isLanding = currentPath === '/';
 
-  const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
-  const handleOpenSessionDialog = () => { setOpenSessionDialog(true);};
-  const handleCloseSessionDialog = (hasAccepted) => 
-  {
-    setOpenSessionDialog(false);
-    if(hasAccepted){navigate('/login');}; 
+  // <--------------- ESTADOS --------------->
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [openSessionDialog, setOpenSessionDialog] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+  // Funcion abre menu en cel
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
   };
 
+  // Funcion cierra menu en cel
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  // Funcion abre dialogo cerrar sesion
+  const handleOpenSessionDialog = () => {
+    setOpenSessionDialog(true);
+  };
+
+  // Funcion cierra dialogo cerrar sesion
+  const handleCloseSessionDialog = (hasAccepted) => {
+    setOpenSessionDialog(false);
+    if (hasAccepted) {
+      navigate('/login');
+    }
+  };
+
+  // <--------------- RENDER --------------->  
   return (
     <AppBar
       position='fixed'
-      sx={{ background: 'linear-gradient(180deg, #121229 100%, #1b1c37 0%)' }}
+      sx={{ background: (theme) => theme.customGradients.navbar }}
     >
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           {isLanding ? (
             // Landing Page
             <>
-              <Link href='/'>
+              <Link component={RouterLink} to='/'>
                 <img
                   src={logo}
                   alt='Logo'
@@ -72,7 +92,7 @@ function NavBar() {
           ) : (
             // Main Page
             <>
-              <Link href='/main'>
+              <Link component={RouterLink} to='/main'>
                 <img
                   src={logo}
                   alt='Logo'
@@ -104,8 +124,7 @@ function NavBar() {
               sx={{
                 display: { xs: 'block', md: 'none' },
                 '.MuiMenu-paper': {
-                  background:
-                    'linear-gradient(180deg, #1b1c37 100%, #272951 0%)',
+                  background: (theme) => theme.customGradients.menuMobile,
                 },
                 '.MuiMenuItem-root': {
                   display: 'flex',
@@ -121,11 +140,21 @@ function NavBar() {
             >
               {isLanding
                 ? [
-                    <MenuItem key='login' component='a' href='/login'>
+                    <MenuItem
+                      key='login'
+                      component={RouterLink}
+                      to='/login'
+                      onClick={handleCloseNavMenu}
+                    >
                       <HowToRegIcon />
                       <Typography>Inicia sesión</Typography>
                     </MenuItem>,
-                    <MenuItem key='signup' component='a' href='/signup'>
+                    <MenuItem
+                      key='signup'
+                      component={RouterLink}
+                      to='/signup'
+                      onClick={handleCloseNavMenu}
+                    >
                       <PersonAddIcon />
                       <Typography>Regístrate</Typography>
                     </MenuItem>,
@@ -133,8 +162,9 @@ function NavBar() {
                 : [
                     <MenuItem
                       key='main'
-                      component='a'
-                      href='/main'
+                      component={RouterLink}
+                      to='/main'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/main'
@@ -146,8 +176,9 @@ function NavBar() {
                     </MenuItem>,
                     <MenuItem
                       key='book'
-                      component='a'
-                      href='/book-appointment'
+                      component={RouterLink}
+                      to='/book-appointment'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/book-appointment'
@@ -159,11 +190,12 @@ function NavBar() {
                     </MenuItem>,
                     <MenuItem
                       key='schedule'
-                      component='a'
-                      href='/my-schedule'
+                      component={RouterLink}
+                      to='/my-appointments'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/my-schedule'
+                          currentPath === '/my-appointments'
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -172,8 +204,9 @@ function NavBar() {
                     </MenuItem>,
                     <MenuItem
                       key='profile'
-                      component='a'
-                      href='/profile'
+                      component={RouterLink}
+                      to='/profile'
+                      onClick={handleCloseNavMenu}
                       sx={{
                         color:
                           currentPath === '/profile'
@@ -226,9 +259,9 @@ function NavBar() {
                 />
                 <NavOptions
                   icon={<CalendarIcon />}
-                  link='/my-schedule'
+                  link='/my-appointments'
                   text='Mis citas'
-                  isActive={currentPath === '/my-schedule'}
+                  isActive={currentPath === '/my-appointments'}
                 />
                 <NavOptions
                   icon={<UserIcon />}
@@ -278,7 +311,7 @@ function NavBar() {
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   onClick={handleOpenSessionDialog}
-                  sx={{ 
+                  sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     fontSize: '0.6rem',
@@ -287,10 +320,10 @@ function NavBar() {
                     color: 'secondary.main',
                     transition: '0.2s ease-in-out',
                     '&:hover': {
-                        backgroundColor: '#ffffff00',
-                        color: 'secondary.blueShade'
-                    }
-                  }} 
+                      backgroundColor: 'background.transparent',
+                      color: 'secondary.blueShade',
+                    },
+                  }}
                 >
                   <LogoutIcon /> Cerrar sesión
                 </Button>
@@ -299,13 +332,21 @@ function NavBar() {
           )}
         </Toolbar>
       </Container>
+
+      {/* Dialogo */}
       <BaseDialog
-        id="close-admin-session"
+        id='close-admin-session'
         open={openSessionDialog}
         onClose={handleCloseSessionDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={<> Está a punto de cerrar sesión<br/> <b>¿desea continuar?</b></>}
+        title={'Advertencia'}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            {' '}
+            Está a punto de cerrar sesión
+            <br /> <b>¿Desea continuar?</b>
+          </>
+        }
       />
     </AppBar>
   );

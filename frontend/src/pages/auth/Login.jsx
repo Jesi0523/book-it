@@ -1,10 +1,12 @@
+// React
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
+// MUI
+import { useTheme } from '@mui/material/styles';
 import MuiLink from '@mui/material/Link';
 
-import AuthLayout from '@/layouts/AuthLayout';
-
-// <---- Componentes ---->
+// <--------------- Componentes --------------->
 
 // Common
 import Card from '@/components/common/Card';
@@ -12,16 +14,22 @@ import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
 
-// Formulario
+// Form
 import TextInput from '@/components/form/TextInput';
 import PasswordInput from '@/components/form/PasswordInput';
 
 function Login() {
+  // <--------------- CONTEXTO --------------->
+  const theme = useTheme();
+  const navigate = useNavigate();
+
+  // <--------------- ESTADOS --------------->
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const navigate = useNavigate();
+  // <--------------- FUNCIONES --------------->
 
+  // Funcion boton login
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -32,52 +40,57 @@ function Login() {
     }
   };
 
+  // <--------------- RENDER --------------->
   return (
-    <AuthLayout>
-      <Card
-        bg='linear-gradient(180deg, #0c0c18 0%, #060511 100%)'
-        brRadius='12px'
-        showShadow={true}
-      >
-        <Title>Bienvenido de vuelta</Title>
-        <Text size={20}>Inicia sesión para continuar</Text>
+    <Card
+      bg={theme.customGradients.mainBackground}
+      brRadius='12px'
+      showShadow={true}
+    >
+      {/* Titulo y descripcion */}
+      <Title>Bienvenido de vuelta</Title>
+      <Text size={20}>Inicia sesión para continuar</Text>
 
-        <TextInput
-          type='email'
-          label='Correo electrónico'
-          placeholder='ejemplo@gmail.com'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <PasswordInput
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      {/* Correo */}
+      <TextInput
+        type='email'
+        label='Correo electrónico'
+        placeholder='ejemplo@gmail.com'
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-        <MainButton size={20} onClick={handleLogin}>
-          Iniciar sesión
-        </MainButton>
+      {/* Contrasena */}
+      <PasswordInput
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-        <Text align='center'>
-          ¿No tienes una cuenta?{' '}
-          <MuiLink
-            component={RouterLink}
-            to='/signup'
-            sx={{
-              color: 'primary.main',
-              fontWeight: 'bold',
-              textDecoration: 'none',
-              '&:hover': {
-                textDecoration: 'underline',
-                color: 'primary.light',
-              },
-            }}
-          >
-            Regístrate
-          </MuiLink>
-        </Text>
-      </Card>
-    </AuthLayout>
+      {/* Boton login */}
+      <MainButton size={20} onClick={handleLogin}>
+        Iniciar sesión
+      </MainButton>
+
+      {/* Redirigir signup */}
+      <Text align='center'>
+        ¿No tienes una cuenta?{' '}
+        <MuiLink
+          component={RouterLink}
+          to='/signup'
+          sx={{
+            color: 'primary.main',
+            fontWeight: 'bold',
+            textDecoration: 'none',
+            '&:hover': {
+              textDecoration: 'underline',
+              color: 'primary.light',
+            },
+          }}
+        >
+          Regístrate
+        </MuiLink>
+      </Text>
+    </Card>
   );
 }
 

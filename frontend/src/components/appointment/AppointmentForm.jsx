@@ -1,5 +1,11 @@
+// React
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+// MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 // ************** componentes propios :3 **************
 // |  common
@@ -7,10 +13,12 @@ import Title from '@/components/common/Title';
 import Calendar from '@/components/common/Calendar';
 import MainButton from '@/components/common/MainButton';
 import Text from '@/components/common/Text';
+import InfoDialog from '@/components/common/InfoDialog';
 // | formulario
 import Combobox from '@/components/form/Combobox';
 import TextInput from '@/components/form/TextInput';
 import GenderSelect from '@/components/form/GenderSelect';
+
 // ************** media dummy **************
 // |  Imagenes
 import photo from '@/assets/dummy/perfil-1.jpg';
@@ -25,7 +33,7 @@ const servicesDummy = [
   'Servicio 4',
   'Servicio 5',
 ];
-const employsDummy = [
+const employeesDummy = [
   { name: 'Oliver Hansen', pfp: photo },
   { name: 'Van Henry', pfp: photo2 },
   {
@@ -43,8 +51,33 @@ const hoursDummy = [
 // ****************************
 
 function AppointmentForm() {
-  const linearDegraded = 'linear-gradient(180deg, #2c2e5b 0%, #1c1e51 100%)';
-  const colorBorder = '2px solid #2c2e5bba';
+  // <--------------- CONTEXTO --------------->
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // <--------------- ESTADOS --------------->
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion boton agendar
+  const handleSchedule = () => {
+    setIsSuccessDialogOpen(true);
+  };
+
+  // Funcion dialogo
+  const handleCloseDialog = () => {
+    setIsSuccessDialogOpen(false);
+
+    if (location.pathname === '/admin/book-appointment') {
+      navigate('/admin/appointment-calendar');
+    } else {
+      navigate('/my-appointments');
+    }
+  };
+
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -55,12 +88,14 @@ function AppointmentForm() {
         mx: 'auto',
       }}
     >
+      {/* Titulo */}
       <Box sx={{ px: 3 }}>
         <Title children='Agenda tu cita' color='text.primary' align='center' />
       </Box>
 
-      {/* Agendar cita */}
+      {/* Seccion superior */}
       <Grid container sx={{ height: '100%', p: 2 }}>
+        {/* Calendario */}
         <Grid
           size={{ xs: 12, md: 6 }}
           sx={{
@@ -72,6 +107,7 @@ function AppointmentForm() {
           <Calendar />
         </Grid>
 
+        {/* Datos servicios */}
         <Grid
           size={{ xs: 12, md: 6 }}
           sx={{
@@ -133,11 +169,12 @@ function AppointmentForm() {
               </Box>
               <Box
                 sx={{
-                  background: linearDegraded,
+                  background: (theme) =>
+                    theme.customGradients.collapsableHeader,
                   height: '56px',
                   width: '100%',
                   borderRadius: '8px',
-                  border: colorBorder,
+                  border: (theme) => theme.palette.customBorders.form,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -166,7 +203,7 @@ function AppointmentForm() {
               }}
             >
               <Combobox
-                array={employsDummy}
+                array={employeesDummy}
                 hasImage={true}
                 placeholder='Elige un empleado'
               />
@@ -210,93 +247,101 @@ function AppointmentForm() {
           sx={{
             p: { xs: 1.5, md: 4 },
             my: 3,
-            background: linearDegraded,
+            background: (theme) => theme.customGradients.collapsableHeader,
             borderRadius: '15px',
             display: 'flex',
             flexDirection: 'column',
-            gap: { xs: 2, md: 4 }, // Separación entre la Fila 1 y la Fila 2
+            gap: { xs: 2, md: 4 },
           }}
         >
-          {/* --- FILA 1: Nombre, Edad, Teléfono --- */}
+          {/* --- Fila de nombre, edad, telefono --- */}
           <Grid container spacing={{ xs: 2, md: 3 }}>
+            {/* Nombre */}
             <Grid size={{ xs: 12, md: 5 }}>
               <TextInput
                 label='Nombre Completo'
                 placeholder='Ingrese su nombre'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
 
+            {/* Edad */}
             <Grid size={{ xs: 4, md: 2 }}>
               <TextInput
                 label='Edad'
                 placeholder='Ej: 18'
                 type='number'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
                 sx={{
-                  // Rescate para la Edad: Mantenemos el padding arriba/abajo, 
-                  // pero reducimos drásticamente los lados (a 5px) para que quepa "Ej: 18"
-                  "& .MuiInputBase-input": {
-                    padding: "28px 5px 10px 5px !important", 
-                    textAlign: "center"
-                  }
+                  '& .MuiInputBase-input': {
+                    padding: '28px 5px 10px 5px !important',
+                    textAlign: 'center',
+                  },
                 }}
               />
             </Grid>
 
+            {/* Telefono */}
             <Grid size={{ xs: 8, md: 5 }}>
               <TextInput
                 label='Número telefónico'
                 type='number'
                 placeholder='Ej: 8101010011'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
           </Grid>
 
-          {/* --- FILA 2: Sexo, Correo (CENTRADA) --- */}
+          {/* --- Fila de sexo y correo --- */}
           <Grid
             container
             spacing={{ xs: 2, md: 3 }}
             sx={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center', // Esto centra perfectamente toda la fila
+              justifyContent: 'center',
             }}
           >
+            {/* Sexo */}
             <Grid size={{ xs: 12, md: 3 }}>
-              <GenderSelect background={linearDegraded} border={colorBorder} />
+              <GenderSelect
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
+              />
             </Grid>
+
+            {/* Correo */}
             <Grid size={{ xs: 12, md: 6 }}>
               <TextInput
                 label='Correo electrónico'
                 type='email'
                 placeholder='Ingrese su correo'
-                background={linearDegraded}
-                border={colorBorder}
+                background={(theme) => theme.customGradients.collapsableHeader}
+                border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
           </Grid>
-
         </Box>
       </Box>
 
-      {/* Confirmación y muestra de datos */}
+      {/* Confirmacion */}
       <Box sx={{ px: 5 }}>
+        {/* Texto */}
         <Title
           children='Se agendará una cita con la siguiente fecha:'
           size='16'
           textTransform='capitalize'
           align='center'
         />
+        {/* Detalles de la cita */}
         <Box
           sx={{
             p: { xs: 1, md: 3 },
             my: 3,
-            background: linearDegraded,
+            background: (theme) => theme.customGradients.collapsableHeader,
             borderRadius: '15px',
             display: 'flex',
             flexDirection: 'column',
@@ -307,13 +352,18 @@ function AppointmentForm() {
           <Text children='Horario: 9:00 a 10:00' size='18' align='center' />
           <Text children='Empleado 1' size='16' align='center' />
         </Box>
-        <hr
-          style={{
+
+        {/* Linea separadora */}
+        <Box
+          component='hr'
+          sx={{
             border: 'none',
             height: '1px',
-            backgroundColor: '#cbd4ff6e',
+            backgroundColor: 'divider',
           }}
         />
+
+        {/* Precio */}
         <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Title
             children='Total a pagar: $$$$'
@@ -330,9 +380,18 @@ function AppointmentForm() {
         </Box>
       </Box>
 
+      {/* Boton agendar */}
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-        <MainButton>Agendar</MainButton>
+        <MainButton onClick={handleSchedule}>Agendar</MainButton>
       </Box>
+
+      {/* Dialogo inmediato */}
+      <InfoDialog
+        open={isSuccessDialogOpen}
+        onClose={handleCloseDialog}
+        title='¡Cita Agendada!'
+        content='Tu cita se ha registrado correctamente.'
+      />
     </Box>
   );
 }

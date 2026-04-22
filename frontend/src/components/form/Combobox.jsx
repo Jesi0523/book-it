@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -11,15 +13,23 @@ const ITEM_PADDING_TOP = 8;
 
 function getStyles(name, labelName, theme) {
   return {
-    fontWeight: labelName === name
-      ? theme.typography.fontWeightMedium
-      : theme.typography.fontWeightRegular,
+    fontWeight:
+      labelName === name
+        ? theme.typography.fontWeightMedium
+        : theme.typography.fontWeightRegular,
   };
 }
 
-const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, defaultValue = '' }) => {
+const Combobox = ({
+  name,
+  size = '16px',
+  array,
+  hasImage = false,
+  placeholder,
+  defaultValue = '',
+}) => {
   const theme = useTheme();
-  const [labelName, setLabelName] = React.useState(defaultValue);
+  const [labelName, setLabelName] = useState(defaultValue);
 
   const handleChange = (event) => {
     setLabelName(event.target.value);
@@ -61,7 +71,7 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
               )}
 
               <Box
-                component="span"
+                component='span'
                 sx={{
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
@@ -76,13 +86,12 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
         }}
         MenuProps={{
           PaperProps: {
-            style: 
-            { 
+            style: {
               maxHeight: ITEM_HEIGHT * 6 + ITEM_PADDING_TOP,
               maxWidth: 300,
             },
             sx: {
-              background: 'linear-gradient(180deg, #1b1c37 100%, #a0a3de 0%)',
+              background: (theme) => theme.customGradients.comboboxMenu,
               color: 'text.primary',
               '& .MuiMenuItem-root': {
                 fontSize: size,
@@ -91,17 +100,17 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
                 py: 1.5,
               },
               '& .MuiMenuItem-root:hover': {
-                backgroundColor: 'rgba(255, 183, 77, 0.2)',
+                backgroundColor: (theme) => `${theme.palette.background.menuHover} !important`,
               },
               '& .MuiMenuItem-root.Mui-selected': {
-                backgroundColor: 'rgba(255, 183, 77, 0.4) !important',
-                color: 'white',
+                backgroundColor: (theme) => `${theme.palette.background.menuSelected} !important`,
+                color: 'text.primary',
               },
             },
           },
         }}
         sx={{
-          background: 'linear-gradient(180deg, #2c2e5b 0%, #13154d 100%)',
+          background: (theme) => theme.customGradients.calendar,
           borderRadius: '8px',
           height: '56px',
 
@@ -109,10 +118,10 @@ const Combobox = ({ name, size = '16px', array, hasImage = false, placeholder, d
             backgroundColor: 'transparent !important',
             color: 'text.primary',
             fontSize: size,
-            paddingRight: '40px !important', 
+            paddingRight: '40px !important',
             boxSizing: 'border-box',
           },
-          '.MuiSvgIcon-root': { fill: 'orange !important' },
+          '.MuiSvgIcon-root': { fill: (theme) => theme.palette.primary.main + ' !important' },
           '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
         }}
       >

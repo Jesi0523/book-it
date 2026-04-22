@@ -1,4 +1,6 @@
 import React from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
@@ -37,15 +39,15 @@ const EmployeeDataSection = ({
               sx={{
                 width: { xs: 120, md: 160 },
                 height: { xs: 120, md: 160 },
-                border: `1px solid #ced0ffa6`,
+                border: (theme) => theme.palette.customBorders.avatar,
               }}
             />
             <MainButton
               component='label'
               size={{ xs: '12px', md: '14px' }}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                bgcolor: 'primary.light',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 alignItems: 'center',

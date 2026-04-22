@@ -1,11 +1,14 @@
-import * as React from 'react';
+// React
+import React, { useState } from 'react';
+
+// MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { useNavigate } from 'react-router-dom';
+
+// Utils
+import { toastSuccess } from '@/utils/notify';
 
 // ************** componentes propios :3 **************
-// |  layout
-import ClientLayout from '@/layouts/ClientLayout';
 // |  common
 import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
@@ -18,20 +21,28 @@ import PasswordInput from '@/components/form/PasswordInput';
 // |  iconos
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
-function Profile() 
-{
-  const navigate = useNavigate();
-  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const handleOpenSaveDialog = () => { setOpenSaveDialog(true);};
-  const handleCloseSaveDialog = (hasAccepted) => 
-  {
-    setOpenSaveDialog(false);
-    if(hasAccepted){navigate('/login');}; 
-    //NOTA: lo moví a log in porque un profe había mencionado que luego de hacer modificaciones
-    // sacaramos al usuario para que volviera a iniciar sesión por seguridad :3
+function Profile() {
+  // <--------------- ESTADOS --------------->
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion boton guardar perfil
+  const handleSaveProfile = () => {
+    setIsSaveDialogOpen(true);
   };
+
+  // Funcion dialogo
+  const handleCloseDialog = (hasAccepted) => {
+    setIsSaveDialogOpen(false);
+    if (hasAccepted) {
+      toastSuccess('Perfil actualizado correctamente.', 'profile-save-toast');
+    }
+  };
+
+  // <--------------- RENDER --------------->
   return (
-    <ClientLayout>
+    <>
       <Box
         sx={{
           py: { xs: 2, md: 5 },
@@ -41,10 +52,12 @@ function Profile()
           mx: 'auto',
         }}
       >
+        {/* Titulo */}
         <Box sx={{ px: 3 }}>
           <Title children='Editar perfil' color='text.primary' align='center' />
         </Box>
 
+        {/* Formulario */}
         <Box
           sx={{
             mx: { xs: 0, md: 10 },
@@ -54,9 +67,11 @@ function Profile()
             gap: 3,
           }}
         >
+          {/* Nombre */}
           <TextInput label='Nombre' placeholder='Ingrese su nombre' />
 
           <Grid container spacing={2}>
+            {/* Fecha y correo */}
             <Grid
               size={{ xs: 12, md: 6 }}
               sx={{
@@ -65,7 +80,10 @@ function Profile()
                 gap: { xs: 3, md: 2 },
               }}
             >
+              {/* Fecha nacimiento */}
               <DateInput></DateInput>
+
+              {/* Correo */}
               <TextInput
                 label='Correo electrónico'
                 type='email'
@@ -73,6 +91,7 @@ function Profile()
               />
             </Grid>
 
+            {/* Sexo y telefono */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Grid
                 container
@@ -84,10 +103,12 @@ function Profile()
                   flexWrap: { xs: 'nowrap', md: 'wrap' },
                 }}
               >
+                {/* Sexo */}
                 <Grid sx={{ width: { xs: '35%', md: '100%' } }}>
                   <GenderSelect height={{ xs: '62px', md: '85px' }} />
                 </Grid>
 
+                {/* Numero telefonico */}
                 <Grid sx={{ flexGrow: 1, width: { xs: '60%', md: '100%' } }}>
                   <TextInput
                     label='Número telefónico'
@@ -99,16 +120,21 @@ function Profile()
             </Grid>
           </Grid>
 
+          {/* Contenedor contrasenas */}
           <Grid container spacing={2}>
+            {/* Coontrasena */}
             <Grid size={{ xs: 12, md: 6 }}>
               <PasswordInput></PasswordInput>
             </Grid>
+
+            {/* Confirmar contrasena */}
             <Grid size={{ xs: 12, md: 6 }}>
               <PasswordInput label='Confirmar contraseña'></PasswordInput>
             </Grid>
           </Grid>
         </Box>
 
+        {/* Boton guardar */}
         <Box
           sx={{
             display: 'flex',
@@ -117,18 +143,26 @@ function Profile()
             m: 2,
           }}
         >
-          <MainButton onClick={handleOpenSaveDialog}  children={'Guardar'} />
+          <MainButton onClick={handleSaveProfile} children={'Guardar'} />
         </Box>
       </Box>
+
+      {/* Dialogo */}
       <BaseDialog
-        id="save-client-data"
-        open={openSaveDialog}
-        onClose={handleCloseSaveDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={<> Está a punto de cambiar sus datos personales <br/> <b>¿desea continuar?</b></>}
+        id='save-client-data'
+        open={isSaveDialogOpen}
+        onClose={handleCloseDialog}
+        title={'Advertencia'}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            {' '}
+            Está a punto de cambiar sus datos personales <br />{' '}
+            <b>¿Desea continuar?</b>
+          </>
+        }
       />
-    </ClientLayout>
+    </>
   );
 }
 export default Profile;

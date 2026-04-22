@@ -1,61 +1,65 @@
-import Box from '@mui/material/Box';
-import img from "@/assets/auth/bg_auth.webp";
-import logo from "@/assets/logo/Logo1.webp";
+import { Outlet } from 'react-router-dom';
 
-const AuthLayout = ({ children }) => {
+// MUI
+import Box from '@mui/material/Box';
+
+// Assets
+import img from '@/assets/auth/bg_auth.webp';
+import logo from '@/assets/logo/Logo1.webp';
+
+const AuthLayout = () => {
   return (
     <Box
       sx={{
-        position: "relative",
-        minHeight: "100vh",
-        width: "100%", 
-
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          md: "repeat(12, 1fr)",
-        },
-        alignItems: "center",
-
+        position: 'relative',
+        minHeight: '100vh',
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: { xs: '1fr', md: 'repeat(12, 1fr)' },
         backgroundImage: `url(${img})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        backgroundBlendMode: "darken",
-
-        p: { xs: 2, md: 4 }, 
-        boxSizing: "border-box", 
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundBlendMode: 'darken',
+        p: { xs: 2, md: 4 },
+        boxSizing: 'border-box',
       }}
     >
+      {/* Logo */}
       <Box
-        component="img"
+        component='img'
         src={logo}
-        alt="Book IT! Logo"
+        alt='Book IT! Logo'
         sx={{
-          position: "absolute",
+          position: 'absolute',
           top: { xs: 20, md: 40 },
           right: { xs: 20, md: 60 },
-          width: { xs: "80px", md: "120px" },
-          height: "auto",
+          width: { xs: '80px', md: '120px' },
+          height: 'auto',
           zIndex: 10,
-          display: { xs: "none", md: "block" }, 
+          display: { xs: 'none', md: 'block' },
         }}
       />
 
+      {/* Contenido */}
       <Box
         sx={{
-          gridColumn: {
-            xs: "1",
-            md: "2 / span 5",
-            lg: "2 / span 4",
-          },
+          gridColumn: { xs: '1', md: '2 / span 5', lg: '2 / span 4' },
           zIndex: 5,
-          display: "flex",
-          justifyContent: "flex-start", 
+          display: 'flex',
+          justifyContent: 'flex-start',
         }}
       >
-        <Box sx={{ width: "100%", maxWidth: "450px" }}>{children}</Box>
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: '450px',
+            margin: 'auto 0',
+          }}
+        >
+          <Outlet />
+        </Box>
       </Box>
     </Box>
   );

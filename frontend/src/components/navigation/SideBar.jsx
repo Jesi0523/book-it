@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
+
+// MUI
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useLocation, Link as RouterLink,useNavigate } from 'react-router-dom';
-
-import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -20,109 +20,166 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
+// Componentes
+import BaseDialog from '@/components/common/BaseDialog';
+
 // Logos
 import logo from '@/assets/logo/Logo1.webp';
 
 // Opciones
 const menuItems = [
-  { text: 'Calendario de citas', icon: <CalendarMonthIcon />, path: '/admin/appointment-calendar' },
-  { text: 'Agendar cita', icon: <EditCalendarIcon/>, path: '/admin/book-appointment' },
-  { text: 'Gestión de empleados', icon: <PeopleIcon />, path: '/admin/employees' },
-  { text: 'Gestión de servicios', icon: <BuildIcon />, path: '/admin/services' },
-  { text: 'Información de la empresa', icon: <InfoIcon />, path: '/admin/company-info' },
-  { text: 'Suspensión de servicios', icon: <ReportProblemIcon />, path: '/admin/suspensions' },
+  {
+    text: 'Calendario de citas',
+    icon: <CalendarMonthIcon />,
+    path: '/admin/appointment-calendar',
+  },
+  {
+    text: 'Agendar cita',
+    icon: <EditCalendarIcon />,
+    path: '/admin/book-appointment',
+  },
+  {
+    text: 'Gestión de empleados',
+    icon: <PeopleIcon />,
+    path: '/admin/employees',
+  },
+  {
+    text: 'Gestión de servicios',
+    icon: <BuildIcon />,
+    path: '/admin/services',
+  },
+  {
+    text: 'Información de la empresa',
+    icon: <InfoIcon />,
+    path: '/admin/company-info',
+  },
+  {
+    text: 'Suspensión de servicios',
+    icon: <ReportProblemIcon />,
+    path: '/admin/suspensions',
+  },
   { text: 'Reportes', icon: <BarChartIcon />, path: '/admin/reports' },
 ];
 
-const Sidebar = ({ isExpanded = true }) => {
+const Sidebar = ({ isExpanded = true, onClose }) => {
+  // <--------------- CONTEXTO --------------->
   const location = useLocation();
   const navigate = useNavigate();
-  const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
-  const handleOpenSessionDialog = () => { setOpenSessionDialog(true);};
-  const handleCloseSessionDialog = (hasAccepted) => 
-  {
-    setOpenSessionDialog(false);
-    if(hasAccepted){navigate('/login');}; 
+
+  // <--------------- ESTADOS --------------->
+  const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+  // Funcion abrir dialogo
+  const handleOpenSessionDialog = () => {
+    setIsSessionDialogOpen(true);
   };
 
+  // Funcion cerrar dialogo
+  const handleCloseSessionDialog = (hasAccepted) => {
+    setIsSessionDialogOpen(false);
 
+    if (hasAccepted) {
+      setTimeout(() => {
+        navigate('/login');
+      }, 300);
+    }
+  };
+
+  // <--------------- RENDER --------------->
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      height: '100%', 
-      width: '260px', 
-      background: 'linear-gradient(180deg, #1b1c37 0%, #121229 100%)',
-      color: 'white',
-      overflowX: 'hidden' 
-    }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '260px',
+        background: (theme) => theme.customGradients.sidebar,
+        color: 'white',
+        overflowX: 'hidden',
+      }}
+    >
       {/* Logo */}
-      <Box 
-        sx={{ 
-          p: 2, 
-          display: 'flex', 
-          justifyContent: 'flex-start', 
-          alignItems: 'center', 
+      <Box
+        sx={{
+          p: 2,
+          display: 'flex',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
           height: '64px',
-          px: 2
+          px: 2,
         }}
       >
-        <img 
-          src={logo} 
-          alt="Logo" 
-          style={{ 
-            height: '40px', 
-            width: '40px', 
-            minWidth: '40px', 
+        <img
+          src={logo}
+          alt='Logo'
+          style={{
+            height: '40px',
+            width: '40px',
+            minWidth: '40px',
             maxWidth: '40px',
-            objectFit: 'contain' 
-          }} 
+            objectFit: 'contain',
+          }}
         />
       </Box>
 
       {/* Opciones */}
       <List sx={{ flexGrow: 1, mt: 2 }}>
         {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ display: 'block', mb: 1 }}>
+          <ListItem
+            key={item.text}
+            disablePadding
+            sx={{ display: 'block', mb: 1 }}
+          >
             <ListItemButton
               component={RouterLink}
               to={item.path}
+              onClick={onClose}
               sx={{
-                height: 'auto', 
-                py: 1.5, 
-                justifyContent: 'flex-start', 
+                height: 'auto',
+                py: 1.5,
+                justifyContent: 'flex-start',
                 px: 2.5,
-                backgroundColor: location.pathname === item.path ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
-                borderLeft: location.pathname === item.path ? '4px solid #ffb74d' : '4px solid transparent',
+                backgroundColor:
+                  location.pathname === item.path
+                    ? 'background.activeMenuItem'
+                    : 'transparent',
+                borderLeft: (theme) =>
+                  location.pathname === item.path
+                    ? `4px solid ${theme.palette.primary.light}`
+                    : '4px solid transparent',
               }}
             >
               <ListItemIcon
                 sx={{
                   minWidth: 0,
-                  mr: 3, 
+                  mr: 3,
                   justifyContent: 'center',
-                  color: location.pathname === item.path ? '#ffb74d' : 'white',
+                  color:
+                    location.pathname === item.path
+                      ? 'primary.light'
+                      : 'text.primary',
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText 
-                primary={item.text} 
-                sx={{ 
-                  opacity: isExpanded ? 1 : 0, 
-                  whiteSpace: 'normal', 
-                  width: '170px', 
+              <ListItemText
+                primary={item.text}
+                sx={{
+                  opacity: isExpanded ? 1 : 0,
+                  whiteSpace: 'normal',
+                  width: '170px',
                   minWidth: '170px',
                   maxWidth: '170px',
-                  flexShrink: 0, 
-                  transition: 'opacity 0.2s ease', 
+                  flexShrink: 0,
+                  transition: 'opacity 0.2s ease',
                   margin: 0,
-                  '& .MuiTypography-root': { 
-                    fontSize: '0.9rem', 
+                  '& .MuiTypography-root': {
+                    fontSize: '0.9rem',
                     fontFamily: "'Montserrat', sans-serif",
-                    lineHeight: 1.2 
-                  } 
-                }} 
+                    lineHeight: 1.2,
+                  },
+                }}
               />
             </ListItemButton>
           </ListItem>
@@ -134,49 +191,63 @@ const Sidebar = ({ isExpanded = true }) => {
         <ListItemButton
           onClick={handleOpenSessionDialog}
           sx={{
-            height: '48px', 
+            height: '48px',
             width: isExpanded ? '100%' : '48px',
             px: isExpanded ? 2.5 : 0,
-            justifyContent: 'flex-start', 
+            justifyContent: 'flex-start',
             borderRadius: isExpanded ? '24px' : '50%',
-            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-            transition: 'all 0.3s ease', 
-            overflow: 'hidden' 
+            backgroundColor: 'background.hoverLighter',
+            '&:hover': { backgroundColor: 'background.hoverLight' },
+            transition: 'all 0.3s ease',
+            overflow: 'hidden',
           }}
         >
-          <ListItemIcon sx={{ 
-            minWidth: isExpanded ? 0 : '48px', 
-            mr: isExpanded ? 3 : 0, 
-            justifyContent: 'center', 
-            color: 'white',
-            transition: 'all 0.3s ease' 
-          }}>
+          <ListItemIcon
+            sx={{
+              minWidth: isExpanded ? 0 : '48px',
+              mr: isExpanded ? 3 : 0,
+              justifyContent: 'center',
+              color: 'white',
+              transition: 'all 0.3s ease',
+            }}
+          >
             <LogoutIcon />
           </ListItemIcon>
-          <ListItemText 
-            primary="Cerrar sesión" 
-            sx={{ 
-              opacity: isExpanded ? 1 : 0, 
-              whiteSpace: 'normal', 
-              width: '170px', 
+          <ListItemText
+            primary='Cerrar sesión'
+            sx={{
+              opacity: isExpanded ? 1 : 0,
+              whiteSpace: 'normal',
+              width: '170px',
               minWidth: '170px',
               maxWidth: '170px',
               flexShrink: 0,
               margin: 0,
               transition: 'opacity 0.2s ease',
-              '& .MuiTypography-root': { fontSize: '0.9rem', fontFamily: "'Montserrat', sans-serif", lineHeight: 1.2 } 
-            }} 
+              '& .MuiTypography-root': {
+                fontSize: '0.9rem',
+                fontFamily: "'Montserrat', sans-serif",
+                lineHeight: 1.2,
+              },
+            }}
           />
         </ListItemButton>
       </Box>
+
+      {/* Dialogo */}
       <BaseDialog
-        id="close-admin-session"
-        open={openSessionDialog}
+        id='close-admin-session'
+        open={isSessionDialogOpen}
         onClose={handleCloseSessionDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={<> Está a punto de cerrar sesión<br/> <b>¿desea continuar?</b></>}
+        title={'Advertencia'}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            {' '}
+            Está a punto de cerrar sesión
+            <br /> <b>¿Desea continuar?</b>
+          </>
+        }
       />
     </Box>
   );

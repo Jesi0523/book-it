@@ -1,4 +1,7 @@
+// React
 import React, { useState, useEffect } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 
 // Componentes propios
@@ -25,9 +28,8 @@ const availableDummyServices = [
   'Limpieza facial',
 ];
 
-// <----------- LOGICA ----------->
 const EmployeeForm = ({ employee, onCancel, onSave }) => {
-  // Estados
+  // <--------------- ESTADOS --------------->
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -37,6 +39,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     foto: null,
     archivoFisico: null,
   });
+
   const [scheduleMap, setScheduleMap] = useState({
     Domingo: [],
     Lunes: [],
@@ -46,9 +49,11 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     Viernes: [],
     Sábado: [],
   });
+
   const [selectedServices, setSelectedServices] = useState([]);
 
-  // <----------- UseEffects ----------->
+  // <--------------- EFFECTS --------------->
+  // Trae los datos del empleado si existe
   useEffect(() => {
     if (employee && employee.id !== 'nuevo') {
       setFormData({
@@ -91,6 +96,8 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     }
   }, [employee]);
 
+  // <--------------- FUNCIONES --------------->
+
   // Funcion input text
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -132,7 +139,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     });
   };
 
-  // Estructura
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -158,7 +165,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
         sx={{
           p: { xs: 2, md: 4 },
           borderRadius: '16px',
-          border: `1px solid #787ff6`,
+          border: (theme) => theme.palette.customBorders.section,
         }}
       >
         <ScheduleSection
@@ -172,7 +179,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
         sx={{
           p: { xs: 2, md: 4 },
           borderRadius: '16px',
-          border: `1px solid #787ff6`,
+          border: (theme) => theme.palette.customBorders.section,
         }}
       >
         <ServicesSection
@@ -187,7 +194,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
         <MainButton
           size={{ xs: '16px', md: '18px' }}
           onClick={handleSubmit}
-          sx={{ backgroundColor: '#ffb74d', color: '#000', px: 6 }}
+          sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', px: 6 }}
         >
           {employee?.id === 'nuevo' ? 'Agregar' : 'Guardar'}
         </MainButton>

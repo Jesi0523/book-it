@@ -20,9 +20,11 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('@mui')) return 'vendor-mui';
+            if (id.includes('@mui') || id.includes('@emotion')) return 'vendor-mui';
+            if (id.includes('react')) return 'vendor-react';
             if (id.includes('recharts')) return 'vendor-charts';
             if (id.includes('swiper')) return 'vendor-swiper';
+            
             return 'vendor-others';
           }
         },

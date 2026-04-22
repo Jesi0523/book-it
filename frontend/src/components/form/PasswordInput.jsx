@@ -1,16 +1,24 @@
+// React
 import { useState } from "react";
+
+// MUI
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
+
+// Iconos
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const PasswordInput = ({ label = "Contraseña", ...props }) => {
+  // <--------------- ESTADOS --------------->
   const [showPassword, setShowPassword] = useState(false);
 
+  // <--------------- FUNCIONES --------------->
   // Funcion para cambiar entre ver/ocultar
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
+  // <--------------- RENDER --------------->
   return (
     <TextField
       label={label}

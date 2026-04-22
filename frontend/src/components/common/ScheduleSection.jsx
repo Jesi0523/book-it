@@ -1,27 +1,29 @@
+// React
 import React, { useState, useMemo, useEffect } from 'react';
+
+// MUI
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
-// Media queries para el responsive
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
-// Componentes propios
-import Text from '@/components/common/Text';
-import MainButton from '@/components/common/MainButton';
-import BaseDialog from '@/components/common/BaseDialog'
 
 // Iconos
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
+// Componentes propios
+import Text from '@/components/common/Text';
+import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog';
+
+// <--------------- HELPERS --------------->
+
 // Dias de la semana
-const diasSemana = [
+const DIAS_SEMANA = [
   'Domingo',
   'Lunes',
   'Martes',
@@ -31,13 +33,15 @@ const diasSemana = [
   'Sábado',
 ];
 
-// <----------- Funciones ----------->
+// <----------- Logica ----------->
 
+// Convierte una hora en formato "HH:mm" a minutos totales
 const timeToMins = (timeStr) => {
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
 };
 
+// Convierte minutos totales a formato "HH:mm"
 const minsToTime = (mins) => {
   const h = Math.floor(mins / 60)
     .toString()
@@ -66,48 +70,24 @@ const opcionesTiempo = Array.from({ length: 48 }, (_, i) => {
 });
 
 const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
-  // Responsive
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Estados
+  // <--------------- ESTADOS --------------->
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
+  const [endTime, setEndTime] = useState('14:00');
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  // Const para el modal de confirmación -> si elimina el horario de un día
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const handleOpenDeleteDialog = () => { setOpenDeleteDialog(true); };
-  const handleCloseDeleteDialog = (hasAccepted) => 
-  {
-    setOpenDeleteDialog(false);
-    if(hasAccepted){handleLimpiarDia()};
-  };
+  // <--------------- DERIVADA --------------->
 
+  // Define que dias se muestran dependiendo si es en cel o desktop
+  const diasAMostrar = isMobile ? [selectedDay] : DIAS_SEMANA;
 
+  // <--------------- MEMO --------------->
 
-  // <-------- UseEffects -------->
-  useEffect(() => {
-    const bloquesDia = scheduleMap[selectedDay] || [];
-    if (bloquesDia.length > 0) {
-      let minMins = Infinity;
-      let maxMins = -Infinity;
-      bloquesDia.forEach((bloque) => {
-        const [start, end] = bloque.split('-');
-        const sMins = timeToMins(start);
-        const eMins = timeToMins(end);
-        if (sMins < minMins) minMins = sMins;
-        if (eMins > maxMins) maxMins = eMins;
-      });
-      setStartTime(minsToTime(minMins));
-      setEndTime(minsToTime(maxMins));
-    } else {
-      setStartTime('09:00');
-      setEndTime('17:00');
-    }
-  }, [selectedDay, scheduleMap]);
-
-  // Funciones
+  // Calcula el rango global de horarios en base a todos los dias configurados
   const bloquesDinamicos = useMemo(() => {
     let minGlobal = Infinity;
     let maxGlobal = -Infinity;
@@ -130,6 +110,45 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
     return generarBloquesRango(minGlobal, maxGlobal);
   }, [scheduleMap]);
 
+  // <--------------- EFFECTS --------------->
+
+  // Cada vez que se cambie el dia seleccionado o el horario guardado, actualiza automáticamente las horas del selector (inicio y fin)
+  useEffect(() => {
+    const bloquesDia = scheduleMap[selectedDay] || [];
+    if (bloquesDia.length > 0) {
+      let minMins = Infinity;
+      let maxMins = -Infinity;
+      bloquesDia.forEach((bloque) => {
+        const [start, end] = bloque.split('-');
+        const sMins = timeToMins(start);
+        const eMins = timeToMins(end);
+        if (sMins < minMins) minMins = sMins;
+        if (eMins > maxMins) maxMins = eMins;
+      });
+      setStartTime(minsToTime(minMins));
+      setEndTime(minsToTime(maxMins));
+    } else {
+      setStartTime('09:00');
+      setEndTime('17:00');
+    }
+  }, [selectedDay, scheduleMap]);
+
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion que abre el dialogo
+  const handleOpenDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Funcion que cierra el dialogo
+  const handleCloseDeleteDialog = (hasAccepted) => {
+    setIsDeleteDialogOpen(false);
+    if (hasAccepted) {
+      handleLimpiarDia();
+    }
+  };
+
+  // Funcion boton aplicar
   const handleAplicar = () => {
     const startMins = timeToMins(startTime);
     const endMins = timeToMins(endTime);
@@ -138,20 +157,20 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
     setScheduleMap((prev) => ({ ...prev, [selectedDay]: nuevosBloques }));
   };
 
+  // Funcion borrar dia
   const handleLimpiarDia = () => {
     setScheduleMap((prev) => ({ ...prev, [selectedDay]: [] }));
   };
 
-  const diasAMostrar = isMobile ? [selectedDay] : diasSemana;
-
+  // <--------------- RENDER --------------->
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       {/* Seccion superior */}
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' }, 
-          alignItems: 'center', 
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'center',
           justifyContent: 'space-between',
           gap: 3,
           mb: 4,
@@ -180,7 +199,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             MenuProps={{
               PaperProps: {
                 sx: {
-                  backgroundColor: '#1b1c37',
+                  bgcolor: 'background.serviceChip',
                   color: 'white',
                   '& .MuiMenuItem-root:hover': {
                     backgroundColor: 'rgba(255, 183, 77, 0.2)',
@@ -193,14 +212,14 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             }}
             sx={{
               minWidth: '130px',
-              backgroundColor: '#1b1c37',
+              bgcolor: 'background.serviceChip',
               color: 'white',
               borderRadius: '8px',
               '& fieldset': { border: 'none' },
-              '& .MuiSvgIcon-root': { color: '#ffb74d' },
+              '& .MuiSvgIcon-root': { color: 'primary.light' },
             }}
           >
-            {diasSemana.map((dia) => (
+            {DIAS_SEMANA.map((dia) => (
               <MenuItem key={dia} value={dia}>
                 {dia}
               </MenuItem>
@@ -220,7 +239,14 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
           }}
         >
           {/* Rango de horas */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              flexWrap: 'wrap',
+            }}
+          >
             {/* Hora 1 */}
             <Select
               value={startTime}
@@ -228,7 +254,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               size='small'
               sx={{
                 width: '92px',
-                backgroundColor: '#1b1c37',
+                bgcolor: 'background.serviceChip',
                 borderRadius: '8px',
                 color: 'white',
                 '& fieldset': { border: 'none' },
@@ -236,12 +262,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                   padding: '8px 14px',
                   textAlign: 'center',
                 },
-                '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                '& .MuiSvgIcon-root': { color: 'primary.light' },
               }}
               MenuProps={{
                 PaperProps: {
                   sx: {
-                    backgroundColor: '#1b1c37',
+                    bgcolor: 'background.serviceChip',
                     color: 'white',
                     maxHeight: 300,
                   },
@@ -264,7 +290,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               size='small'
               sx={{
                 width: '92px',
-                backgroundColor: '#1b1c37',
+                bgcolor: 'background.serviceChip',
                 borderRadius: '8px',
                 color: 'white',
                 '& fieldset': { border: 'none' },
@@ -272,12 +298,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                   padding: '8px 14px',
                   textAlign: 'center',
                 },
-                '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                '& .MuiSvgIcon-root': { color: 'primary.light' },
               }}
               MenuProps={{
                 PaperProps: {
                   sx: {
-                    backgroundColor: '#1b1c37',
+                    bgcolor: 'background.serviceChip',
                     color: 'white',
                     maxHeight: 300,
                   },
@@ -299,8 +325,8 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               size={{ xs: '14px', md: '14px' }}
               onClick={handleAplicar}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                backgroundColor: 'primary.light',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 m: 0,
@@ -314,7 +340,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               <IconButton
                 onClick={handleOpenDeleteDialog}
                 sx={{
-                  color: '#ffb74d',
+                  color: 'primary.light',
                   border: '1px solid rgba(255, 183, 77, 0.5)',
                   borderRadius: '50%',
                   p: '9px',
@@ -331,11 +357,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
 
       {/* Horario dinamico */}
       {bloquesDinamicos.length === 0 ? (
+        // No hay horario
         <Box
           sx={{
-            background: '#171836',
+            bgcolor: 'background.scheduleUnselected',
             borderRadius: '12px',
-            border: `1px solid #060511`,
+            border: (theme) => theme.palette.customBorders.schedule,
             p: 4,
             display: 'flex',
             justifyContent: 'center',
@@ -343,7 +370,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
         >
           <Text
             children='No hay horarios asignados aún. Selecciona un día y aplica un horario.'
-            color='rgba(255,255,255,0.5)'
+            color='text.disabled'
             size='14px'
             align='center'
           />
@@ -354,7 +381,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             overflowX: 'auto',
             width: '100%',
             borderRadius: '12px',
-            border: `1px solid #060511`,
+            border: (theme) => theme.palette.customBorders.schedule,
           }}
         >
           <Box
@@ -367,21 +394,21 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             {/* Fila de dias */}
             <Box
               sx={{
-                background: '#171836',
-                borderBottom: `1px solid #060511`,
-                borderRight: `1px solid #060511`,
+                bgcolor: 'background.scheduleUnselected',
+                borderBottom: (theme) => theme.palette.customBorders.schedule,
+                borderRight: (theme) => theme.palette.customBorders.schedule,
               }}
             />
             {diasAMostrar.map((dia) => (
               <Box
                 key={dia}
                 sx={{
-                  background: '#171836',
+                  bgcolor: 'background.scheduleUnselected',
                   p: 2,
                   display: 'flex',
                   justifyContent: 'center',
-                  borderBottom: `1px solid #060511`,
-                  borderRight: `1px solid #060511`,
+                  borderBottom: (theme) => theme.palette.customBorders.schedule,
+                  borderRight: (theme) => theme.palette.customBorders.schedule,
                 }}
               >
                 <Text children={dia} color='primary.main' size='12px' />
@@ -394,13 +421,15 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                 {/* Columna de la hora */}
                 <Box
                   sx={{
-                    background: '#171836',
+                    bgcolor: 'background.scheduleUnselected',
                     p: 2,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderBottom: `1px solid #060511`,
-                    borderRight: `1px solid #060511`,
+                    borderBottom: (theme) =>
+                      theme.palette.customBorders.schedule,
+                    borderRight: (theme) =>
+                      theme.palette.customBorders.schedule,
                   }}
                 >
                   <Text
@@ -420,10 +449,13 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                       key={`${dia}-${bloque}`}
                       sx={{
                         background: isSelected
-                          ? 'linear-gradient(180deg, #6c74cc 0%, #4f58a3 100%)'
-                          : '#171836',
-                        borderBottom: `1px solid #060511`,
-                        borderRight: `1px solid #060511`,
+                          ? (theme) => theme.customGradients.scheduleSelected
+                          : (theme) =>
+                              theme.palette.background.scheduleUnselected,
+                        borderBottom: (theme) =>
+                          theme.palette.customBorders.schedule,
+                        borderRight: (theme) =>
+                          theme.palette.customBorders.schedule,
                         transition: 'background 0.2s',
                       }}
                     />
@@ -436,20 +468,23 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
       )}
 
       {/* Modal de confirmación */}
-       <BaseDialog
-          id="delete-schedule"
-          open={openDeleteDialog}
-          onClose={handleCloseDeleteDialog}
-          title={"Advertencia"}
-          fontSizeContent={18}
-          icon={<AdvertismentIcon/>}
-          content={
-            <>
-              Está a punto de eliminar el horario del día:<br />
-              <b>{selectedDay}</b><br />
-              ¿Desea continuar?
-          </>}
-        />
+      <BaseDialog
+        id='delete-schedule'
+        open={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        title={'Advertencia'}
+        fontSizeContent={18}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            Está a punto de eliminar el horario del día:
+            <br />
+            <b>{selectedDay}</b>
+            <br />
+            ¿Desea continuar?
+          </>
+        }
+      />
     </Box>
   );
 };

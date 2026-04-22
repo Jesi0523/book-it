@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+
+// Iconos
+import CheckIcon from '@mui/icons-material/Check';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Componentes propios
 import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
 import Calendar from '@/components/common/Calendar';
 import BaseDialog from '@/components/common/BaseDialog';
-// Iconos
-import CheckIcon from '@mui/icons-material/Check';
-import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
-// <---------- Funcion ---------->
+// <--------------- CONSTANTE --------------->
+
+// Genera tiempo de 30 a 30 min
 const opcionesTiempo = Array.from({ length: 48 }, (_, i) => {
   const h = Math.floor(i / 2)
     .toString()
@@ -37,25 +42,36 @@ const SuspensionForm = ({
   selectMenuProps,
   selectEstilos,
 }) => {
-  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const handleOpenSaveDialog = () => { setOpenSaveDialog(true);};
-  const handleCloseSaveDialog = (hasAccepted) => 
-  {
-    setOpenSaveDialog(false);
-    if(hasAccepted){{handleAplicar}}
-  }; 
- 
+  // <--------------- ESTADOS --------------->
+  const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+
+  // Abrir dialogo
+  const handleOpenSaveDialog = () => {
+    setIsSaveDialogOpen(true);
+  };
+
+  // Cerrar dialogo
+  const handleCloseSaveDialog = (hasAccepted) => {
+    setIsSaveDialogOpen(false);
+    if (hasAccepted) {
+      handleAplicar();
+    }
+  };
+
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
-        border: '1px solid #787ff6',
+        border: (theme) => theme.palette.customBorders.section,
         borderRadius: '16px',
         p: { xs: 2, md: 4 },
       }}
     >
       <Text
         children='Registrar suspensión:'
-        color='#ffb74d'
+        color='primary.light'
         size='22'
         sx={{ mb: { xs: 3, md: 4 }, display: 'block' }}
       />
@@ -119,15 +135,15 @@ const SuspensionForm = ({
                 MenuProps={selectMenuProps}
                 sx={{
                   flex: 1,
-                  backgroundColor: '#1b1c37',
+                  backgroundColor: 'background.serviceChip',
                   borderRadius: '8px',
-                  color: 'white',
+                  color: 'text.primary',
                   '& fieldset': { border: 'none' },
                   '& .MuiSelect-select': {
                     padding: '10px',
                     textAlign: 'center',
                   },
-                  '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                  '& .MuiSvgIcon-root': { color: 'primary.light' },
                 }}
               >
                 {opcionesTiempo.map((t) => (
@@ -147,15 +163,15 @@ const SuspensionForm = ({
                 MenuProps={selectMenuProps}
                 sx={{
                   flex: 1,
-                  backgroundColor: '#1b1c37',
+                  backgroundColor: 'background.serviceChip',
                   borderRadius: '8px',
-                  color: 'white',
+                  color: 'text.primary',
                   '& fieldset': { border: 'none' },
                   '& .MuiSelect-select': {
                     padding: '10px',
                     textAlign: 'center',
                   },
-                  '& .MuiSvgIcon-root': { color: '#ffb74d' },
+                  '& .MuiSvgIcon-root': { color: 'primary.light' },
                 }}
               >
                 {opcionesTiempo.map((t) => (
@@ -185,10 +201,10 @@ const SuspensionForm = ({
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
             <MainButton
               size='16px'
-              onClick={handleOpenSaveDialog} 
+              onClick={handleOpenSaveDialog}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                backgroundColor: 'primary.light',
+                color: 'primary.contrastText',
                 px: 4,
                 display: 'flex',
                 gap: 1,
@@ -199,14 +215,21 @@ const SuspensionForm = ({
           </Box>
         </Box>
       </Box>
+
+      {/* Dialogo */}
       <BaseDialog
-        id="save-suspension-data"
-        open={openSaveDialog}
+        id='save-suspension-data'
+        open={isSaveDialogOpen}
         onClose={handleCloseSaveDialog}
-        title={"Atención"}
-        icon={<AdvertismentIcon/>}
+        title={'Atención'}
+        icon={<AdvertismentIcon />}
         content={
-        <> Está a punto de añadir una suspensión <br/> <b>¿desea continuar?</b></>}
+          <>
+            {' '}
+            Está a punto de añadir una suspensión. Si hay citas programadas,
+            serán canceladas. <br /> <b>¿Desea continuar?</b>
+          </>
+        }
       />
     </Box>
   );

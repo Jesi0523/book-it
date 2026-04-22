@@ -1,20 +1,24 @@
+// React
 import React from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-
-// Componentes propios
-import MainButton from '@/components/common/MainButton';
-import TextInput from '@/components/form/TextInput';
 
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+
+// Componentes propios
+import MainButton from '@/components/common/MainButton';
+import TextInput from '@/components/form/TextInput';
 
 const CompanyDataSection = ({
   formData,
   handleInputChange,
   handleLogoChange,
 }) => {
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}
@@ -35,8 +39,7 @@ const CompanyDataSection = ({
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
-                background:
-                  'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
+                background: (theme) => theme.customGradients.imagePlaceholder,
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
@@ -64,8 +67,8 @@ const CompanyDataSection = ({
               fullWidth
               size={{ xs: '14px', md: '16px' }}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                bgcolor: 'primary.light',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 alignItems: 'center',
@@ -95,6 +98,7 @@ const CompanyDataSection = ({
               gap: { xs: 4, md: 0 },
             }}
           >
+            {/* Nombre */}
             <TextInput
               label='Nombre'
               name='nombre'
@@ -103,6 +107,7 @@ const CompanyDataSection = ({
               placeholder='Ejemplo'
             />
 
+            {/* Correo */}
             <TextInput
               label='Correo electrónico'
               name='correo'
@@ -112,6 +117,7 @@ const CompanyDataSection = ({
               placeholder='Ejemplo'
             />
 
+            {/* Telefono */}
             <TextInput
               label='Número telefónico'
               name='telefono'
@@ -122,7 +128,7 @@ const CompanyDataSection = ({
           </Box>
         </Grid>
 
-        {/* Seccion abajo */}
+        {/* Descripcion */}
         <Grid size={12}>
           <TextInput
             label='Descripción'
@@ -141,6 +147,7 @@ const CompanyDataSection = ({
           />
         </Grid>
 
+        {/* Slogan */}
         <Grid size={12}>
           <TextInput
             label='Slogan'
@@ -151,6 +158,7 @@ const CompanyDataSection = ({
           />
         </Grid>
 
+        {/* Direccion */}
         <Grid size={12}>
           <TextInput
             label='Dirección'

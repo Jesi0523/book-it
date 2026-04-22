@@ -1,7 +1,10 @@
+// MUI
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+
+// Componentes
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 

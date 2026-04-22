@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastSuccess } from '@/utils/notify';
+
+// MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 
-// Componentes propios
-import MainButton from '@/components/common/MainButton';
-import TextInput from '@/components/form/TextInput';
-import BaseDialog from '@/components/common/BaseDialog';
-
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
+// Componentes propios
+import MainButton from '@/components/common/MainButton';
+import TextInput from '@/components/form/TextInput';
+
+// <----------- CONSTANTE ----------->
 // Opciones para la duracion de un servicio hasta 6 horas max
 const opcionesDuracion = Array.from(
   { length: 12 },
@@ -20,6 +24,7 @@ const opcionesDuracion = Array.from(
 );
 
 const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
+  // <--------------- ESTADOS --------------->
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -29,6 +34,9 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     archivoFisico: null,
   });
 
+  const [isSaving, setIsSaving] = useState(false);
+
+  // <--------------- EFFECTS --------------->
   useEffect(() => {
     if (service && service.id !== 'nuevo') {
       setFormData({
@@ -51,11 +59,21 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     }
   }, [service]);
 
+  // <--------------- DERIVADO --------------->
+  const opcionesSeguras = [...opcionesDuracion];
+  if (formData.tiempo && !opcionesSeguras.includes(formData.tiempo)) {
+    opcionesSeguras.unshift(formData.tiempo);
+  }
+
+  // <--------------- FUNCIONES --------------->
+
+  // Llena los inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Llena la foto
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -68,25 +86,26 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     }
   };
 
-  // Consts para modal de confirmación
-  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const handleOpenSaveDialog = () => { setOpenSaveDialog(true); console.log(isEditing)};
-  const handleCloseSaveDialog = (hasAccepted) => 
-  {
-    setOpenSaveDialog(false);
-    if(hasAccepted){handleSubmit;}; 
-  };
-
-
+  // Boton guardar
   const handleSubmit = () => {
+    if (isSaving) return;
+    setIsSaving(true);
+
     onSave({ ...service, ...formData });
+
+    const isNew = service.id === 'nuevo';
+
+    toastSuccess(
+      isNew
+        ? 'Servicio agregado correctamente.'
+        : 'Servicio actualizado correctamente.',
+      'service-save-toast',
+    );
+
+    setIsSaving(false);
   };
 
-  const opcionesSeguras = [...opcionesDuracion];
-  if (formData.tiempo && !opcionesSeguras.includes(formData.tiempo)) {
-    opcionesSeguras.unshift(formData.tiempo);
-  }
-
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}
@@ -107,8 +126,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
-                background:
-                  'linear-gradient(180deg, #8791eb 0%, #9291d8 50%, #69abca 100%)',
+                background: (theme) => theme.customGradients.imagePlaceholder,
                 borderRadius: '12px',
                 display: 'flex',
                 justifyContent: 'center',
@@ -136,8 +154,8 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               fullWidth
               size={{ xs: '14px', md: '16px' }}
               sx={{
-                backgroundColor: '#ffb74d',
-                color: '#000',
+                backgroundColor: 'primary.light',
+                color: 'primary.contrastText',
                 display: 'flex',
                 gap: 1,
                 alignItems: 'center',
@@ -217,17 +235,20 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
             value={formData.tiempo}
             onChange={handleInputChange}
             SelectProps={{
-              sx: { '& .MuiSvgIcon-root': { color: '#ffb74d' } },
+              sx: { '& .MuiSvgIcon-root': { color: 'primary.light' } },
               MenuProps: {
                 PaperProps: {
                   sx: {
-                    backgroundColor: '#1b1c37',
+                    backgroundColor: (theme) =>
+                      theme.palette.background.serviceChip,
                     color: 'white',
                     '& .MuiMenuItem-root:hover': {
-                      backgroundColor: 'rgba(255, 183, 77, 0.2)',
+                      backgroundColor: (theme) =>
+                        theme.palette.background.menuHover,
                     },
                     '& .Mui-selected': {
-                      backgroundColor: 'rgba(255, 183, 77, 0.4) !important',
+                      backgroundColor: (theme) =>
+                        `${theme.palette.background.menuSelected} !important`,
                     },
                   },
                 },
@@ -247,21 +268,21 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
         <MainButton
           size={{ xs: '16px', md: '18px' }}
-          onClick={handleOpenSaveDialog}
-          sx={{ backgroundColor: '#ffb74d', color: '#000', px: 8 }}
+          onClick={handleSubmit}
+          disabled={isSaving}
+          sx={{
+            backgroundColor: isSaving
+              ? 'action.disabledBackground'
+              : 'primary.light',
+            color: isSaving ? 'action.disabled' : 'primary.contrastText',
+            px: 8,
+            cursor: isSaving ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
+          }}
         >
           Guardar
         </MainButton>
       </Box>
-      <BaseDialog
-        id="save-service-data"
-        open={openSaveDialog}
-        onClose={handleCloseSaveDialog}
-        title={"Advertencia"}
-        icon={<AdvertismentIcon/>}
-        content={ isEditing ? <>Agregará el servicio: <br/><b>{formData.nombre}</b><br/>¿desea continuar? </>
-         : <>Editará el servicio: <br/><b>{formData.nombre}</b><br/>¿desea continuar?</>}
-      />
     </Box>
   );
 };

@@ -1,4 +1,8 @@
+// React
 import * as React from 'react';
+
+// MUI
+import { useTheme } from '@mui/material/styles';
 //NOTA: este nada más es para que se respete el tipo de dato, 
 // se puede quitar, pero lo dejé por seguridad 🦭
 import PropTypes from 'prop-types'; 
@@ -10,24 +14,31 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 // --------------------------------------
+// Iconos
 import CloseIcon from '@mui/icons-material/ClearRounded';
 import ContinueIcon from '@mui/icons-material/CheckRounded';
 
 // --------------------------------------
 function BaseDialog({onClose, open, title,icon,content, fontSizeContent = 20,...other}) 
 {
-    const linearDegraded= 'linear-gradient(180deg, #2c2e69 0%, #2d2e5c 100%)';
+    // <--------------- CONTEXTO --------------->
+    const theme = useTheme();
 
+    // <--------------- FUNCIONES --------------->
+
+    // Funcion cancelar
     const handleCancel = () => { onClose(false);};
 
+    // Funcion aceptar
     const handleOk = () => { onClose(true);};
 
+    // <--------------- RENDER --------------->
     return (
         <Dialog
             sx={{ 
                 '& .MuiDialog-paper': 
                 {   width: '80%', maxHeight: 435,
-                    background: linearDegraded,
+                    background: theme.customGradients.dialog,
                 } 
 
             }}

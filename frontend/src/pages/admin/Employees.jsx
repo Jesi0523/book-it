@@ -1,9 +1,14 @@
+// React
 import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastSuccess } from '@/utils/notify';
+
+// MUI
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { toastSuccess } from '@/utils/notify';
 
 // Iconos
 import SearchIcon from '@mui/icons-material/Search';
@@ -23,7 +28,7 @@ import EmployeeForm from '@/components/employees/EmployeeForm';
 import avatar1 from '@/assets/dummy/perfil-1.jpg';
 import avatar2 from '@/assets/dummy/perfil-2.jpg';
 
-// <----------- DUMMY DATA ----------->
+// <------------- DUMMY DATA ------------->
 
 // Lista de servicios
 const dummyServicios = [
@@ -86,22 +91,26 @@ const dummyEmpleados = [
   },
 ];
 
-// <----------- LOGICA ----------->
 const Employees = () => {
-  // Estados
+  // <--------------- ESTADOS --------------->
   const [busqueda, setBusqueda] = useState('');
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
 
+  // <--------------- DERIVADOS --------------->
+  // Busqueda de empleado
+  const empleadosFiltrados = dummyEmpleados.filter((emp) =>
+    emp.name.toLowerCase().includes(busqueda.toLowerCase()),
+  );
+
+  // <--------------- EFFECTS --------------->
+  // Scroll hacia arriba al cambiar de lista/datos empleado
   useEffect(() => {
     window.scrollTo({
       top: 0,
     });
   }, [empleadoEditando]);
 
-  // Funcion busqueda empleado
-  const empleadosFiltrados = dummyEmpleados.filter((emp) =>
-    emp.name.toLowerCase().includes(busqueda.toLowerCase()),
-  );
+  // <--------------- FUNCIONES --------------->
 
   // Funcion guardar empleado
   const handleSaveEmployee = (employeeData) => {
@@ -116,6 +125,7 @@ const Employees = () => {
     setEmpleadoEditando(null);
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

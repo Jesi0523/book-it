@@ -1,3 +1,4 @@
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -10,11 +11,14 @@ const Card = ({
   shadowColor,
   offset = 8
 }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
+  // <--------------- VALORES --------------->
   const background = bg || theme.palette.background.paper;
   const shadow = shadowColor || theme.palette.customShadows.card;
   
+  // <--------------- RENDER --------------->
   return (
     <Box 
       sx={{ 

@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastSuccess } from '@/utils/notify';
+
+// MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
-import { toastSuccess } from '@/utils/notify';
-
-// Componentes propios
-import MainButton from '@/components/common/MainButton';
-import TextInput from '@/components/form/TextInput';
 
 // Iconos
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 
+// Componentes propios
+import MainButton from '@/components/common/MainButton';
+import TextInput from '@/components/form/TextInput';
+
+// <----------- CONSTANTE ----------->
 // Opciones para la duracion de un servicio hasta 6 horas max
 const opcionesDuracion = Array.from(
   { length: 12 },
@@ -19,6 +24,7 @@ const opcionesDuracion = Array.from(
 );
 
 const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
+  // <--------------- ESTADOS --------------->
   const [formData, setFormData] = useState({
     nombre: '',
     precio: '',
@@ -30,6 +36,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
 
   const [isSaving, setIsSaving] = useState(false);
 
+  // <--------------- EFFECTS --------------->
   useEffect(() => {
     if (service && service.id !== 'nuevo') {
       setFormData({
@@ -52,11 +59,21 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     }
   }, [service]);
 
+  // <--------------- DERIVADO --------------->
+  const opcionesSeguras = [...opcionesDuracion];
+  if (formData.tiempo && !opcionesSeguras.includes(formData.tiempo)) {
+    opcionesSeguras.unshift(formData.tiempo);
+  }
+
+  // <--------------- FUNCIONES --------------->
+
+  // Llena los inputs
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Llena la foto
   const handlePhotoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -69,6 +86,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     }
   };
 
+  // Boton guardar
   const handleSubmit = () => {
     if (isSaving) return;
     setIsSaving(true);
@@ -87,11 +105,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
     setIsSaving(false);
   };
 
-  const opcionesSeguras = [...opcionesDuracion];
-  if (formData.tiempo && !opcionesSeguras.includes(formData.tiempo)) {
-    opcionesSeguras.unshift(formData.tiempo);
-  }
-
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}

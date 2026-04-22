@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+
+// DAYJS
 import dayjs from 'dayjs';
 
 // Componentes propios
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
+
+// REPORTES
 import AppointmentsReport from '@/components/reports/AppointmentsReport';
 import IncomeReport from '@/components/reports/IncomeReport';
 import ServicesReport from '@/components/reports/ServicesReport';
 import ProductivityReport from '@/components/reports/ProductivityReport';
+
+// <--------------- CONSTANTES --------------->
 
 // Arregla bug de la libreria recharts
 const originalConsoleWarn = console.warn;
@@ -24,34 +32,37 @@ console.warn = (...args) => {
   originalConsoleWarn(...args);
 };
 
-const Reports = () => {
-  const mesesNombres = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre',
-  ];
+const mesesNombres = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
 
+const Reports = () => {
+  // <--------------- CONTEXTO --------------->
   const mesActualIndex = dayjs().month();
   const anioActualNum = dayjs().year();
 
+  // <--------------- DERIVADO --------------->
   const aniosList = Array.from({ length: 10 }, (_, i) =>
     (anioActualNum - 1 + i).toString(),
   );
 
-  //   Estados
+  // <--------------- ESTADOS --------------->
   const [activeTab, setActiveTab] = useState(0);
   const [mesFiltro, setMesFiltro] = useState(mesesNombres[mesActualIndex]);
   const [anioFiltro, setAnioFiltro] = useState(anioActualNum.toString());
 
+  // <--------------- CONFIG DE UI --------------->
   const tabs = [
     'Citas por período',
     'Ingresos por período',
@@ -59,7 +70,6 @@ const Reports = () => {
     'Productividad',
   ];
 
-  // Estilos
   const selectMenuProps = {
     PaperProps: {
       sx: {
@@ -85,6 +95,7 @@ const Reports = () => {
     '& .MuiSvgIcon-root': { color: 'primary.light' },
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

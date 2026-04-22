@@ -1,10 +1,14 @@
+// React
 import React, { useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+
+// MUI
+import { useTheme } from '@mui/material/styles';
 import MuiLink from '@mui/material/Link';
 import Box from '@mui/material/Box';
 
-// <---- Componentes ---->
+// <--------------- Componentes --------------->
+
 // Common
 import Card from '@/components/common/Card';
 import Title from '@/components/common/Title';
@@ -12,27 +16,34 @@ import Text from '@/components/common/Text';
 import MainButton from '@/components/common/MainButton';
 import InfoDialog from '@/components/common/InfoDialog';
 
-// Formulario
+// Form
 import TextInput from '@/components/form/TextInput';
 import PasswordInput from '@/components/form/PasswordInput';
 import GenderSelect from '@/components/form/GenderSelect';
 import DateInput from '@/components/form/DateInput';
 
 function Signup() {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [openSuccess, setOpenSuccess] = useState(false);
+  // <--------------- ESTADOS --------------->
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false); // Estado del dialogo
 
-  const handleContinue = () => {
-    setOpenSuccess(true);
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion boton registrar
+  const handleSignup = () => {
+    setIsSuccessDialogOpen(true);
   };
 
+  // Funcion dialogo
   const handleCloseDialog = () => {
-    setOpenSuccess(false);
+    setIsSuccessDialogOpen(false);
     navigate('/login');
   };
 
+  // <--------------- RENDER --------------->
   return (
     <>
       <Card
@@ -41,9 +52,11 @@ function Signup() {
         showShadow={true}
         offset={12}
       >
+        {/* Titulo y descripcion */}
         <Title>BIENVENIDO.</Title>
         <Text size={20}>Regístrate para comenzar</Text>
 
+        {/* Nombre */}
         <TextInput type='text' label='Nombre' placeholder='Ejemplo' />
 
         <Box
@@ -53,10 +66,12 @@ function Signup() {
             width: '100%',
           }}
         >
+          {/* Genero */}
           <Box sx={{ flex: 0.35 }}>
             <GenderSelect height='80px' />
           </Box>
 
+          {/* Telefono */}
           <Box sx={{ flex: 0.65 }}>
             <TextInput
               type='number'
@@ -67,21 +82,28 @@ function Signup() {
           </Box>
         </Box>
 
+        {/* Correo */}
         <TextInput
           type='email'
           label='Correo electrónico'
           placeholder='ejemplo@gmail.com'
         />
 
+        {/* Fecha de nacimiento */}
         <DateInput />
 
+        {/* Contrasena */}
         <PasswordInput />
+
+        {/* Confirmar contrasena */}
         <PasswordInput label='Confirmar Contraseña' />
 
-        <MainButton size={20} onClick={handleContinue}>
+        {/* Boton registrar */}
+        <MainButton size={20} onClick={handleSignup}>
           Regístrate
         </MainButton>
 
+        {/* Redirigir login */}
         <Text align='center'>
           ¿Ya tienes una cuenta?{' '}
           <MuiLink
@@ -103,8 +125,9 @@ function Signup() {
         </Text>
       </Card>
 
+      {/* Dialogo inmediato */}
       <InfoDialog
-        open={openSuccess}
+        open={isSuccessDialogOpen}
         onClose={handleCloseDialog}
         title='¡Registro Exitoso!'
         content='Tu cuenta ha sido creada.'

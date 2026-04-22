@@ -1,4 +1,7 @@
+// MUI
 import Box from '@mui/material/Box'
+
+// Componente
 import Text from '@/components/common/Text';
 
 const TextWIcon = ({icon, text}) =>

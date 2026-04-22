@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+// CHARTS
 import {
   BarChart,
   Bar,
@@ -11,15 +17,16 @@ import {
   Cell,
   LabelList,
 } from 'recharts';
-import dayjs from 'dayjs';
 
-// Responsive
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
+// DAYJS
+import dayjs from 'dayjs';
 
 // Componentes propios
 import Text from '@/components/common/Text';
 
+// <--------------- COMPONENTES AUXILIARES --------------->
+
+// El cuadrito de cada barrita
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -52,25 +59,31 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+// <--------------- CONSTANTES --------------->
+const mesesNombres = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
+
 const AppointmentsReport = ({ mes, anio }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // <--------------- MEMO --------------->
+
+  // Genera los datos de la grafica segun el mes y año
   const dataDinamica = useMemo(() => {
-    const mesesNombres = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre',
-    ];
     const mesIndex = mesesNombres.indexOf(mes);
 
     if (mesIndex === -1) return [];
@@ -118,6 +131,7 @@ const AppointmentsReport = ({ mes, anio }) => {
     return semanas;
   }, [mes, anio]);
 
+  // Genera los numeros de la izq blanco
   const dynamicTicks = useMemo(() => {
     const maxCitas = Math.max(...dataDinamica.map((d) => d.citas), 10);
     let step = maxCitas / 5;
@@ -126,6 +140,7 @@ const AppointmentsReport = ({ mes, anio }) => {
     return [0, step, step * 2, step * 3, step * 4, step * 5];
   }, [dataDinamica]);
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -191,8 +206,8 @@ const AppointmentsReport = ({ mes, anio }) => {
             minHeight: 0,
             width: '100%',
             height: '100%',
-            '& .recharts-wrapper, & .recharts-surface, & *:focus': { 
-              outline: 'none !important' 
+            '& .recharts-wrapper, & .recharts-surface, & *:focus': {
+              outline: 'none !important',
             },
           }}
         >

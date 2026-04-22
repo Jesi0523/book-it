@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import dayjs from 'dayjs';
+
+// Utils
 import { toastSuccess, toastNeutral } from '@/utils/notify';
+
+// Dayjs
+import dayjs from 'dayjs';
+
+// MUI
+import Box from '@mui/material/Box';
 
 // Componentes propios
 import Title from '@/components/common/Title';
@@ -22,7 +28,7 @@ const dummySuspensiones = [
 ];
 
 const Suspensions = () => {
-  // <------------- ESTADOS ------------->
+  // <--------------- ESTADOS --------------->
   const [fechaSeleccionada, setFechaSeleccionada] = useState(dayjs());
   const [tipoSuspension, setTipoSuspension] = useState('horario');
   const [horaInicio, setHoraInicio] = useState('07:00');
@@ -32,7 +38,7 @@ const Suspensions = () => {
   const [anioFiltro, setAnioFiltro] = useState(2026);
   const [listaSuspensiones, setListaSuspensiones] = useState(dummySuspensiones);
 
-  // <------------- FUNCIONES ------------->
+  // <--------------- FUNCIONES --------------->
   const handleAplicar = () => {
     toastSuccess('Suspensión registrada correctamente.', 'suspension-save-toast');
   };
@@ -41,6 +47,8 @@ const Suspensions = () => {
     setListaSuspensiones((prev) => prev.filter((susp) => susp.id !== id));
     toastNeutral('La suspensión ha sido eliminada.', 'suspension-delete-toast');
   };
+
+  // <--------------- CONFIG DE UI --------------->
 
   // Estilos globales de los selects
   const selectMenuProps = {

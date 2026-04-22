@@ -1,5 +1,8 @@
+// React
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
+// MUI
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
@@ -8,17 +11,17 @@ import AuthLayout from '@/layouts/AuthLayout';
 import ClientLayout from '@/layouts/ClientLayout';
 import AdminLayout from '@/layouts/AdminLayout';
 
-// Auth
+// Paginas Auth
 const Login = lazy(() => import('@/pages/auth/Login.jsx'));
 const Signup = lazy(() => import('@/pages/auth/Signup.jsx'));
 
-// Client
+// Paginas Client
 const MainPage = lazy(() => import('@/pages/client/MainPage'));
 const BookAppointment = lazy(() => import('@/pages/client/BookAppointment'));
 const MyAppointments = lazy(() => import('@/pages/client/MyAppointments'));
 const Profile = lazy(() => import('@/pages/client/Profile'));
 
-// Admin
+// Paginas Admin
 const AppointmentCalendar = lazy(
   () => import('@/pages/admin/AppointmentCalendar'),
 );
@@ -31,9 +34,12 @@ const CompanyInfo = lazy(() => import('@/pages/admin/CompanyInfo'));
 const Suspensions = lazy(() => import('@/pages/admin/Suspensions'));
 const Reports = lazy(() => import('@/pages/admin/Reports'));
 
-// Error
+// Pagina Error
 const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
+// <--------------------------------------------------------->
+
+// Pantalla de carga
 const FallbackLoader = () => (
   <Box
     sx={{
@@ -48,13 +54,13 @@ const FallbackLoader = () => (
   </Box>
 );
 
+// Muestra algo mientras se carga un componente
 const SuspenseLayout = ({ children }) => (
   <Suspense fallback={<FallbackLoader />}>{children}</Suspense>
 );
 
 const AppRoutes = () => {
   return (
-    // Cargando pantallas
     <Routes>
       {/* Auth */}
       <Route

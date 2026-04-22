@@ -1,5 +1,10 @@
+// React
 import React, { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
+
+// Utils
 import { toastSuccess } from '@/utils/notify';
 
 // Componentes propios
@@ -10,7 +15,7 @@ import ScheduleSection from '@/components/common/ScheduleSection';
 import CompanyGallerySection from '@/components/company/CompanyGallerySection';
 
 const CompanyInfo = () => {
-  // ESTADOS
+  // <--------------- ESTADOS --------------->
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -39,7 +44,7 @@ const CompanyInfo = () => {
   const [galleryFiles, setGalleryFiles] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
 
-  // FUNCIONES
+  // <--------------- FUNCIONES --------------->
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -100,6 +105,7 @@ const CompanyInfo = () => {
     }, 3000);
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

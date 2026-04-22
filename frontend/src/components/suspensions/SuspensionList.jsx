@@ -1,16 +1,36 @@
 import React, { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 
+// Iconos
+import CloseIcon from '@mui/icons-material/Close';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
+
 // Componentes propios
 import Text from '@/components/common/Text';
 import BaseDialog from '@/components/common/BaseDialog';
 
-// Iconos
-import CloseIcon from '@mui/icons-material/Close';
-import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
+// <--------------- CONSTANTES --------------->
+const meses = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
+
+const anios = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
 
 const SuspensionList = ({
   mesFiltro,
@@ -22,32 +42,23 @@ const SuspensionList = ({
   selectMenuProps,
   selectEstilos,
 }) => {
-  const meses = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre',
-  ];
-
-  const anios = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  // <--------------- ESTADOS --------------->
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [actualSuspenction, setActualSuspenction] = useState(
     listaSuspensiones[0] || '',
   );
-  const [suspenctionName, setSuspectionName] = React.useState('');
+  const [suspenctionName, setSuspectionName] = useState('');
+
+  // <--------------- FUNCIONES --------------->
+
+  // Abrir dialogo
   const handleOpenDeleteDialog = (index, texto) => {
     setOpenDeleteDialog(true);
     setActualSuspenction(index);
     setSuspectionName(texto);
   };
+
+  // Cerrar dialogo
   const handleCloseDeleteDialog = (hasAccepted) => {
     setOpenDeleteDialog(false);
     if (hasAccepted) {
@@ -55,6 +66,7 @@ const SuspensionList = ({
     }
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -171,6 +183,8 @@ const SuspensionList = ({
           ))
         )}
       </Box>
+
+      {/* Dialogo */}
       <BaseDialog
         id='delete-suspension'
         open={openDeleteDialog}

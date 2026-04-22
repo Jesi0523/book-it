@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+// CHARTS
 import {
   BarChart,
   Bar,
@@ -12,13 +18,12 @@ import {
   LabelList,
 } from 'recharts';
 
-// Responsive
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-
 // Componentes propios
 import Text from '@/components/common/Text';
 
+// <--------------- COMPONENTES AUXILIARES --------------->
+
+// El cuadrito de cada barrita
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -50,9 +55,13 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const ServicesReport = ({ mes, anio }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // <--------------- MEMO --------------->
+
+  // Genera los datos de la grafica segun el mes y año
   const dataDinamica = useMemo(() => {
     const datos = Array.from({ length: 12 }).map((_, index) => ({
       servicio: `Servicio ${index + 1}`,
@@ -64,6 +73,7 @@ const ServicesReport = ({ mes, anio }) => {
     return datos.sort((a, b) => b.solicitudes - a.solicitudes);
   }, [mes, anio]);
 
+  // Genera los numeros de la izq blanco
   const dynamicTicks = useMemo(() => {
     const maxSolicitudes = Math.max(
       ...dataDinamica.map((d) => d.solicitudes),
@@ -75,10 +85,12 @@ const ServicesReport = ({ mes, anio }) => {
     return [0, step, step * 2, step * 3, step * 4, step * 5];
   }, [dataDinamica]);
 
+  // <--------------- DERVIADO --------------->
   const chartHeightValue = isMobile ? 320 : 380;
   const leftColWidth = isMobile ? 45 : 65;
   const chartWidthValue = dataDinamica.length * (isMobile ? 55 : 80);
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

@@ -1,11 +1,14 @@
+// MUI
 import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 export default function Calendar({ value, onChange }) {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   
+  // <--------------- RENDER --------------->
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar

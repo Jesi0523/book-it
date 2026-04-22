@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastNeutral } from '@/utils/notify';
+
+// MUI
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { toastNeutral } from '@/utils/notify';
 
 // Iconos
 import SearchIcon from '@mui/icons-material/Search';
@@ -58,20 +62,27 @@ const dummyServicios = [
 ];
 
 const Services = () => {
-  //   Estados
+  // <--------------- ESTADOS --------------->
   const [busqueda, setBusqueda] = useState('');
   const [servicioEditando, setServicioEditando] = useState(null);
-  const [services, setServices] = React.useState(dummyServicios);
+  const [services, setServices] = useState(dummyServicios);
 
+  // <--------------- EFFECTS --------------->
+
+  // Scroll hasta arriba al cambiar de ver servicios/agregar o editar
   useEffect(() => {
     window.scrollTo({
       top: 0,
     });
   }, [servicioEditando]);
 
+  // <--------------- DERIVADO --------------->
+  // Buscar servicio
   const serviciosFiltrados = services.filter((serv) =>
     serv.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
+
+  // <--------------- FUNCIONES --------------->
 
   // Funcion eliminar servicio
   const handleDelete = (index) => {
@@ -87,6 +98,7 @@ const Services = () => {
     setServicioEditando(null);
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

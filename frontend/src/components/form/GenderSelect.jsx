@@ -1,7 +1,12 @@
+// React
 import { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+
+// Iconos
 import Man from '@mui/icons-material/Man';
 import Woman from '@mui/icons-material/Woman';
 
@@ -11,8 +16,10 @@ const GenderSelect = ({
   border,
   height = { xs: '60px', md: '80px' },
 }) => {
+  // <--------------- ESTADOS --------------->
   const [selected, setSelected] = useState(null);
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

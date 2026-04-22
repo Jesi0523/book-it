@@ -1,5 +1,8 @@
+// React
+import React, { useState } from 'react';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
-import React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
@@ -15,17 +18,25 @@ import MainButton from '@/components/common/MainButton';
 import BaseDialog from '@/components/common/BaseDialog';
 
 const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
+  
+  // <--------------- ESTADOS --------------->
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  // <--------------- FUNCIONES --------------->
+  // Funcion abrir dialogo
   const handleOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true);
+    setIsDeleteDialogOpen(true);
   };
+
+  // Funcion cerrar dialogo
   const handleCloseDeleteDialog = (hasAccepted) => {
-    setOpenDeleteDialog(false);
+    setIsDeleteDialogOpen(false);
     if (hasAccepted) onDeleteConfirm();
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}
@@ -157,9 +168,11 @@ const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
           servicio
         </MainButton>
       </Box>
+
+      {/* Dialogo */}
       <BaseDialog
         id='delete-service'
-        open={openDeleteDialog}
+        open={isDeleteDialogOpen}
         onClose={handleCloseDeleteDialog}
         title={'Advertencia'}
         icon={<AdvertismentIcon />}

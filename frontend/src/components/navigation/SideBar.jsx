@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
+
+// MUI
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
-
-import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -19,6 +19,9 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
+
+// Componentes
+import BaseDialog from '@/components/common/BaseDialog';
 
 // Logos
 import logo from '@/assets/logo/Logo1.webp';
@@ -59,14 +62,22 @@ const menuItems = [
 ];
 
 const Sidebar = ({ isExpanded = true, onClose }) => {
+  // <--------------- CONTEXTO --------------->
   const location = useLocation();
   const navigate = useNavigate();
-  const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
+
+  // <--------------- ESTADOS --------------->
+  const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+  // Funcion abrir dialogo
   const handleOpenSessionDialog = () => {
-    setOpenSessionDialog(true);
+    setIsSessionDialogOpen(true);
   };
+
+  // Funcion cerrar dialogo
   const handleCloseSessionDialog = (hasAccepted) => {
-    setOpenSessionDialog(false);
+    setIsSessionDialogOpen(false);
 
     if (hasAccepted) {
       setTimeout(() => {
@@ -75,6 +86,7 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
     }
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -221,9 +233,11 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
           />
         </ListItemButton>
       </Box>
+
+      {/* Dialogo */}
       <BaseDialog
         id='close-admin-session'
-        open={openSessionDialog}
+        open={isSessionDialogOpen}
         onClose={handleCloseSessionDialog}
         title={'Advertencia'}
         icon={<AdvertismentIcon />}

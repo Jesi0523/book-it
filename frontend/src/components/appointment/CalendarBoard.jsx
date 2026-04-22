@@ -1,5 +1,8 @@
 // <------------- IMPORTS ------------->
+// React
 import React, { useState, useEffect, useRef } from 'react';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -20,7 +23,7 @@ import avatar1 from '@/assets/dummy/perfil-1.jpg';
 import avatar2 from '@/assets/dummy/perfil-2.jpg';
 import avatar3 from '@/assets/dummy/perfil-3.jpg';
 
-// <------------- DUMMY ------------->
+// <------------- DUMMY DATA ------------->
 
 // Empleados
 const dummyEmpleados = [
@@ -71,6 +74,7 @@ const dummyCitas = [
   },
 ];
 
+// Horario
 const horariosSemanalesDB = {
   0: { abierto: false, horaInicio: 0, horaFin: 0 }, // Domingo (Cerrado)
   1: { abierto: true, horaInicio: 7, horaFin: 20 }, // Lunes
@@ -80,6 +84,8 @@ const horariosSemanalesDB = {
   5: { abierto: true, horaInicio: 7, horaFin: 17.5 }, // Viernes
   6: { abierto: true, horaInicio: 7, horaFin: 14 }, // Sabado
 };
+
+// <------------- HELPERS ------------->
 
 // Horarios de cada dia
 const generarHorariosDelDia = (fecha) => {
@@ -106,40 +112,53 @@ const generarHorariosDelDia = (fecha) => {
   return { slots, horaInicio, horaFin };
 };
 
-// <------ LOGICA ------>
+// ------------------------------------
+
 const CalendarBoard = () => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
-  const [fechaActual, setFechaActual] = useState(new Date());
-  const [empleadoBuscado, setEmpleadoBuscado] = useState(null);
-  const [ahora, setAhora] = useState(new Date());
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [citaSeleccionada, setCitaSeleccionada] = useState(null);
+  // <--------------- REF --------------->
   const scrollRef = useRef(null);
 
-  const handleAbrirModal = (cita, empleado) => {
-    setCitaSeleccionada({ ...cita, employ: empleado });
-    setModalOpen(true);
-  };
+  // <--------------- ESTADOS --------------->
+  const [fechaActual, setFechaActual] = useState(new Date());
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date()); // Hora actual
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado del modal de la cita
+  const [citaSeleccionada, setCitaSeleccionada] = useState(null); // Cita seleccionada para mostrar al modal
 
+  // <--------------- EFFECTS --------------->
+
+  // Efecto para actualizar la hora actual cada minuto para la linea de la hora actual
   useEffect(() => {
-    const intervalo = setInterval(() => setAhora(new Date()), 60000);
+    const intervalo = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(intervalo);
   }, []);
 
+  // Efecto que reinicia el scroll horizontal cuando se cambie el filtro de empleados
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
     }
-  }, [empleadoBuscado]);
+  }, [empleadoSeleccionado]);
 
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion para abrir el modal de cita con datos de la cita
+  const handleAbrirModal = (cita, empleado) => {
+    setCitaSeleccionada({ ...cita, employee: empleado });
+    setIsModalOpen(true);
+  };
+
+  // Funcion para cambiar dia en el calendario
   const cambiarDia = (dias) => {
     const nuevaFecha = new Date(fechaActual);
     nuevaFecha.setDate(nuevaFecha.getDate() + dias);
     setFechaActual(nuevaFecha);
   };
 
+  // Funcion para el scroll horizontal del calendario
   const desplazarScroll = (direccion) => {
     if (scrollRef.current) {
       const cantidadScroll = 200;
@@ -150,6 +169,7 @@ const CalendarBoard = () => {
     }
   };
 
+  // Funcion para formatear una fecha a string
   const getFormatedDateStr = (date) => {
     const y = date.getFullYear();
     const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -157,26 +177,38 @@ const CalendarBoard = () => {
     return `${y}-${m}-${d}`;
   };
 
+  // <--------------- DATOS DERIVADOS --------------->
+
+  // Texto del mes y dia actual
   const opcionesMes = { month: 'long', year: 'numeric' };
   const opcionesDia = { weekday: 'long', day: 'numeric' };
+
   const mesAnioTexto = fechaActual.toLocaleDateString('es-ES', opcionesMes);
   const diaTexto = fechaActual.toLocaleDateString('es-ES', opcionesDia);
 
-  const empleadosAMostrar = empleadoBuscado
-    ? [empleadoBuscado]
+  // Lista de empleados
+  const empleadosAMostrar = empleadoSeleccionado
+    ? [empleadoSeleccionado]
     : dummyEmpleados;
+
+  // Genera los horarios del dia
   const {
     slots: horariosDelDia,
     horaInicio,
     horaFin,
   } = generarHorariosDelDia(fechaActual);
 
-  const isToday = fechaActual.toDateString() === ahora.toDateString();
-  const currentHourFloat = ahora.getHours() + ahora.getMinutes() / 60;
+  // Calculos para la linea de la hora actual
+  const isToday = fechaActual.toDateString() === currentTime.toDateString();
+  const currentHourFloat =
+    currentTime.getHours() + currentTime.getMinutes() / 60;
+
   const isTimeWithinBounds =
     currentHourFloat >= horaInicio && currentHourFloat <= horaFin;
+
   const topOffset = (currentHourFloat - horaInicio) * 160;
 
+  // <--------------- RENDER --------------->
   return (
     <Box sx={{ width: '100%', mt: 2 }}>
       {/* Seccion de filtros */}
@@ -189,6 +221,7 @@ const CalendarBoard = () => {
           alignItems: 'flex-end',
         }}
       >
+        {/* Filtro empleado */}
         <Box
           sx={{
             display: 'flex',
@@ -211,20 +244,21 @@ const CalendarBoard = () => {
             placeholder='Buscar empleado...'
             array={dummyEmpleados}
             hasImage={true}
-            value={empleadoBuscado?.name || ''}
+            value={empleadoSeleccionado?.name || ''}
             onChange={(e) => {
               if (!e.target.value) {
-                setEmpleadoBuscado(null);
+                setEmpleadoSeleccionado(null);
               } else {
                 const emp = dummyEmpleados.find(
                   (emp) => emp.name === e.target.value,
                 );
-                setEmpleadoBuscado(emp || null);
+                setEmpleadoSeleccionado(emp || null);
               }
             }}
           />
         </Box>
 
+        {/* Fecha seleccionada */}
         <Box
           sx={{
             display: 'flex',
@@ -273,6 +307,7 @@ const CalendarBoard = () => {
               `1px solid ${theme.palette.customBorders.inputDefault}`,
           }}
         >
+          {/* Mes y anio */}
           <Typography
             sx={{
               color: 'white',
@@ -282,10 +317,14 @@ const CalendarBoard = () => {
           >
             {mesAnioTexto}
           </Typography>
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Flecha dia anterior */}
             <IconButton onClick={() => cambiarDia(-1)} sx={{ color: 'white' }}>
               <ArrowBackIosNewIcon fontSize='small' />
             </IconButton>
+
+            {/* Dia texto */}
             <Typography
               sx={{
                 color: 'white',
@@ -295,6 +334,8 @@ const CalendarBoard = () => {
             >
               {diaTexto}
             </Typography>
+
+            {/* Flecha dia siguiente */}
             <IconButton onClick={() => cambiarDia(1)} sx={{ color: 'white' }}>
               <ArrowForwardIosIcon fontSize='small' />
             </IconButton>
@@ -302,6 +343,7 @@ const CalendarBoard = () => {
         </Box>
 
         {horariosDelDia.length === 0 ? (
+          // Dia de descanso
           <Typography
             sx={{
               color: 'text.secondary',
@@ -358,6 +400,7 @@ const CalendarBoard = () => {
                 >
                   <ArrowBackIosNewIcon fontSize='small' />
                 </IconButton>
+
                 <IconButton
                   onClick={() => desplazarScroll('derecha')}
                   sx={{ color: 'white' }}
@@ -366,7 +409,7 @@ const CalendarBoard = () => {
                 </IconButton>
               </Box>
 
-              {/* Nombre de los empleados */}
+              {/* Empleados */}
               {empleadosAMostrar.map((emp) => (
                 <Box
                   key={emp.id}
@@ -404,11 +447,12 @@ const CalendarBoard = () => {
                 </Box>
               ))}
 
-              {/* Columna de horarios */}
+              {/* Filas de horarios */}
               {horariosDelDia.map((horario) => {
                 const horaInicioCeldita = horario.split('-')[0];
                 return (
                   <React.Fragment key={horario}>
+                    {/* Columna de horas */}
                     <Box
                       sx={{
                         display: 'flex',
@@ -441,7 +485,9 @@ const CalendarBoard = () => {
                       </Typography>
                     </Box>
 
+                    {/* Columna por empleado */}
                     {empleadosAMostrar.map((emp) => {
+                      // Busca si el empleado tiene una cita en una hora
                       const cita = dummyCitas.find(
                         (a) =>
                           a.empId === emp.id && a.start === horaInicioCeldita,
@@ -461,6 +507,7 @@ const CalendarBoard = () => {
                             background: 'transparent',
                           }}
                         >
+                          {/* Bloque de cia si existe */}
                           {cita && (
                             <Box
                               onClick={() => handleAbrirModal(cita, emp)}
@@ -480,6 +527,7 @@ const CalendarBoard = () => {
                                 overflow: 'hidden',
                               }}
                             >
+                              {/* Nombre del servicio */}
                               <Typography
                                 sx={{
                                   color: 'white',
@@ -493,6 +541,8 @@ const CalendarBoard = () => {
                               >
                                 {cita.title}
                               </Typography>
+
+                              {/* Nombre del cliente */}
                               <Typography
                                 sx={{
                                   color: 'rgba(255,255,255,0.7)',
@@ -504,6 +554,8 @@ const CalendarBoard = () => {
                               >
                                 {cita.client}
                               </Typography>
+
+                              {/* Horario */}
                               <Typography
                                 sx={{
                                   color: 'rgba(255,255,255,0.7)',
@@ -559,8 +611,8 @@ const CalendarBoard = () => {
 
       {/* Detalles de la cita */}
       <AppointmentModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
         appointment={citaSeleccionada}
       />
     </Box>

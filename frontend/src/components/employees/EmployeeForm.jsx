@@ -1,4 +1,7 @@
+// React
 import React, { useState, useEffect } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 
 // Componentes propios
@@ -25,9 +28,8 @@ const availableDummyServices = [
   'Limpieza facial',
 ];
 
-// <----------- LOGICA ----------->
 const EmployeeForm = ({ employee, onCancel, onSave }) => {
-  // Estados
+  // <--------------- ESTADOS --------------->
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -37,6 +39,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     foto: null,
     archivoFisico: null,
   });
+
   const [scheduleMap, setScheduleMap] = useState({
     Domingo: [],
     Lunes: [],
@@ -46,9 +49,11 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     Viernes: [],
     Sábado: [],
   });
+
   const [selectedServices, setSelectedServices] = useState([]);
 
-  // <----------- UseEffects ----------->
+  // <--------------- EFFECTS --------------->
+  // Trae los datos del empleado si existe
   useEffect(() => {
     if (employee && employee.id !== 'nuevo') {
       setFormData({
@@ -91,6 +96,8 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     }
   }, [employee]);
 
+  // <--------------- FUNCIONES --------------->
+
   // Funcion input text
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -132,7 +139,7 @@ const EmployeeForm = ({ employee, onCancel, onSave }) => {
     });
   };
 
-  // Estructura
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{

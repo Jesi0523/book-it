@@ -1,4 +1,7 @@
+// React
 import React from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 
 // Iconos
@@ -10,8 +13,10 @@ import Title from '@/components/common/Title';
 import MainButton from '@/components/common/MainButton';
 
 const AppointmentCalendar = () => {
+  // <--------------- RENDER --------------->
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
+      {/* Seccion superior */}
       <Box
         sx={{
           display: 'flex',
@@ -24,6 +29,7 @@ const AppointmentCalendar = () => {
           flexGrow: 1,
         }}
       >
+        {/* Titulo */}
         <Box sx={{ flexGrow: 1, textAlign: { xs: 'center', md: 'left' } }}>
           <Title
             size={{ xs: '1.5rem', md: '2.5rem' }}
@@ -35,6 +41,7 @@ const AppointmentCalendar = () => {
           </Title>
         </Box>
 
+        {/* Boton agendar cita */}
         <MainButton
           size={{ xs: '14px', md: '16px' }}
           to='/admin/book-appointment'
@@ -46,6 +53,7 @@ const AppointmentCalendar = () => {
         </MainButton>
       </Box>
 
+      {/* Calendario */}
       <CalendarBoard />
     </Box>
   );

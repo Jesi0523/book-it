@@ -1,35 +1,49 @@
-import * as React from 'react';
+// React
+import React, { useState } from 'react';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 // ****************************
+// Componentes
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
-
 import BaseDialog from '@/components/common/BaseDialog';
-
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
 // ****************************
+// Iconos
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 const AppointmentBody = ({ appointment, onConfirmCancel }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
-  const [openCancelDialog, setOpenCancelDialog] = React.useState(false);
-  const handleOpenCancelDialog = () => {
-    setOpenCancelDialog(true);
-  };
-  const handleCloseCancelDialog = (hasAccepted) => {
-    setOpenCancelDialog(false);
-    if (hasAccepted) onConfirmCancel();
-  };
+  // <--------------- ESTADOS --------------->
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+
+  // <--------------- DERIVADO --------------->
   const showCancelButton =
     appointment.status.name !== 'Cancelada' &&
     appointment.status.name !== 'Completada';
 
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion abrir dialogo
+  const handleOpenCancelDialog = () => {
+    setIsCancelDialogOpen(true);
+  };
+
+  // Funcion cerrar dialogo
+  const handleCloseCancelDialog = (hasAccepted) => {
+    setIsCancelDialogOpen(false);
+    if (hasAccepted) onConfirmCancel();
+  };
+
+  // <--------------- RENDER --------------->
   return (
     <>
       <Box
@@ -63,11 +77,11 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
             }}
           >
             <Avatar
-              src={appointment.employ.pfp}
+              src={appointment.employee.pfp}
               sx={{ width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 } }}
             />
             <Text
-              children={appointment.employ.name}
+              children={appointment.employee.name}
               size={14}
               sx={{
                 whiteSpace: 'nowrap',
@@ -198,9 +212,11 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
             )}
           </Grid>
         </Box>
+
+        {/* Dialogo */}
         <BaseDialog
           id='cancel-appointment'
-          open={openCancelDialog}
+          open={isCancelDialogOpen}
           onClose={handleCloseCancelDialog}
           title={'Advertencia'}
           icon={<AdvertismentIcon />}

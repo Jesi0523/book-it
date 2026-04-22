@@ -1,5 +1,7 @@
-import Button from '@mui/material/Button';
 import { Link as RouterLink } from 'react-router-dom';
+
+// MUI
+import Button from '@mui/material/Button';
 
 const MainButton = ({
   children,
@@ -11,6 +13,7 @@ const MainButton = ({
   to,
   ...props
 }) => {
+  // <--------------- VALORES --------------->
   const responsiveFontSize =
     typeof size === 'object'
       ? { ...size }
@@ -20,6 +23,7 @@ const MainButton = ({
           md: `${size}px`,
         };
 
+  // <--------------- RENDER --------------->
   return (
     <Button
       type={type}

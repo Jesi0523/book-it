@@ -1,13 +1,18 @@
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
+
+// Componentes
 import Title from '@/components/common/Title'
 import Text from '@/components/common/Text'
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 
 const AppointmentHeader = ({title, date, price}) =>
 {
+    // <--------------- CONTEXTO --------------->
     const theme = useTheme();
     
+    // <--------------- RENDER --------------->
     return(
         <Grid container sx={{ width: '100%', px: 1, py: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: 2 }}>
             <Grid sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, minWidth: 0 }}>

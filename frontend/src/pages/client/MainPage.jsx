@@ -1,12 +1,18 @@
+// React
+import { useLocation } from 'react-router-dom';
+
+// MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { useLocation } from 'react-router-dom';
+
+// SWIPER
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, EffectFade } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+
 // ************** componentes propios :3 **************
 // |  common
 import MainButton from '@/components/common/MainButton';
@@ -28,7 +34,7 @@ import LocationIcon from '@mui/icons-material/LocationOnRounded';
 import PhoneIcon from '@mui/icons-material/PhoneRounded';
 import EmailIcon from '@mui/icons-material/EmailRounded';
 
-//NOTA: Datos de ejemplo, eliminar después
+//NOTA: Datos de ejemplo, eliminar despues
 const serviciesInfoDummy = [
   {
     id: 1,
@@ -69,9 +75,11 @@ const imageDummy = [
 // ***********************************
 
 function MainPage() {
+  // <--------------- CONTEXTO --------------->
   const location = useLocation();
   const isLanding = location.pathname === '/';
 
+  // <--------------- RENDER --------------->
   return (
     <>
       {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
@@ -100,7 +108,10 @@ function MainPage() {
             flexDirection: 'column',
           }}
         >
+          {/* Empresa */}
           <Title children='Empresa' align='center' color='text.primary' />
+          
+          {/* Slogan */}
           <Text
             children='Slogan'
             align='center'
@@ -155,6 +166,7 @@ function MainPage() {
             width: '100%',
           }}
         >
+          {/* Imagen */}
           <Grid
             size={{ xs: 12, md: 4 }}
             sx={{
@@ -173,6 +185,8 @@ function MainPage() {
               }}
             />
           </Grid>
+
+          {/* Descripcion */}
           <Grid
             size={{ xs: 12, md: 8 }}
             sx={{
@@ -288,19 +302,23 @@ function MainPage() {
         </Box>
         <Grid container sx={{ justifyContent: 'center' }}>
           <Grid size={{ xs: 12, md: 6 }}>
+            {/* Direccion */}
             <TextWIcon
               icon={<LocationIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
               text='Dirección de la empresa'
             />
+            {/* Telefono */}
             <TextWIcon
               icon={<PhoneIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
               text='Teléfono de la empresa'
             />
+            {/* Correo */}
             <TextWIcon
               icon={<EmailIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
               text='Correo electrónico'
             />
           </Grid>
+          {/* Horario */}
           <Grid size={{ xs: 12, md: 6 }}>
             <TextWIcon
               icon={<CalendarIcon sx={{ color: 'secondary.main', p: 0.3 }} />}

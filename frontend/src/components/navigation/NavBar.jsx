@@ -1,5 +1,8 @@
-import * as React from 'react';
+// React
+import React, { useState } from 'react';
 import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
+
+// MUI
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
@@ -31,22 +34,35 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 function NavBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+  // <--------------- CONTEXTO --------------->
   const location = useLocation();
   const navigate = useNavigate();
+
+  // <--------------- DERIVADO --------------->
   const currentPath = location.pathname;
   const isLanding = currentPath === '/';
 
-  const [openSessionDialog, setOpenSessionDialog] = React.useState(false);
+  // <--------------- ESTADOS --------------->
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [openSessionDialog, setOpenSessionDialog] = useState(false);
+
+  // <--------------- FUNCIONES --------------->
+  // Funcion abre menu en cel
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  // Funcion cierra menu en cel
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  // Funcion abre dialogo cerrar sesion
   const handleOpenSessionDialog = () => {
     setOpenSessionDialog(true);
   };
+
+  // Funcion cierra dialogo cerrar sesion
   const handleCloseSessionDialog = (hasAccepted) => {
     setOpenSessionDialog(false);
     if (hasAccepted) {
@@ -54,6 +70,7 @@ function NavBar() {
     }
   };
 
+  // <--------------- RENDER --------------->  
   return (
     <AppBar
       position='fixed'
@@ -315,6 +332,8 @@ function NavBar() {
           )}
         </Toolbar>
       </Container>
+
+      {/* Dialogo */}
       <BaseDialog
         id='close-admin-session'
         open={openSessionDialog}

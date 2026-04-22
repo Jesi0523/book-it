@@ -1,4 +1,6 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
@@ -27,7 +29,7 @@ const Combobox = ({
   defaultValue = '',
 }) => {
   const theme = useTheme();
-  const [labelName, setLabelName] = React.useState(defaultValue);
+  const [labelName, setLabelName] = useState(defaultValue);
 
   const handleChange = (event) => {
     setLabelName(event.target.value);
@@ -98,10 +100,10 @@ const Combobox = ({
                 py: 1.5,
               },
               '& .MuiMenuItem-root:hover': {
-                bgcolor: 'background.menuHover',
+                backgroundColor: (theme) => `${theme.palette.background.menuHover} !important`,
               },
               '& .MuiMenuItem-root.Mui-selected': {
-                bgcolor: 'background.menuSelected',
+                backgroundColor: (theme) => `${theme.palette.background.menuSelected} !important`,
                 color: 'text.primary',
               },
             },

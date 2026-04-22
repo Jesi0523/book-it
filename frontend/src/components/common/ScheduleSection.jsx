@@ -1,27 +1,29 @@
+// React
 import React, { useState, useMemo, useEffect } from 'react';
+
+// MUI
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-
-// Media queries para el responsive
-import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
-// Componentes propios
-import Text from '@/components/common/Text';
-import MainButton from '@/components/common/MainButton';
-import BaseDialog from '@/components/common/BaseDialog';
 
 // Iconos
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
+// Componentes propios
+import Text from '@/components/common/Text';
+import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog';
+
+// <--------------- HELPERS --------------->
+
 // Dias de la semana
-const diasSemana = [
+const DIAS_SEMANA = [
   'Domingo',
   'Lunes',
   'Martes',
@@ -31,13 +33,15 @@ const diasSemana = [
   'Sábado',
 ];
 
-// <----------- Funciones ----------->
+// <----------- Logica ----------->
 
+// Convierte una hora en formato "HH:mm" a minutos totales
 const timeToMins = (timeStr) => {
   const [h, m] = timeStr.split(':').map(Number);
   return h * 60 + m;
 };
 
+// Convierte minutos totales a formato "HH:mm"
 const minsToTime = (mins) => {
   const h = Math.floor(mins / 60)
     .toString()
@@ -66,49 +70,24 @@ const opcionesTiempo = Array.from({ length: 48 }, (_, i) => {
 });
 
 const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
-  // Responsive
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Estados
+  // <--------------- ESTADOS --------------->
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
+  const [endTime, setEndTime] = useState('14:00');
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  // Const para el modal de confirmación -> si elimina el horario de un día
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const handleOpenDeleteDialog = () => {
-    setOpenDeleteDialog(true);
-  };
-  const handleCloseDeleteDialog = (hasAccepted) => {
-    setOpenDeleteDialog(false);
-    if (hasAccepted) {
-      handleLimpiarDia();
-    }
-  };
+  // <--------------- DERIVADA --------------->
 
-  // <-------- UseEffects -------->
-  useEffect(() => {
-    const bloquesDia = scheduleMap[selectedDay] || [];
-    if (bloquesDia.length > 0) {
-      let minMins = Infinity;
-      let maxMins = -Infinity;
-      bloquesDia.forEach((bloque) => {
-        const [start, end] = bloque.split('-');
-        const sMins = timeToMins(start);
-        const eMins = timeToMins(end);
-        if (sMins < minMins) minMins = sMins;
-        if (eMins > maxMins) maxMins = eMins;
-      });
-      setStartTime(minsToTime(minMins));
-      setEndTime(minsToTime(maxMins));
-    } else {
-      setStartTime('09:00');
-      setEndTime('17:00');
-    }
-  }, [selectedDay, scheduleMap]);
+  // Define que dias se muestran dependiendo si es en cel o desktop
+  const diasAMostrar = isMobile ? [selectedDay] : DIAS_SEMANA;
 
-  // Funciones
+  // <--------------- MEMO --------------->
+
+  // Calcula el rango global de horarios en base a todos los dias configurados
   const bloquesDinamicos = useMemo(() => {
     let minGlobal = Infinity;
     let maxGlobal = -Infinity;
@@ -131,6 +110,45 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
     return generarBloquesRango(minGlobal, maxGlobal);
   }, [scheduleMap]);
 
+  // <--------------- EFFECTS --------------->
+
+  // Cada vez que se cambie el dia seleccionado o el horario guardado, actualiza automáticamente las horas del selector (inicio y fin)
+  useEffect(() => {
+    const bloquesDia = scheduleMap[selectedDay] || [];
+    if (bloquesDia.length > 0) {
+      let minMins = Infinity;
+      let maxMins = -Infinity;
+      bloquesDia.forEach((bloque) => {
+        const [start, end] = bloque.split('-');
+        const sMins = timeToMins(start);
+        const eMins = timeToMins(end);
+        if (sMins < minMins) minMins = sMins;
+        if (eMins > maxMins) maxMins = eMins;
+      });
+      setStartTime(minsToTime(minMins));
+      setEndTime(minsToTime(maxMins));
+    } else {
+      setStartTime('09:00');
+      setEndTime('17:00');
+    }
+  }, [selectedDay, scheduleMap]);
+
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion que abre el dialogo
+  const handleOpenDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Funcion que cierra el dialogo
+  const handleCloseDeleteDialog = (hasAccepted) => {
+    setIsDeleteDialogOpen(false);
+    if (hasAccepted) {
+      handleLimpiarDia();
+    }
+  };
+
+  // Funcion boton aplicar
   const handleAplicar = () => {
     const startMins = timeToMins(startTime);
     const endMins = timeToMins(endTime);
@@ -139,12 +157,12 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
     setScheduleMap((prev) => ({ ...prev, [selectedDay]: nuevosBloques }));
   };
 
+  // Funcion borrar dia
   const handleLimpiarDia = () => {
     setScheduleMap((prev) => ({ ...prev, [selectedDay]: [] }));
   };
 
-  const diasAMostrar = isMobile ? [selectedDay] : diasSemana;
-
+  // <--------------- RENDER --------------->
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       {/* Seccion superior */}
@@ -201,7 +219,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
               '& .MuiSvgIcon-root': { color: 'primary.light' },
             }}
           >
-            {diasSemana.map((dia) => (
+            {DIAS_SEMANA.map((dia) => (
               <MenuItem key={dia} value={dia}>
                 {dia}
               </MenuItem>
@@ -339,6 +357,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
 
       {/* Horario dinamico */}
       {bloquesDinamicos.length === 0 ? (
+        // No hay horario
         <Box
           sx={{
             bgcolor: 'background.scheduleUnselected',
@@ -407,8 +426,10 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderBottom: (theme) => theme.palette.customBorders.schedule,
-                    borderRight: (theme) => theme.palette.customBorders.schedule,
+                    borderBottom: (theme) =>
+                      theme.palette.customBorders.schedule,
+                    borderRight: (theme) =>
+                      theme.palette.customBorders.schedule,
                   }}
                 >
                   <Text
@@ -449,7 +470,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
       {/* Modal de confirmación */}
       <BaseDialog
         id='delete-schedule'
-        open={openDeleteDialog}
+        open={isDeleteDialogOpen}
         onClose={handleCloseDeleteDialog}
         title={'Advertencia'}
         fontSizeContent={18}

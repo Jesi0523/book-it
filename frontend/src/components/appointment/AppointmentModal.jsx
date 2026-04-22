@@ -1,4 +1,10 @@
+// React
 import React, { useState, useEffect } from 'react';
+
+// Utils
+import { toastNeutral } from '@/utils/notify';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
@@ -7,7 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { toastNeutral } from '@/utils/notify';
 
 // Iconos
 import CloseIcon from '@mui/icons-material/Close';
@@ -22,23 +27,20 @@ import Text from '@/components/common/Text';
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import BaseDialog from '@/components/common/BaseDialog';
 
+// <--------------- CONSTANTES --------------->
+const OPCIONES_ESTADO = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
+
 const AppointmentModal = ({ open, onClose, appointment }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
+  // <--------------- ESTADOS --------------->
   const [estadoCita, setEstadoCita] = useState('Pendiente');
-  const [openCancelDialog, setOpenCancelDialog] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
 
-  const handleOpenCancel = () => setOpenCancelDialog(true);
-  const handleCloseCancel = (hasAccepted) => {
-    setOpenCancelDialog(false);
+  // <--------------- EFFECTS --------------->
 
-    if (hasAccepted) {
-      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
-
-      onClose();
-    }
-  };
-
+  // Sincroniza el estado local con la cita recibida
   useEffect(() => {
     if (appointment) {
       setEstadoCita(
@@ -47,10 +49,26 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
     }
   }, [appointment]);
 
+  // <--------------- FUNCIONES --------------->
+
+  // Abre el dialogo de cancelacion
+  const handleOpenCancelDialog = () => setIsCancelDialogOpen(true);
+
+  // Funcion que cierra el dialogo de cancelar cita
+  const handleCloseCancelDialog = (hasAccepted) => {
+    setIsCancelDialogOpen(false);
+
+    if (hasAccepted) {
+      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+
+      onClose();
+    }
+  };
+
+  // <--------------- EARLY RETURN --------------->
   if (!appointment) return null;
 
-  const opcionesEstado = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
-
+  // <--------------- RENDER --------------->
   return (
     <Dialog
       open={open}
@@ -77,11 +95,13 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           mb: 2,
         }}
       >
+        {/* Titulo */}
         <Title
           children={appointment.title || 'SERVICIO 1'}
           color='white'
           size={{ xs: '24px', md: '32px' }}
         />
+        {/* Boton cerrar */}
         <IconButton
           onClick={onClose}
           sx={{
@@ -108,6 +128,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           mb: 3,
         }}
       >
+        {/* Fecha */}
         <Box
           sx={{
             borderBottom: (theme) => `1px solid ${theme.palette.primary.light}`,
@@ -122,6 +143,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           />
         </Box>
 
+        {/* Estado de la cita */}
         <Select
           value={estadoCita}
           onChange={(e) => setEstadoCita(e.target.value)}
@@ -174,7 +196,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
             '& fieldset': { border: 'none' },
           }}
         >
-          {opcionesEstado.map((opcion) => (
+          {OPCIONES_ESTADO.map((opcion) => (
             <MenuItem key={opcion} value={opcion}>
               {opcion}
             </MenuItem>
@@ -193,17 +215,20 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           mb: 2,
         }}
       >
+        {/* Empleado */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar
-            src={appointment.employ?.foto}
+            src={appointment.employee?.foto}
             sx={{ width: 40, height: 40 }}
           />
           <Text
-            children={appointment.employ?.name || 'Empleado 1'}
+            children={appointment.employee?.name || 'Empleado 1'}
             color='white'
             size='18px'
           />
         </Box>
+
+        {/* Precio */}
         <Box>
           <SimpleInfoDisplay
             title='Costo: '
@@ -242,6 +267,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         >
           <Grid container spacing={{ xs: 2, md: 5 }}>
             <Grid size={{ xs: 12, md: 9 }}>
+              {/* Nombre */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text
                   children='Nombre Completo'
@@ -258,6 +284,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 3 }}>
+              {/* Edad */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Edad' color='primary.main' size='14' />
                 <SimpleInfoDisplay
@@ -269,6 +296,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
 
           <Grid container spacing={{ xs: 2, md: 5 }}>
             <Grid size={{ xs: 12, md: 5 }}>
+              {/* Sexo */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Sexo' color='primary.main' size='14' />
                 <SimpleInfoDisplay
@@ -277,6 +305,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 7 }}>
+              {/* Correo */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text
                   children='Correo electrónico'
@@ -296,6 +325,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
             sx={{ display: 'flex', alignItems: 'flex-end' }}
           >
             <Grid size={{ xs: 12, md: 6 }}>
+              {/* Numero */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text
                   children='Número telefónico'
@@ -308,6 +338,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               </Box>
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
+              {/* Boton cancelar cita */}
               <Box
                 sx={{
                   display: 'flex',
@@ -315,7 +346,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                 }}
               >
                 <MainButton
-                  onClick={handleOpenCancel}
+                  onClick={handleOpenCancelDialog}
                   size={{ xs: '14px', md: '16px' }}
                   sx={{
                     mt: 1,
@@ -334,9 +365,10 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         </Box>
       </Box>
 
+      {/* Dialogo */}
       <BaseDialog
-        open={openCancelDialog}
-        onClose={handleCloseCancel}
+        open={isCancelDialogOpen}
+        onClose={handleCloseCancelDialog}
         title={'Advertencia'}
         icon={<AdvertismentIcon />}
         content={

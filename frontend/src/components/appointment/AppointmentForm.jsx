@@ -1,5 +1,8 @@
+// React
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+
+// MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
@@ -30,7 +33,7 @@ const servicesDummy = [
   'Servicio 4',
   'Servicio 5',
 ];
-const employsDummy = [
+const employeesDummy = [
   { name: 'Oliver Hansen', pfp: photo },
   { name: 'Van Henry', pfp: photo2 },
   {
@@ -48,18 +51,24 @@ const hoursDummy = [
 // ****************************
 
 function AppointmentForm() {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [openSuccess, setOpenSuccess] = useState(false);
+  // <--------------- ESTADOS --------------->
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
 
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion boton agendar
   const handleSchedule = () => {
-    setOpenSuccess(true);
+    setIsSuccessDialogOpen(true);
   };
 
+  // Funcion dialogo
   const handleCloseDialog = () => {
-    setOpenSuccess(false);
+    setIsSuccessDialogOpen(false);
 
     if (location.pathname === '/admin/book-appointment') {
       navigate('/admin/appointment-calendar');
@@ -68,6 +77,7 @@ function AppointmentForm() {
     }
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -78,12 +88,14 @@ function AppointmentForm() {
         mx: 'auto',
       }}
     >
+      {/* Titulo */}
       <Box sx={{ px: 3 }}>
         <Title children='Agenda tu cita' color='text.primary' align='center' />
       </Box>
 
-      {/* Agendar cita */}
+      {/* Seccion superior */}
       <Grid container sx={{ height: '100%', p: 2 }}>
+        {/* Calendario */}
         <Grid
           size={{ xs: 12, md: 6 }}
           sx={{
@@ -95,6 +107,7 @@ function AppointmentForm() {
           <Calendar />
         </Grid>
 
+        {/* Datos servicios */}
         <Grid
           size={{ xs: 12, md: 6 }}
           sx={{
@@ -190,7 +203,7 @@ function AppointmentForm() {
               }}
             >
               <Combobox
-                array={employsDummy}
+                array={employeesDummy}
                 hasImage={true}
                 placeholder='Elige un empleado'
               />
@@ -238,11 +251,12 @@ function AppointmentForm() {
             borderRadius: '15px',
             display: 'flex',
             flexDirection: 'column',
-            gap: { xs: 2, md: 4 }, // Separación entre la Fila 1 y la Fila 2
+            gap: { xs: 2, md: 4 },
           }}
         >
-          {/* --- FILA 1: Nombre, Edad, Teléfono --- */}
+          {/* --- Fila de nombre, edad, telefono --- */}
           <Grid container spacing={{ xs: 2, md: 3 }}>
+            {/* Nombre */}
             <Grid size={{ xs: 12, md: 5 }}>
               <TextInput
                 label='Nombre Completo'
@@ -252,6 +266,7 @@ function AppointmentForm() {
               />
             </Grid>
 
+            {/* Edad */}
             <Grid size={{ xs: 4, md: 2 }}>
               <TextInput
                 label='Edad'
@@ -260,8 +275,6 @@ function AppointmentForm() {
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
                 sx={{
-                  // Rescate para la Edad: Mantenemos el padding arriba/abajo,
-                  // pero reducimos drásticamente los lados (a 5px) para que quepa "Ej: 18"
                   '& .MuiInputBase-input': {
                     padding: '28px 5px 10px 5px !important',
                     textAlign: 'center',
@@ -270,6 +283,7 @@ function AppointmentForm() {
               />
             </Grid>
 
+            {/* Telefono */}
             <Grid size={{ xs: 8, md: 5 }}>
               <TextInput
                 label='Número telefónico'
@@ -281,22 +295,25 @@ function AppointmentForm() {
             </Grid>
           </Grid>
 
-          {/* --- FILA 2: Sexo, Correo (CENTRADA) --- */}
+          {/* --- Fila de sexo y correo --- */}
           <Grid
             container
             spacing={{ xs: 2, md: 3 }}
             sx={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center', // Esto centra perfectamente toda la fila
+              justifyContent: 'center',
             }}
           >
+            {/* Sexo */}
             <Grid size={{ xs: 12, md: 3 }}>
               <GenderSelect
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
               />
             </Grid>
+
+            {/* Correo */}
             <Grid size={{ xs: 12, md: 6 }}>
               <TextInput
                 label='Correo electrónico'
@@ -310,14 +327,16 @@ function AppointmentForm() {
         </Box>
       </Box>
 
-      {/* Confirmación y muestra de datos */}
+      {/* Confirmacion */}
       <Box sx={{ px: 5 }}>
+        {/* Texto */}
         <Title
           children='Se agendará una cita con la siguiente fecha:'
           size='16'
           textTransform='capitalize'
           align='center'
         />
+        {/* Detalles de la cita */}
         <Box
           sx={{
             p: { xs: 1, md: 3 },
@@ -333,6 +352,8 @@ function AppointmentForm() {
           <Text children='Horario: 9:00 a 10:00' size='18' align='center' />
           <Text children='Empleado 1' size='16' align='center' />
         </Box>
+
+        {/* Linea separadora */}
         <Box
           component='hr'
           sx={{
@@ -341,6 +362,8 @@ function AppointmentForm() {
             backgroundColor: 'divider',
           }}
         />
+
+        {/* Precio */}
         <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Title
             children='Total a pagar: $$$$'
@@ -357,12 +380,14 @@ function AppointmentForm() {
         </Box>
       </Box>
 
+      {/* Boton agendar */}
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
         <MainButton onClick={handleSchedule}>Agendar</MainButton>
       </Box>
 
+      {/* Dialogo inmediato */}
       <InfoDialog
-        open={openSuccess}
+        open={isSuccessDialogOpen}
         onClose={handleCloseDialog}
         title='¡Cita Agendada!'
         content='Tu cita se ha registrado correctamente.'

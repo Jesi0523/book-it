@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -16,10 +18,12 @@ const ServicesSection = ({
   selectedServices,
   onServiceToggle,
 }) => {
-  // Estados
+  // <--------------- ESTADOS --------------->
   const [selectedValue, setSelectedValue] = useState(
     availableServices[0] || '',
   );
+
+  // <--------------- FUNCIONES --------------->
 
   // Funcion agregar servicio
   const handleAdd = () => {
@@ -28,6 +32,7 @@ const ServicesSection = ({
     }
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {/* Seccion superior */}

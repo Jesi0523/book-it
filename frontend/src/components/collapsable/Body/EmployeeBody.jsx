@@ -1,6 +1,9 @@
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+
+// Icono
 import EditIcon from '@mui/icons-material/Edit';
 
 // Componentes propios
@@ -9,8 +12,10 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
 
 const EmployeeBody = ({ employee, onEdit }) => {
+  // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{ display: 'flex', flexDirection: 'column', gap: 3, width: '100%' }}

@@ -1,5 +1,8 @@
+// MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box'
+
+// Componente
 import Text from '@/components/common/Text'
 
 const SimpleInfoDisplay = 
@@ -16,11 +19,15 @@ const SimpleInfoDisplay =
     background,
     border}) =>
 {
+    // <--------------- CONTEXTO --------------->
     const theme = useTheme();
+
+    // <--------------- VALORES --------------->
     const finalBackground = background || theme.customGradients.searchBar; 
     const finalBorder = border || theme.palette.customBorders.infoDisplay;
-
     const iconDisplay = hasIcon ? icon : '';
+
+    // <--------------- RENDER --------------->
     return(
         <Box sx=
         {{

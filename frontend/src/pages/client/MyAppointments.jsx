@@ -1,6 +1,11 @@
-import * as React from 'react';
+// React
+import React, { useState } from 'react';
+
+// MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+
+// Utils
 import { toastNeutral } from '@/utils/notify';
 
 // ************** componentes propios :3 **************
@@ -36,9 +41,8 @@ import { isCancel } from 'axios';
 const orderByDummy = [
   'Ordenar por antiguedad',
   'Ordenar alfabeticamente',
-  // 'Ordenar por',
 ];
-const employsDummy = [
+const employeesDummy = [
   { name: 'Oliver Hansen', pfp: photo },
   { name: 'Van Henry', pfp: photo2 },
   { name: 'April Tucker', pfp: photo3 },
@@ -73,7 +77,7 @@ const appointmentsInfo = [
     date: 'Febrero 11, 2026 9:00 a 10:00.',
     price: '$4000',
     status: statusAppointment[0],
-    employ: employsDummy[1],
+    employee: employeesDummy[1],
     client: clientDummy[0],
     isCanceled: false,
   },
@@ -83,7 +87,7 @@ const appointmentsInfo = [
     date: 'Marzo 1, 2026 13:00 a 14:00.',
     price: '$500',
     status: statusAppointment[1],
-    employ: employsDummy[2],
+    employee: employeesDummy[2],
     client: clientDummy[1],
     isCanceled: false,
   },
@@ -91,7 +95,12 @@ const appointmentsInfo = [
 // ****************************
 
 function MyAppointments() {
-  const [appointments, setAppointments] = React.useState(appointmentsInfo);
+  // <--------------- ESTADOS --------------->
+  const [appointments, setAppointments] = useState(appointmentsInfo);
+  
+  // <--------------- FUNCIONES --------------->
+
+  // Funcion boton cancelar cita
   const handleCancel = (index) => {
     const newAppointments = [...appointments];
     newAppointments[index].status = statusAppointment[2];
@@ -102,6 +111,7 @@ function MyAppointments() {
 
   };
 
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -112,18 +122,22 @@ function MyAppointments() {
         mx: 'auto',
       }}
     >
+      {/* Seccion superior */}
       <Grid
         container
         sx={{ display: 'flex', alignItems: 'center' }}
         rowSpacing={{ xs: 2, md: 0 }}
       >
         <Grid size={{ xs: 12, md: 7 }}>
+          {/* Titulo */}
           <Title
             children='Mis citas'
             color='text.primary'
             align={{ xs: 'center', md: 'start' }}
           />
         </Grid>
+
+        {/* Combobox */}
         <Grid size={{ xs: 12, md: 5 }}>
           <Combobox
             name='Ordenar por:'
@@ -133,15 +147,21 @@ function MyAppointments() {
           />
         </Grid>
       </Grid>
-      <hr
-        style={{
+
+      {/* Linea separadora */}
+      <Box
+        component="hr"
+        sx={{
           border: 'none',
           height: '1px',
           backgroundColor: 'divider',
         }}
-      />
+      />  
+
+      {/* Citas */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 5 }}>
         {appointments.length === 0 ? (
+          // No hay citas
           <Box
             sx={{
               display: 'flex',
@@ -158,6 +178,7 @@ function MyAppointments() {
             </Text>
           </Box>
         ) : (
+          // Se muestran citas
           appointments.map((appointment, index) => {
             return (
               <Collapsable

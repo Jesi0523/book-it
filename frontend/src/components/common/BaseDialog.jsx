@@ -1,4 +1,7 @@
+// React
 import * as React from 'react';
+
+// MUI
 import { useTheme } from '@mui/material/styles';
 //NOTA: este nada más es para que se respete el tipo de dato, 
 // se puede quitar, pero lo dejé por seguridad 🦭
@@ -11,18 +14,25 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 // --------------------------------------
+// Iconos
 import CloseIcon from '@mui/icons-material/ClearRounded';
 import ContinueIcon from '@mui/icons-material/CheckRounded';
 
 // --------------------------------------
 function BaseDialog({onClose, open, title,icon,content, fontSizeContent = 20,...other}) 
 {
+    // <--------------- CONTEXTO --------------->
     const theme = useTheme();
 
+    // <--------------- FUNCIONES --------------->
+
+    // Funcion cancelar
     const handleCancel = () => { onClose(false);};
 
+    // Funcion aceptar
     const handleOk = () => { onClose(true);};
 
+    // <--------------- RENDER --------------->
     return (
         <Dialog
             sx={{ 

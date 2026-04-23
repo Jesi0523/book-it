@@ -1,5 +1,6 @@
 // React
 import * as React from 'react';
+import { useEffect } from 'react';
 
 // MUI
 import { useTheme } from '@mui/material/styles';
@@ -19,65 +20,94 @@ import CloseIcon from '@mui/icons-material/ClearRounded';
 import ContinueIcon from '@mui/icons-material/CheckRounded';
 
 // --------------------------------------
-function BaseDialog({onClose, open, title,icon,content, fontSizeContent = 20,...other}) 
-{
-    // <--------------- CONTEXTO --------------->
-    const theme = useTheme();
+function BaseDialog({
+  onClose,
+  open,
+  title,
+  icon,
+  content,
+  fontSizeContent = 20,
+  ...other
+}) {
+  // <--------------- CONTEXTO --------------->
+  const theme = useTheme();
 
-    // <--------------- FUNCIONES --------------->
+  // <--------------- EFFECTS --------------->
+  // Solucion al warning de aria-hidden
+  useEffect(() => {
+    if (open && document.activeElement) {
+      document.activeElement.blur();
+    }
+  }, [open]);
 
-    // Funcion cancelar
-    const handleCancel = () => { onClose(false);};
+  // <--------------- FUNCIONES --------------->
 
-    // Funcion aceptar
-    const handleOk = () => { onClose(true);};
+  // Funcion cancelar
+  const handleCancel = () => {
+    onClose(false);
+  };
 
-    // <--------------- RENDER --------------->
-    return (
-        <Dialog
-            sx={{ 
-                '& .MuiDialog-paper': 
-                {   width: '80%', maxHeight: 435,
-                    background: theme.customGradients.dialog,
-                } 
+  // Funcion aceptar
+  const handleOk = () => {
+    onClose(true);
+  };
 
-            }}
-            maxWidth="xs"
-            open={open}
-            {...other}
-        >
-            <DialogTitle 
-                sx={{
-                    display: 'flex', alignItems: 'center', gap: 1,
-                    fontWeight: '400', fontSize: 16,
-                    color: 'text.secondary'
-                }}
-            >
-                {icon}{title}
-            </DialogTitle>
+  // <--------------- RENDER --------------->
+  return (
+    <Dialog
+      sx={{
+        '& .MuiDialog-paper': {
+          width: '80%',
+          maxHeight: 435,
+          background: theme.customGradients.dialog,
+        },
+      }}
+      maxWidth='xs'
+      open={open}
+      {...other}
+    >
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          fontWeight: '400',
+          fontSize: 16,
+          color: 'text.secondary',
+        }}
+      >
+        {icon}
+        {title}
+      </DialogTitle>
 
-            {/* -------------------------------------- */}
+      {/* -------------------------------------- */}
 
-            <DialogContent dividers
-                sx={{
-                fontWeight: '400', textAlign: 'center', fontSize: fontSizeContent,
-                color: 'text.primary'
-            }}>
-                {content}
-            </DialogContent>
-            
-            {/* -------------------------------------- */}
+      <DialogContent
+        dividers
+        sx={{
+          fontWeight: '400',
+          textAlign: 'center',
+          fontSize: fontSizeContent,
+          color: 'text.primary',
+        }}
+      >
+        {content}
+      </DialogContent>
 
-            <DialogActions sx={{mx:1}}> 
-                <Button onClick={handleCancel}>
-                    <CloseIcon />Cancelar
-                </Button>
-                <Button onClick={handleOk}>
-                    <ContinueIcon />Aceptar
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+      {/* -------------------------------------- */}
+
+      <DialogActions sx={{ mx: 1 }}>
+        <Button onClick={handleCancel}>
+          <CloseIcon />
+          Cancelar
+        </Button>
+        <Button onClick={handleOk}>
+          <ContinueIcon />
+          Aceptar
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
 
 BaseDialog.propTypes = 

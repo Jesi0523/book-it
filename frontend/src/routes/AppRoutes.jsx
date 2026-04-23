@@ -37,6 +37,10 @@ const Reports = lazy(() => import('@/pages/admin/Reports'));
 // Pagina Error
 const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
+// Rutas protegidas
+import PublicRoute from '@/routes/PublicRoute';
+import ProtectedRoute from '@/routes/ProtectedRoute';
+
 // <--------------------------------------------------------->
 
 // Pantalla de carga
@@ -62,49 +66,73 @@ const SuspenseLayout = ({ children }) => (
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Auth */}
-      <Route
-        element={
-          <SuspenseLayout>
-            <AuthLayout />
-          </SuspenseLayout>
-        }
-      >
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
+      {/* Rutas publicas */}
+      <Route element={<PublicRoute />}>
+        {/* Landing Page */}
+        <Route
+          element={
+            <SuspenseLayout>
+              <ClientLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route path='/' element={<MainPage />} />
+        </Route>
+
+        {/* Auth */}
+        <Route
+          element={
+            <SuspenseLayout>
+              <AuthLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+        </Route>
       </Route>
 
       {/* Usuario */}
-      <Route
-        element={
-          <SuspenseLayout>
-            <ClientLayout />
-          </SuspenseLayout>
-        }
-      >
-        <Route path='/' element={<MainPage />} />
-        <Route path='/main' element={<MainPage />} />
-        <Route path='/book-appointment' element={<BookAppointment />} />
-        <Route path='/my-appointments' element={<MyAppointments />} />
-        <Route path='/profile' element={<Profile />} />
+      <Route element={<ProtectedRoute allowedRoles={['CLIENTE']} />}>
+        <Route
+          element={
+            <SuspenseLayout>
+              <ClientLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route path='/main' element={<MainPage />} />
+          <Route path='/book-appointment' element={<BookAppointment />} />
+          <Route path='/my-appointments' element={<MyAppointments />} />
+          <Route path='/profile' element={<Profile />} />
+        </Route>
       </Route>
 
       {/* Admin */}
-      <Route
-        path='/admin'
-        element={
-          <SuspenseLayout>
-            <AdminLayout />
-          </SuspenseLayout>
-        }
-      >
-        <Route path='appointment-calendar' element={<AppointmentCalendar />} />
-        <Route path='book-appointment' element={<AdminBookAppointment />} />
-        <Route path='employees' element={<Employees />} />
-        <Route path='services' element={<Services />} />
-        <Route path='company-info' element={<CompanyInfo />} />
-        <Route path='suspensions' element={<Suspensions />} />
-        <Route path='reports' element={<Reports />} />
+      <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+        <Route
+          path='/admin'
+          element={
+            <SuspenseLayout>
+              <AdminLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route
+            index
+            element={<Navigate to='/404' replace />}
+          />
+          <Route
+            path='appointment-calendar'
+            element={<AppointmentCalendar />}
+          />
+          <Route path='book-appointment' element={<AdminBookAppointment />} />
+          <Route path='employees' element={<Employees />} />
+          <Route path='services' element={<Services />} />
+          <Route path='company-info' element={<CompanyInfo />} />
+          <Route path='suspensions' element={<Suspensions />} />
+          <Route path='reports' element={<Reports />} />
+        </Route>
       </Route>
 
       {/* Error */}

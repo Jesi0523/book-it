@@ -2,6 +2,13 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
+// Utils
+import { toastError } from '@/utils/notify';
+
+// API y Schemas
+import { loginUser } from '@/api/auth.api';
+import { loginSchema } from '@/schemas/auth.schema';
+
 // MUI
 import { useTheme } from '@mui/material/styles';
 import MuiLink from '@mui/material/Link';
@@ -26,17 +33,70 @@ function Login() {
   // <--------------- ESTADOS --------------->
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   // <--------------- FUNCIONES --------------->
 
+  // Funcion para el correo
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    // Si hay un error, se limpiamos al escribir
+    if (formErrors.correo) {
+      setFormErrors((prev) => ({ ...prev, correo: null }));
+    }
+  };
+
+  // Funcion para la contraseña
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    // Si hay un error, se limpiamos al escribir
+    if (formErrors.password) {
+      setFormErrors((prev) => ({ ...prev, password: null }));
+    }
+  };
+
   // Funcion boton login
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (email === 'admin@gmail.com' && password === '1234') {
-      navigate('/admin/appointment-calendar');
-    } else {
-      navigate('/main');
+    if (isSaving) return;
+
+    // Se limpian los errores al intentar de nuevo
+    setFormErrors({});
+
+    // Valida los campos
+    const validation = loginSchema.safeParse({ correo: email, password });
+
+    if (!validation.success) {
+      // Zod separa los errores por campo automáticamente
+      const fieldErrors = validation.error.flatten().fieldErrors;
+      setFormErrors(fieldErrors);
+      return; // Detenemos la ejecución sin lanzar el toast general
+    }
+
+    setIsSaving(true);
+
+    try {
+      // Se llama la api
+      const response = await loginUser(validation.data);
+
+      // Guarda datos
+      sessionStorage.setItem('token', 'active');
+      sessionStorage.setItem('role', response.usuario.rol);
+      sessionStorage.setItem('userName', response.usuario.nombre);
+      sessionStorage.setItem('userEmail', email);
+
+      // Redireccionamiento segun rol
+      if (response.usuario.rol === 'ADMIN') {
+        navigate('/admin/appointment-calendar');
+      } else {
+        navigate('/main');
+      }
+    } catch (error) {
+      toastError(error, 'login-error');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -57,18 +117,20 @@ function Login() {
         label='Correo electrónico'
         placeholder='ejemplo@gmail.com'
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleEmailChange}
+        helperText={formErrors.correo ? formErrors.correo[0] : ''}
       />
 
       {/* Contrasena */}
       <PasswordInput
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={handlePasswordChange}
+        helperText={formErrors.password ? formErrors.password[0] : ''}
       />
 
       {/* Boton login */}
-      <MainButton size={20} onClick={handleLogin}>
-        Iniciar sesión
+      <MainButton size={20} onClick={handleLogin} disabled={isSaving}>
+        {isSaving ? 'Cargando' : 'Iniciar sesión'}
       </MainButton>
 
       {/* Redirigir signup */}

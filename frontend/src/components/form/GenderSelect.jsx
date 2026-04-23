@@ -31,7 +31,7 @@ const GenderSelect = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        background: background || 'background.paper',
+        backgroundColor: background || 'background.paper',
         boxSizing: 'border-box',
       }}
     >

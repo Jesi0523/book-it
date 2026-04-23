@@ -37,3 +37,18 @@ export const toastNeutral = (message, toastId) => {
     },
   });
 };
+
+// Notificacion de error
+export const toastError = (message, toastId) => {
+  toast.error(message, {
+    id: toastId,
+    style: {
+      ...baseStyle,
+      border: `1px solid ${theme.palette.error.main}`,
+    },
+    iconTheme: {
+      primary: theme.palette.error.main,
+      secondary: theme.palette.text.primary,
+    },
+  });
+};

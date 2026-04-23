@@ -80,6 +80,11 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
     setIsSessionDialogOpen(false);
 
     if (hasAccepted) {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('role');
+      sessionStorage.removeItem('userName');
+      sessionStorage.removeItem('userEmail');
+
       setTimeout(() => {
         navigate('/login');
       }, 300);

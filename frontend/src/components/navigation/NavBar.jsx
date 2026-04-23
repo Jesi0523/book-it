@@ -40,7 +40,13 @@ function NavBar() {
 
   // <--------------- DERIVADO --------------->
   const currentPath = location.pathname;
-  const isLanding = currentPath === '/';
+
+  const token = sessionStorage.getItem('token');
+  const userRole = sessionStorage.getItem('role');
+  const userName = sessionStorage.getItem('userName') || 'Usuario';
+  const userEmail = sessionStorage.getItem('userEmail') || 'Correo';
+
+  const isLogged = !!token;
 
   // <--------------- ESTADOS --------------->
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -66,11 +72,15 @@ function NavBar() {
   const handleCloseSessionDialog = (hasAccepted) => {
     setOpenSessionDialog(false);
     if (hasAccepted) {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('role');
+      sessionStorage.removeItem('userName');
+      sessionStorage.removeItem('userEmail');
       navigate('/login');
     }
   };
 
-  // <--------------- RENDER --------------->  
+  // <--------------- RENDER --------------->
   return (
     <AppBar
       position='fixed'
@@ -78,7 +88,7 @@ function NavBar() {
     >
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          {isLanding ? (
+          {!isLogged ? (
             // Landing Page
             <>
               <Link component={RouterLink} to='/'>
@@ -138,7 +148,7 @@ function NavBar() {
                 },
               }}
             >
-              {isLanding
+              {!isLogged
                 ? [
                     <MenuItem
                       key='login'
@@ -228,7 +238,7 @@ function NavBar() {
               justifyContent: 'end',
             }}
           >
-            {isLanding ? (
+            {!isLogged ? (
               // Landing Page
               <>
                 <NavOptions
@@ -274,7 +284,7 @@ function NavBar() {
           </Box>
 
           {/* Nombre y cerrar sesion */}
-          {!isLanding && (
+          {isLogged && (
             <>
               <Box
                 sx={{

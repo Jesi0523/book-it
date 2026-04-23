@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
+import { setLogoutHandler } from '@/utils/authEvents';
+import { postRefreshSession } from '@/api/auth.api';
 
 const AuthContext = createContext();
 
@@ -13,23 +15,45 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Se ejecuta al cargar la pagina e intenta obtener los datos del usuario
+  // EFFECTS
+
+  // Conecta axios con react
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    const role = sessionStorage.getItem('role');
-    const name = sessionStorage.getItem('userName');
-    const email = sessionStorage.getItem('userEmail');
+    setLogoutHandler(logout);
+  }, []);
 
-    if (token && role) {
-      setUser({
-        token,
-        role,
-        name,
-        email,
-      });
-    }
+  // Intenta obtener los datos del usuario
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        // Intenta renovar la sesion
+        await postRefreshSession();
 
-    setLoading(false);
+        // Se intenta recuperar los datos del usuario
+        const role = sessionStorage.getItem('role');
+        const name = sessionStorage.getItem('userName');
+        const email = sessionStorage.getItem('userEmail');
+
+        if (role) {
+          setUser({
+            token: 'active',
+            role,
+            name,
+            email,
+          });
+        } else {
+          // Si faltan datos, la sesion es invalida
+          throw new Error('Faltan datos de la sesión local');
+        }
+      } catch (error) {
+        sessionStorage.clear();
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifySession();
   }, []);
 
   // Login

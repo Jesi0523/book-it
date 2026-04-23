@@ -12,7 +12,7 @@ import { ROUTES, ROLES } from '@/constants/routes';
 import { toastError } from '@/utils/notify';
 
 // API y Schemas
-import { loginUser } from '@/api/auth.api';
+import { postLogin } from '@/api/auth.api';
 import { loginSchema } from '@/schemas/auth.schema';
 
 // MUI
@@ -86,7 +86,7 @@ function Login() {
 
     try {
       // Se llama la api
-      const response = await loginUser(validation.data);
+      const response = await postLogin(validation.data);
 
       // Guarda datos
       login({

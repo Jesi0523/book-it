@@ -1,6 +1,7 @@
 import apiClient from './apiClient';
 
-export const loginUser = async (credentials) => {
+// POST Login
+export const postLogin = async (credentials) => {
   try {
     const { data } = await apiClient.post('/auth/login', credentials, {
       withCredentials: true,
@@ -21,5 +22,16 @@ export const loginUser = async (credentials) => {
     else {
       throw 'Ocurrió un error inesperado. Intenta de nuevo.';
     }
+  }
+};
+
+// POST Refresh
+export const postRefreshSession = async () => {
+  try {
+    // Lee la cookie automaticamente
+    const { data } = await apiClient.post('/auth/refresh');
+    return data;
+  } catch (error) {
+    throw error;
   }
 };

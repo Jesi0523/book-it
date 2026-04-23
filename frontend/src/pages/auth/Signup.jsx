@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
+// Constantes
+import { ROUTES } from '@/constants/routes';
+
 // MUI
 import { useTheme } from '@mui/material/styles';
 import MuiLink from '@mui/material/Link';
@@ -40,7 +43,11 @@ function Signup() {
   // Funcion dialogo
   const handleCloseDialog = () => {
     setIsSuccessDialogOpen(false);
-    navigate('/login');
+  };
+
+  // Funcion redirigir a login
+  const handleNavigation = () => {
+    navigate(ROUTES.PUBLIC.LOGIN);
   };
 
   // <--------------- RENDER --------------->
@@ -108,7 +115,7 @@ function Signup() {
           ¿Ya tienes una cuenta?{' '}
           <MuiLink
             component={RouterLink}
-            to='/login'
+            to={ROUTES.PUBLIC.LOGIN}
             sx={{
               color: 'primary.main',
               fontWeight: 'bold',
@@ -129,6 +136,7 @@ function Signup() {
       <InfoDialog
         open={isSuccessDialogOpen}
         onClose={handleCloseDialog}
+        onTransitionExited={handleNavigation}
         title='¡Registro Exitoso!'
         content='Tu cuenta ha sido creada.'
       />

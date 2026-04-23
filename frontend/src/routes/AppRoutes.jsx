@@ -6,6 +6,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
+// Constantes
+import { ROUTES, ROLES } from '@/constants/routes';
+
 // Layouts
 import AuthLayout from '@/layouts/AuthLayout';
 import ClientLayout from '@/layouts/ClientLayout';
@@ -76,7 +79,7 @@ const AppRoutes = () => {
             </SuspenseLayout>
           }
         >
-          <Route path='/' element={<MainPage />} />
+          <Route path={ROUTES.PUBLIC.ROOT} element={<MainPage />} />
         </Route>
 
         {/* Auth */}
@@ -87,13 +90,13 @@ const AppRoutes = () => {
             </SuspenseLayout>
           }
         >
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
+          <Route path={ROUTES.PUBLIC.LOGIN} element={<Login />} />
+          <Route path={ROUTES.PUBLIC.SIGNUP} element={<Signup />} />
         </Route>
       </Route>
 
       {/* Usuario */}
-      <Route element={<ProtectedRoute allowedRoles={['CLIENTE']} />}>
+      <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT]} />}>
         <Route
           element={
             <SuspenseLayout>
@@ -101,17 +104,19 @@ const AppRoutes = () => {
             </SuspenseLayout>
           }
         >
-          <Route path='/main' element={<MainPage />} />
-          <Route path='/book-appointment' element={<BookAppointment />} />
-          <Route path='/my-appointments' element={<MyAppointments />} />
-          <Route path='/profile' element={<Profile />} />
+          <Route path={ROUTES.CLIENT.MAIN} element={<MainPage />} />
+          <Route path={ROUTES.CLIENT.BOOK} element={<BookAppointment />} />
+          <Route
+            path={ROUTES.CLIENT.APPOINTMENTS}
+            element={<MyAppointments />}
+          />
+          <Route path={ROUTES.CLIENT.PROFILE} element={<Profile />} />
         </Route>
       </Route>
 
       {/* Admin */}
-      <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+      <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
         <Route
-          path='/admin'
           element={
             <SuspenseLayout>
               <AdminLayout />
@@ -119,25 +124,21 @@ const AppRoutes = () => {
           }
         >
           <Route
-            index
-            element={<Navigate to='/404' replace />}
-          />
-          <Route
-            path='appointment-calendar'
+            path={ROUTES.ADMIN.CALENDAR}
             element={<AppointmentCalendar />}
           />
-          <Route path='book-appointment' element={<AdminBookAppointment />} />
-          <Route path='employees' element={<Employees />} />
-          <Route path='services' element={<Services />} />
-          <Route path='company-info' element={<CompanyInfo />} />
-          <Route path='suspensions' element={<Suspensions />} />
-          <Route path='reports' element={<Reports />} />
+          <Route path={ROUTES.ADMIN.BOOK} element={<AdminBookAppointment />} />
+          <Route path={ROUTES.ADMIN.EMPLOYEES} element={<Employees />} />
+          <Route path={ROUTES.ADMIN.SERVICES} element={<Services />} />
+          <Route path={ROUTES.ADMIN.COMPANY} element={<CompanyInfo />} />
+          <Route path={ROUTES.ADMIN.SUSPENSIONS} element={<Suspensions />} />
+          <Route path={ROUTES.ADMIN.REPORTS} element={<Reports />} />
         </Route>
       </Route>
 
       {/* Error */}
-      <Route path='/404' element={<NotFound />} />
-      <Route path='*' element={<Navigate to='/404' replace />} />
+      <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+      <Route path='*' element={<Navigate to={ROUTES.NOT_FOUND} replace />} />
     </Routes>
   );
 };

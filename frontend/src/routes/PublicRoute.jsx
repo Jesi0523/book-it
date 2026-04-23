@@ -1,13 +1,18 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { ROUTES, ROLES } from '@/constants/routes';
+import { useAuth } from '@/context/AuthContext';
 
 const PublicRoute = () => {
-  const token = sessionStorage.getItem('token');
-  const userRole = sessionStorage.getItem('role');
+  const { user, isAuthenticated, loading } = useAuth();
+
+  // Mientras este leyendo la sesion actual, no se vera nada
+  if (loading) return null;
 
   // Si el usuario ya tiene token, se le expulsa de las ruta publica
-  if (token) {
+  if (isAuthenticated) {
     const fallbackRoute =
-      userRole === 'ADMIN' ? '/admin/appointment-calendar' : '/main';
+      user.role === ROLES.ADMIN ? ROUTES.ADMIN.CALENDAR : ROUTES.CLIENT.MAIN;
+
     return <Navigate to={fallbackRoute} replace />;
   }
 

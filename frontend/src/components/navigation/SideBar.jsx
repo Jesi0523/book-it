@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation, Link as RouterLink, useNavigate } from 'react-router-dom';
 
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
+// Constantes
+import { ROUTES } from '@/constants/routes';
+
 // MUI
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -31,40 +37,41 @@ const menuItems = [
   {
     text: 'Calendario de citas',
     icon: <CalendarMonthIcon />,
-    path: '/admin/appointment-calendar',
+    path: ROUTES.ADMIN.CALENDAR,
   },
   {
     text: 'Agendar cita',
     icon: <EditCalendarIcon />,
-    path: '/admin/book-appointment',
+    path: ROUTES.ADMIN.BOOK,
   },
   {
     text: 'Gestión de empleados',
     icon: <PeopleIcon />,
-    path: '/admin/employees',
+    path: ROUTES.ADMIN.EMPLOYEES,
   },
   {
     text: 'Gestión de servicios',
     icon: <BuildIcon />,
-    path: '/admin/services',
+    path: ROUTES.ADMIN.SERVICES,
   },
   {
     text: 'Información de la empresa',
     icon: <InfoIcon />,
-    path: '/admin/company-info',
+    path: ROUTES.ADMIN.COMPANY,
   },
   {
     text: 'Suspensión de servicios',
     icon: <ReportProblemIcon />,
-    path: '/admin/suspensions',
+    path: ROUTES.ADMIN.SUSPENSIONS,
   },
-  { text: 'Reportes', icon: <BarChartIcon />, path: '/admin/reports' },
+  { text: 'Reportes', icon: <BarChartIcon />, path: ROUTES.ADMIN.REPORTS },
 ];
 
 const Sidebar = ({ isExpanded = true, onClose }) => {
   // <--------------- CONTEXTO --------------->
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   // <--------------- ESTADOS --------------->
   const [isSessionDialogOpen, setIsSessionDialogOpen] = useState(false);
@@ -80,14 +87,7 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
     setIsSessionDialogOpen(false);
 
     if (hasAccepted) {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('role');
-      sessionStorage.removeItem('userName');
-      sessionStorage.removeItem('userEmail');
-
-      setTimeout(() => {
-        navigate('/login');
-      }, 300);
+      logout();
     }
   };
 

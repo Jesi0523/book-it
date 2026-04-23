@@ -2,6 +2,12 @@
 import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
+// Constantes
+import { ROUTES, ROLES } from '@/constants/routes';
+
 // Utils
 import { toastError } from '@/utils/notify';
 
@@ -29,6 +35,7 @@ function Login() {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // <--------------- ESTADOS --------------->
   const [email, setEmail] = useState('');
@@ -82,16 +89,18 @@ function Login() {
       const response = await loginUser(validation.data);
 
       // Guarda datos
-      sessionStorage.setItem('token', 'active');
-      sessionStorage.setItem('role', response.usuario.rol);
-      sessionStorage.setItem('userName', response.usuario.nombre);
-      sessionStorage.setItem('userEmail', email);
+      login({
+        token: 'active',
+        role: response.usuario.rol,
+        name: response.usuario.nombre,
+        email: email,
+      });
 
       // Redireccionamiento segun rol
-      if (response.usuario.rol === 'ADMIN') {
-        navigate('/admin/appointment-calendar');
+      if (response.usuario.rol === ROLES.ADMIN) {
+        navigate(ROUTES.ADMIN.CALENDAR);
       } else {
-        navigate('/main');
+        navigate(ROUTES.CLIENT.MAIN);
       }
     } catch (error) {
       toastError(error, 'login-error');
@@ -138,7 +147,7 @@ function Login() {
         ¿No tienes una cuenta?{' '}
         <MuiLink
           component={RouterLink}
-          to='/signup'
+          to={ROUTES.PUBLIC.SIGNUP}
           sx={{
             color: 'primary.main',
             fontWeight: 'bold',

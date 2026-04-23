@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+// Constantes
+import { ROUTES } from '@/constants/routes';
+
 // MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -69,11 +72,13 @@ function AppointmentForm() {
   // Funcion dialogo
   const handleCloseDialog = () => {
     setIsSuccessDialogOpen(false);
+  };
 
-    if (location.pathname === '/admin/book-appointment') {
-      navigate('/admin/appointment-calendar');
+  const handleNavigation = () => {
+    if (location.pathname === ROUTES.ADMIN.BOOK) {
+      navigate(ROUTES.ADMIN.CALENDAR);
     } else {
-      navigate('/my-appointments');
+      navigate(ROUTES.CLIENT.APPOINTMENTS);
     }
   };
 
@@ -389,6 +394,7 @@ function AppointmentForm() {
       <InfoDialog
         open={isSuccessDialogOpen}
         onClose={handleCloseDialog}
+        onTransitionExited={handleNavigation}
         title='¡Cita Agendada!'
         content='Tu cita se ha registrado correctamente.'
       />

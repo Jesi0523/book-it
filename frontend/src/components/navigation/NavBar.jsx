@@ -2,6 +2,12 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
 
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
+// Constantes
+import { ROUTES } from '@/constants/routes';
+
 // MUI
 import AppBar from '@mui/material/AppBar';
 import Link from '@mui/material/Link';
@@ -41,12 +47,11 @@ function NavBar() {
   // <--------------- DERIVADO --------------->
   const currentPath = location.pathname;
 
-  const token = sessionStorage.getItem('token');
-  const userRole = sessionStorage.getItem('role');
-  const userName = sessionStorage.getItem('userName') || 'Usuario';
-  const userEmail = sessionStorage.getItem('userEmail') || 'Correo';
+  const { user, isAuthenticated, logout } = useAuth();
 
-  const isLogged = !!token;
+  const userName = user?.name || 'Usuario';
+  const userEmail = user?.email || 'Correo';
+  const isLogged = isAuthenticated;
 
   // <--------------- ESTADOS --------------->
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -72,11 +77,7 @@ function NavBar() {
   const handleCloseSessionDialog = (hasAccepted) => {
     setOpenSessionDialog(false);
     if (hasAccepted) {
-      sessionStorage.removeItem('token');
-      sessionStorage.removeItem('role');
-      sessionStorage.removeItem('userName');
-      sessionStorage.removeItem('userEmail');
-      navigate('/login');
+      logout();
     }
   };
 
@@ -91,7 +92,7 @@ function NavBar() {
           {!isLogged ? (
             // Landing Page
             <>
-              <Link component={RouterLink} to='/'>
+              <Link component={RouterLink} to={ROUTES.PUBLIC.ROOT}>
                 <img
                   src={logo}
                   alt='Logo'
@@ -102,7 +103,7 @@ function NavBar() {
           ) : (
             // Main Page
             <>
-              <Link component={RouterLink} to='/main'>
+              <Link component={RouterLink} to={ROUTES.CLIENT.MAIN}>
                 <img
                   src={logo}
                   alt='Logo'
@@ -153,7 +154,7 @@ function NavBar() {
                     <MenuItem
                       key='login'
                       component={RouterLink}
-                      to='/login'
+                      to={ROUTES.PUBLIC.LOGIN}
                       onClick={handleCloseNavMenu}
                     >
                       <HowToRegIcon />
@@ -162,7 +163,7 @@ function NavBar() {
                     <MenuItem
                       key='signup'
                       component={RouterLink}
-                      to='/signup'
+                      to={ROUTES.PUBLIC.SIGNUP}
                       onClick={handleCloseNavMenu}
                     >
                       <PersonAddIcon />
@@ -173,11 +174,11 @@ function NavBar() {
                     <MenuItem
                       key='main'
                       component={RouterLink}
-                      to='/main'
+                      to={ROUTES.CLIENT.MAIN}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/main'
+                          currentPath === ROUTES.CLIENT.MAIN
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -187,11 +188,11 @@ function NavBar() {
                     <MenuItem
                       key='book'
                       component={RouterLink}
-                      to='/book-appointment'
+                      to={ROUTES.CLIENT.BOOK}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/book-appointment'
+                          currentPath === ROUTES.CLIENT.BOOK
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -201,11 +202,11 @@ function NavBar() {
                     <MenuItem
                       key='schedule'
                       component={RouterLink}
-                      to='/my-appointments'
+                      to={ROUTES.CLIENT.APPOINTMENTS}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/my-appointments'
+                          currentPath === ROUTES.CLIENT.APPOINTMENTS
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -215,11 +216,11 @@ function NavBar() {
                     <MenuItem
                       key='profile'
                       component={RouterLink}
-                      to='/profile'
+                      to={ROUTES.CLIENT.PROFILE}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/profile'
+                          currentPath === ROUTES.CLIENT.PROFILE
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -243,12 +244,12 @@ function NavBar() {
               <>
                 <NavOptions
                   icon={<HowToRegIcon />}
-                  link='/login'
+                  link={ROUTES.PUBLIC.LOGIN}
                   text='Inicia sesión'
                 />
                 <NavOptions
                   icon={<PersonAddIcon />}
-                  link='/signup'
+                  link={ROUTES.PUBLIC.SIGNUP}
                   text='Regístrate'
                 />
               </>
@@ -257,27 +258,27 @@ function NavBar() {
               <>
                 <NavOptions
                   icon={<HomeIcon />}
-                  link='/main'
+                  link={ROUTES.CLIENT.MAIN}
                   text='Inicio'
-                  isActive={currentPath === '/main'}
+                  isActive={currentPath === ROUTES.CLIENT.MAIN}
                 />
                 <NavOptions
                   icon={<EditCalendarIcon />}
-                  link='/book-appointment'
+                  link={ROUTES.CLIENT.BOOK}
                   text='Agendar cita'
-                  isActive={currentPath === '/book-appointment'}
+                  isActive={currentPath === ROUTES.CLIENT.BOOK}
                 />
                 <NavOptions
                   icon={<CalendarIcon />}
-                  link='/my-appointments'
+                  link={ROUTES.CLIENT.APPOINTMENTS}
                   text='Mis citas'
-                  isActive={currentPath === '/my-appointments'}
+                  isActive={currentPath === ROUTES.CLIENT.APPOINTMENTS}
                 />
                 <NavOptions
                   icon={<UserIcon />}
-                  link='/profile'
+                  link={ROUTES.CLIENT.PROFILE}
                   text='Ver perfil'
-                  isActive={currentPath === '/profile'}
+                  isActive={currentPath === ROUTES.CLIENT.PROFILE}
                 />
               </>
             )}
@@ -304,7 +305,7 @@ function NavBar() {
                     textAlign: 'right',
                   }}
                 >
-                  Nombre(s)
+                  {userName}
                 </Typography>
                 <Typography
                   sx={{
@@ -314,7 +315,7 @@ function NavBar() {
                     textAlign: 'right',
                   }}
                 >
-                  Correo
+                  {userEmail}
                 </Typography>
               </Box>
 

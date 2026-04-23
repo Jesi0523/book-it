@@ -1,39 +1,46 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { ROUTES, ROLES } from '@/constants/routes';
+import { useAuth } from '@/context/AuthContext';
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  // Se verifica si existen el token y el rol en sessionStorage
-  const token = sessionStorage.getItem('token');
-  const userRole = sessionStorage.getItem('role');
+  // Se verifica si existen el token y el rol
+  const { user, isAuthenticated, loading, isLoggingOut } = useAuth();
+
+  // Mientras este leyendo la sesion actual o estoy haciendo 
+  // un logout, no se vera nada
+  if (loading || isLoggingOut) return null;
 
   // Bandera para saber si la ruta que intentan ver es de admin
-  const isAdminRoute = allowedRoles && allowedRoles.includes('ADMIN');
+  const isAdminRoute = allowedRoles && allowedRoles.includes(ROLES.ADMIN);
 
   // Si no ha iniciado sesion
-  if (!token) {
-    // Si consulta una ruta de admin, redirige 404
-    if (isAdminRoute) {
-      return <Navigate to='/404' replace />;
-    }
-    // Si es una ruta del cliente, lo mandamos a login
-    return <Navigate to='/login' replace />;
+  if (!isAuthenticated) {
+    // Si consulta una ruta de admin, redirige 404, sino a login
+    return (
+      <Navigate
+        to={isAdminRoute ? ROUTES.NOT_FOUND : ROUTES.PUBLIC.LOGIN}
+        replace
+      />
+    );
   }
 
   // Si inicio sesion pero no tiene permisos
-  if (allowedRoles && !allowedRoles.includes(userRole)) {
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Si un cliente trata de ir a una ruta del admin,
     // se le muestra 404
     if (isAdminRoute) {
-      return <Navigate to='/404' replace />;
+      return <Navigate to={ROUTES.NOT_FOUND} replace />;
     }
 
     // Si un admin intenta ver una pagina del cliente, se redirige al calendario, si es cliente
     const fallbackRoute =
-      userRole === 'ADMIN' ? '/admin/appointment-calendar' : '/main';
+      user.role === ROLES.ADMIN ? ROUTES.ADMIN.CALENDAR : ROUTES.CLIENT.MAIN;
+
     return <Navigate to={fallbackRoute} replace />;
   }
 
   // Si hay token, se permite el acceso a las rutas hijas
   return <Outlet />;
-};;;
+};;
 
 export default ProtectedRoute;

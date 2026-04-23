@@ -1,6 +1,12 @@
 // React
 import { useLocation } from 'react-router-dom';
 
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
+// Constantes
+import { ROUTES } from '@/constants/routes';
+
 // MUI
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -76,8 +82,7 @@ const imageDummy = [
 
 function MainPage() {
   // <--------------- CONTEXTO --------------->
-  const location = useLocation();
-  const isLanding = location.pathname === '/';
+  const { isAuthenticated } = useAuth();
 
   // <--------------- RENDER --------------->
   return (
@@ -110,7 +115,7 @@ function MainPage() {
         >
           {/* Empresa */}
           <Title children='Empresa' align='center' color='text.primary' />
-          
+
           {/* Slogan */}
           <Text
             children='Slogan'
@@ -219,9 +224,9 @@ function MainPage() {
             width: '100%',
             maxWidth: '1300px',
             px: { xs: 6, md: 8, lg: 12 },
-            position: 'relative', 
+            position: 'relative',
             '.swiper': {
-              position: 'static', 
+              position: 'static',
             },
             '.swiper-button-next, .swiper-button-prev': {
               color: 'text.secondary',
@@ -229,10 +234,10 @@ function MainPage() {
               '&:hover': { color: 'text.primary', transform: 'scale(1.1)' },
             },
             '.swiper-button-prev': {
-              left: { xs: '5px', md: '10px', lg: '20px' }, 
+              left: { xs: '5px', md: '10px', lg: '20px' },
             },
             '.swiper-button-next': {
-              right: { xs: '5px', md: '10px', lg: '20px' }, 
+              right: { xs: '5px', md: '10px', lg: '20px' },
             },
           }}
         >
@@ -271,17 +276,17 @@ function MainPage() {
           width: '100%',
         }}
       >
-        {isLanding ? (
+        {!isAuthenticated ? (
           // Landing Page
           <>
-            <MainButton to='/login'>
+            <MainButton to={ROUTES.PUBLIC.LOGIN}>
               Agenda tu cita <CalendarIcon />
             </MainButton>
           </>
         ) : (
           // Main Page
           <>
-            <MainButton to='/book-appointment'>
+            <MainButton to={ROUTES.CLIENT.BOOK}>
               Agenda tu cita <CalendarIcon />
             </MainButton>
           </>

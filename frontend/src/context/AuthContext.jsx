@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
 import { setLogoutHandler } from '@/utils/authEvents';
-import { postRefreshSession } from '@/api/auth.api';
+import { postLogoutSession, postRefreshSession } from '@/api/auth.api';
 
 const AuthContext = createContext();
 
@@ -67,16 +67,24 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout
-  const logout = () => {
+  const logout = async () => {
     setIsLoggingOut(true);
 
-    sessionStorage.clear();
-    setUser(null);
-    navigate(ROUTES.PUBLIC.LOGIN, { replace: true });
+    try {
+      // El back destruye la cookie
+      await postLogoutSession();
+    } catch (error) {
+      console.error('Error al cerrar sesión en el servidor', error);
+    } finally {
+      // Si o si se borran los datos y redirige a login
+      sessionStorage.clear();
+      setUser(null);
+      navigate(ROUTES.PUBLIC.LOGIN, { replace: true });
 
-    setTimeout(() => {
-      setIsLoggingOut(false);
-    }, 100);
+      setTimeout(() => {
+        setIsLoggingOut(false);
+      }, 100);
+    }
   };
 
   return (

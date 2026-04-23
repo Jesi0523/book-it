@@ -25,6 +25,16 @@ export const postLogin = async (credentials) => {
   }
 };
 
+// POST Logout
+export const postLogoutSession = async () => {
+  try {
+    const { data } = await apiClient.post('/auth/logout');
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // POST Refresh
 export const postRefreshSession = async () => {
   try {

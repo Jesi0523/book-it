@@ -25,6 +25,22 @@ export const postLogin = async (credentials) => {
   }
 };
 
+// POST Registro
+export const postRegister = async (userData) => {
+  try {
+    const { data } = await apiClient.post('/auth/registro', userData);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al registrar el usuario';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor. Verifica tu internet.';
+    } else {
+      throw 'Ocurrió un error inesperado al registrar.';
+    }
+  }
+};
+
 // POST Logout
 export const postLogoutSession = async () => {
   try {

@@ -2,12 +2,14 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-// MUI
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-
 // Constantes
 import { ROUTES, ROLES } from '@/constants/routes';
+
+// Context
+import { useAuth } from '@/context/AuthContext';
+
+// Componentes
+import Loader from '@/components/common/Loader';
 
 // Layouts
 import AuthLayout from '@/layouts/AuthLayout';
@@ -46,27 +48,18 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 
 // <--------------------------------------------------------->
 
-// Pantalla de carga
-const FallbackLoader = () => (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      background: (theme) => theme.customGradients.mainBackground,
-    }}
-  >
-    <CircularProgress color='primary' />
-  </Box>
-);
-
 // Muestra algo mientras se carga un componente
 const SuspenseLayout = ({ children }) => (
-  <Suspense fallback={<FallbackLoader />}>{children}</Suspense>
+  <Suspense fallback={<Loader />}>{children}</Suspense>
 );
 
 const AppRoutes = () => {
+  // Estado de carga desde el contexto
+  const { loading, isLoggingOut } = useAuth();
+
+  // Si esta verificando o cerrando sesion, 
+  // se muestra la pantalla de carga
+  if (loading || isLoggingOut) return <Loader />;
   return (
     <Routes>
       {/* Rutas publicas */}

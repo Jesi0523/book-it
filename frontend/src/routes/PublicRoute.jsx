@@ -3,10 +3,7 @@ import { ROUTES, ROLES } from '@/constants/routes';
 import { useAuth } from '@/context/AuthContext';
 
 const PublicRoute = () => {
-  const { user, isAuthenticated, loading } = useAuth();
-
-  // Mientras este leyendo la sesion actual, no se vera nada
-  if (loading) return null;
+  const { user, isAuthenticated } = useAuth();
 
   // Si el usuario ya tiene token, se le expulsa de las ruta publica
   if (isAuthenticated) {

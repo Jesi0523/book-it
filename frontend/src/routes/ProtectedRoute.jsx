@@ -4,11 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 
 const ProtectedRoute = ({ allowedRoles }) => {
   // Se verifica si existen el token y el rol
-  const { user, isAuthenticated, loading, isLoggingOut } = useAuth();
-
-  // Mientras este leyendo la sesion actual o estoy haciendo 
-  // un logout, no se vera nada
-  if (loading || isLoggingOut) return null;
+  const { user, isAuthenticated } = useAuth();
 
   // Bandera para saber si la ruta que intentan ver es de admin
   const isAdminRoute = allowedRoles && allowedRoles.includes(ROLES.ADMIN);
@@ -41,6 +37,6 @@ const ProtectedRoute = ({ allowedRoles }) => {
 
   // Si hay token, se permite el acceso a las rutas hijas
   return <Outlet />;
-};;
+};
 
 export default ProtectedRoute;

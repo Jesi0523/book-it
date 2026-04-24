@@ -79,6 +79,24 @@ function Signup() {
     if (!validation.success) {
       const fieldErrors = validation.error.flatten().fieldErrors;
       setFormErrors(fieldErrors);
+
+      const firstErrorKey = Object.keys(fieldErrors)[0];
+
+      // Si hay un error al validar, se hace scroll al primer error
+      if (firstErrorKey) {
+        setTimeout(() => {
+          const errorElement = document.getElementById(
+            `campo-${firstErrorKey}`,
+          );
+          if (errorElement) {
+            errorElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center', 
+            });
+          }
+        }, 100);
+      }
+
       return;
     }
 
@@ -138,6 +156,7 @@ function Signup() {
 
         {/* Nombre */}
         <TextInput
+          id='campo-nombre'
           type='text'
           label='Nombre'
           placeholder='Ejemplo'
@@ -150,6 +169,7 @@ function Signup() {
           {/* Sexo */}
           <Box sx={{ flex: 0.35 }}>
             <GenderSelect
+              id='campo-sexo'
               height='80px'
               value={formData.sexo}
               onChange={(value) => handleChange('sexo', value)}
@@ -160,6 +180,7 @@ function Signup() {
           {/* Telefono */}
           <Box sx={{ flex: 0.65 }}>
             <TextInput
+              id='campo-telefono'
               type='number'
               label='Teléfono'
               placeholder='Ejemplo'
@@ -173,6 +194,7 @@ function Signup() {
 
         {/* Correo */}
         <TextInput
+          id='campo-correo'
           type='email'
           label='Correo electrónico'
           placeholder='ejemplo@gmail.com'
@@ -183,6 +205,7 @@ function Signup() {
 
         {/* Fecha de nacimiento */}
         <DateInput
+          id='campo-fechaNacimiento'
           value={formData.fechaNacimiento}
           onChange={(e) => handleChange('fechaNacimiento', e.target.value)}
           helperText={
@@ -192,6 +215,7 @@ function Signup() {
 
         {/* Contrasena */}
         <PasswordInput
+          id='campo-password'
           value={formData.password}
           onChange={(e) => handleChange('password', e.target.value)}
           helperText={formErrors.password ? formErrors.password[0] : ''}
@@ -199,6 +223,7 @@ function Signup() {
 
         {/* Confirmar contrasena */}
         <PasswordInput
+          id='campo-passwordConfirm'
           label='Confirmar Contraseña'
           value={formData.passwordConfirm}
           onChange={(e) => handleChange('passwordConfirm', e.target.value)}

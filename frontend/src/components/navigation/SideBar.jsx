@@ -88,6 +88,10 @@ const Sidebar = ({ isExpanded = true, onClose }) => {
 
     if (hasAccepted) {
       logout();
+    } else {
+      if (onClose) {
+        onClose();
+      };
     }
   };
 

@@ -55,6 +55,7 @@ function BaseDialog({
   // <--------------- RENDER --------------->
   return (
     <Dialog
+      disableScrollLock
       sx={{
         '& .MuiDialog-paper': {
           width: '80%',

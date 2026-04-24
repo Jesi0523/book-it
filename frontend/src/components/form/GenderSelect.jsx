@@ -12,6 +12,7 @@ import Man from '@mui/icons-material/Man';
 import Woman from '@mui/icons-material/Woman';
 
 const GenderSelect = ({
+  id,
   label = 'Sexo',
   background,
   border,
@@ -22,7 +23,7 @@ const GenderSelect = ({
 }) => {
   // <--------------- RENDER --------------->
   return (
-    <>
+    <Box id={id} sx={{ width: '100%' }}>
       <Box
         sx={{
           border:
@@ -106,7 +107,7 @@ const GenderSelect = ({
           {helperText}
         </FormHelperText>
       )}
-    </>
+    </Box>
   );
 };
 

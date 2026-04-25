@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const Usuario = require("../models/usuarioModel");
+const { validarFechaNacimiento } = require("../helpers/validatorHelpers");
 
 const registroValidator = [
     body("nombre")
@@ -38,15 +39,12 @@ const registroValidator = [
         .matches(/[^A-Za-z0-9]/)
         .withMessage("Debe contener al menos un carácter especial"),
 
-    body("passwordConfirmacion")
-        .custom((value,{req}) => {
-            if(value !== req.body.password){
-                throw new Error(
-                    "Las contraseñas no coinciden",
-                );
-            }
-            return true;
-        }),
+    body("passwordConfirmacion").custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error("Las contraseñas no coinciden");
+        }
+        return true;
+    }),
 
     body("sexo")
         .toLowerCase()
@@ -68,33 +66,7 @@ const registroValidator = [
         .withMessage("La fecha de nacimiento es requerida")
         .isISO8601() // AAAAA-MM-DD
         .toDate()
-        .custom((value) => {
-            const fechaIngresada = new Date(value);
-            const hoy = new Date();
-            if (fechaIngresada > hoy) {
-                throw new Error(
-                    "La fecha de nacimiento no puede ser en el futuro",
-                );
-            }
-            let edad = hoy.getFullYear() - fechaIngresada.getFullYear();
-            const diferenciaMeses = hoy.getMonth() - fechaIngresada.getMonth();
-
-            if (
-                diferenciaMeses < 0 ||
-                (diferenciaMeses === 0 &&
-                    hoy.getDate() < fechaIngresada.getDate())
-            ) {
-                edad--;
-            }
-
-            if (edad < 18) {
-                throw new Error(
-                    "Debes tener al menos 18 años para registrarte",
-                );
-            }
-
-            return true;
-        }),
+        .custom(validarFechaNacimiento),
 ];
 const loginValidator = [
     body("correo")

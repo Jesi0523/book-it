@@ -1,5 +1,7 @@
+// MUI
+import Box from '@mui/material/Box'
 
-import{Box} from '@mui/material'
+// Componente
 import Text from '@/components/common/Text';
 
 const TextWIcon = ({icon, text}) =>
@@ -7,7 +9,7 @@ const TextWIcon = ({icon, text}) =>
     return(
         <Box sx={{display: 'flex', alignItems: 'center', p:0.5}}>
             {icon}
-            <Text children={text} align='center' color= 'text.main' size='14'/>
+            <Text children={text} align='center' color= 'text.primary' size='14'/>
         </Box>
     )
 }

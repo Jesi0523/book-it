@@ -1,6 +1,8 @@
-import { Typography } from "@mui/material";
+// MUI
+import Typography from '@mui/material/Typography';
 
 const Title = ({ children, color = "primary.main", align = "start", size = 32, textTransform= 'uppercase' }) => {
+  // <--------------- VALORES --------------->
   const responsiveFontSize = typeof size === 'object' 
     ? { ...size }
     : {
@@ -8,6 +10,8 @@ const Title = ({ children, color = "primary.main", align = "start", size = 32, t
         sm: `${Number(size) * 0.85}px`,
         md: `${size}px`
       };
+
+  // <--------------- RENDER --------------->
   return (
     <Typography
       variant="h1"

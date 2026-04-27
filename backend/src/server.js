@@ -27,7 +27,8 @@ app.use(
 app.use(logTransacciones);
 
 // Rutas
-const usuarioRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");
+const usuarioRoutes = require("./routes/usuarioRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
 const empresaRoutes = require("./routes/empresaRoutes");
 const empleadoRoutes = require("./routes/empleadoRoutes");
@@ -36,7 +37,8 @@ const citasRoutes = require("./routes/citaRoutes");
 const reporteRoutes = require("./routes/reporteRoutes");
 
 // importar rutas
-app.use("/api/auth", usuarioRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/servicios", servicioRoutes);
 app.use("/api/empresa", empresaRoutes);
 app.use("/api/empleados", empleadoRoutes);

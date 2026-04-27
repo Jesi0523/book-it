@@ -69,7 +69,7 @@ const opcionesTiempo = Array.from({ length: 48 }, (_, i) => {
   return `${h}:${m}`;
 });
 
-const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
+const ScheduleSection = ({ scheduleMap, setScheduleMap, error, onAction }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -153,8 +153,11 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
     const startMins = timeToMins(startTime);
     const endMins = timeToMins(endTime);
     if (startMins >= endMins) return;
+
     const nuevosBloques = generarBloquesRango(startMins, endMins);
     setScheduleMap((prev) => ({ ...prev, [selectedDay]: nuevosBloques }));
+
+    if (onAction) onAction();
   };
 
   // Funcion borrar dia
@@ -164,7 +167,10 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
 
   // <--------------- RENDER --------------->
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <Box
+      id='field-horario'
+      sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}
+    >
       {/* Seccion superior */}
       <Box
         sx={{
@@ -194,7 +200,10 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
           {/* Dia */}
           <Select
             value={selectedDay}
-            onChange={(e) => setSelectedDay(e.target.value)}
+            onChange={(e) => {
+              setSelectedDay(e.target.value);
+              if (onAction) onAction();
+            }}
             size='small'
             MenuProps={{
               PaperProps: {
@@ -465,6 +474,17 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap }) => {
             ))}
           </Box>
         </Box>
+      )}
+
+      {/* Error */}
+      {error && (
+        <Text
+          children={error}
+          color='error.main'
+          size='14px'
+          sx={{ mt: 2 }}
+          align='center'
+        />
       )}
 
       {/* Modal de confirmación */}

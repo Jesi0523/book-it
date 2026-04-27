@@ -47,9 +47,11 @@ const CompanyInfo = () => {
   const [mainImageFile, setMainImageFile] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
   const [galleryFiles, setGalleryFiles] = useState([]);
+  const [originalGalleryData, setOriginalGalleryData] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [empresaId, setEmpresaId] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [formErrors, setFormErrors] = useState({});
 
   // <--------------- EFFECTS --------------->
 
@@ -81,6 +83,7 @@ const CompanyInfo = () => {
 
           // Galeria
           if (data.galeria) {
+            setOriginalGalleryData(data.galeria);
             const urlsGaleria = data.galeria.map((img) => img.url);
             setGalleryImages(urlsGaleria);
           }
@@ -163,6 +166,10 @@ const CompanyInfo = () => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleLogoChange = (event) => {
@@ -173,6 +180,13 @@ const CompanyInfo = () => {
         logo: URL.createObjectURL(file),
         archivoFisicoLogo: file,
       }));
+      if (formErrors.logo) setFormErrors((prev) => ({ ...prev, logo: null }));
+    }
+  };
+
+  const clearScheduleError = () => {
+    if (formErrors.horario) {
+      setFormErrors((prev) => ({ ...prev, horario: null }));
     }
   };
 
@@ -181,6 +195,8 @@ const CompanyInfo = () => {
     if (file) {
       setMainImage(URL.createObjectURL(file));
       setMainImageFile(file);
+      if (formErrors.imagenPrincipal)
+        setFormErrors((prev) => ({ ...prev, imagenPrincipal: null }));
     }
   };
 
@@ -190,6 +206,8 @@ const CompanyInfo = () => {
       const newUrls = files.map((file) => URL.createObjectURL(file));
       setGalleryImages((prev) => [...prev, ...newUrls]);
       setGalleryFiles((prev) => [...prev, ...files]);
+      if (formErrors.galeria)
+        setFormErrors((prev) => ({ ...prev, galeria: null }));
     }
   };
 
@@ -202,93 +220,163 @@ const CompanyInfo = () => {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Si ya se esta guardando, se ignoran los clicks extras
     if (isSaving) return;
 
-    // Se bloquea el boton
+    // Limpia los errores
+    setFormErrors({});
+
+    const dataToValidate = {
+      ...formData,
+      logo: formData.archivoFisicoLogo || formData.logo,
+      imagenPrincipal: mainImageFile || mainImage,
+      galeria: {
+        urls: galleryImages,
+        files: galleryFiles,
+      },
+      horario: scheduleMap,
+    };
+
+    // Se validan los campos
+    const validation = empresaSchema.safeParse(dataToValidate);
+
+    if (!validation.success) {
+      const fieldErrors = validation.error.flatten().fieldErrors;
+      setFormErrors(fieldErrors);
+
+      // Scroll al primer error
+      setTimeout(() => {
+        const fieldOrder = [
+          'logo',
+          'nombre',
+          'correo',
+          'telefono',
+          'descripcion',
+          'slogan',
+          'direccion',
+          'horario',
+          'imagenPrincipal',
+          'galeria',
+        ];
+
+        for (const key of fieldOrder) {
+          if (fieldErrors[key]) {
+            const element =
+              document.getElementById(`field-${key}`) ||
+              document.querySelector(`[name="${key}"]`);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              break;
+            }
+          }
+        }
+      }, 50);
+
+      return;
+    }
+
+    // Se activa el bloqueo de boton
     setIsSaving(true);
 
-    toastSuccess(
-      'Datos de la empresa actualizados correctamente.',
-      'company-save-toast',
-    );
+    try {
+      // Se preparan los datos para enviar
+      const payload = new FormData();
 
-    setTimeout(() => {
+      payload.append('nombre', formData.nombre);
+      payload.append('correo', formData.correo);
+      payload.append('telefono', formData.telefono);
+      payload.append('descripcion', formData.descripcion);
+      payload.append('slogan', formData.slogan);
+      payload.append('direccion', formData.direccion);
+
+      const horarioArray = [];
+      const diasReverseMap = {
+        Domingo: 'domingo',
+        Lunes: 'lunes',
+        Martes: 'martes',
+        Miércoles: 'miercoles',
+        Jueves: 'jueves',
+        Viernes: 'viernes',
+        Sábado: 'sabado',
+      };
+
+      for (const [dia, slots] of Object.entries(scheduleMap)) {
+        if (!slots || slots.length === 0) continue;
+
+        const sortedSlots = [...slots].sort();
+
+        let currentStart = sortedSlots[0].split('-')[0];
+        let currentEnd = sortedSlots[0].split('-')[1];
+
+        for (let i = 1; i < sortedSlots.length; i++) {
+          const [nextStart, nextEnd] = sortedSlots[i].split('-');
+          if (currentEnd === nextStart) {
+            currentEnd = nextEnd;
+          } else {
+            horarioArray.push({
+              dia: diasReverseMap[dia],
+              horaInicio: currentStart,
+              horaFin: currentEnd,
+            });
+            currentStart = nextStart;
+            currentEnd = nextEnd;
+          }
+        }
+        horarioArray.push({
+          dia: diasReverseMap[dia],
+          horaInicio: currentStart,
+          horaFin: currentEnd,
+        });
+      }
+
+      payload.append('horarioGlobal', JSON.stringify(horarioArray));
+
+      if (formData.archivoFisicoLogo) {
+        payload.append('logo', formData.archivoFisicoLogo);
+      }
+
+      if (mainImageFile) {
+        payload.append('imagenPrincipal', mainImageFile);
+      }
+
+      galleryFiles.forEach((file) => {
+        payload.append('nuevasFotosGaleria', file);
+      });
+
+      const fotosAntiguas = galleryImages
+        .filter((url) => typeof url === 'string' && url.startsWith('http'))
+        .map((urlConservada) => {
+          const fotoOriginal = originalGalleryData.find(
+            (img) => img.url === urlConservada,
+          );
+
+          return {
+            _id: fotoOriginal._id,
+            url: fotoOriginal.url,
+            public_id: fotoOriginal.public_id,
+          };
+        });
+
+
+      payload.append('galeriaConservada', JSON.stringify(fotosAntiguas));
+
+      // Se hace la peticion
+      await updateEmpresa(payload);
+
+      toastSuccess(
+        'Información actualizada correctamente.',
+        'company-save-toast',
+      );
+    } catch (error) {
+      toastError(
+        typeof error === 'string' ? error : 'Error al guardar los datos',
+        'company-error',
+      );
+    } finally {
       setIsSaving(false);
-    }, 3000);
+    }
   };
-  
-  // Todavia no esta terminada
-  // const handleSave = async () => {
-  //   if (isSaving) return;
-
-  //   try {
-  //     setIsSaving(true);
-
-  //     const payload = new FormData();
-
-  //     payload.append('nombre', formData.nombre);
-  //     payload.append('correo', formData.correo);
-  //     payload.append('telefono', formData.telefono);
-  //     payload.append('descripcion', formData.descripcion);
-  //     payload.append('slogan', formData.slogan);
-  //     payload.append('direccion', formData.direccion);
-
-  //     const horarioArray = [];
-  //     const diasReverseMap = {
-  //       Domingo: 'domingo',
-  //       Lunes: 'lunes',
-  //       Martes: 'martes',
-  //       Miércoles: 'miercoles',
-  //       Jueves: 'jueves',
-  //       Viernes: 'viernes',
-  //       Sábado: 'sabado',
-  //     };
-
-  //     for (const [dia, slots] of Object.entries(scheduleMap)) {
-  //       slots.forEach((slot) => {
-  //         horarioArray.push({
-  //           dia: diasReverseMap[dia],
-  //           horaInicio: slot.inicio,
-  //           horaFin: slot.fin,
-  //         });
-  //       });
-  //     }
-  //     payload.append('horarioGlobal', JSON.stringify(horarioArray));
-
-  //     if (formData.archivoFisicoLogo) {
-  //       payload.append('logo', formData.archivoFisicoLogo);
-  //     }
-  //     if (mainImageFile) {
-  //       payload.append('imagenPrincipal', mainImageFile);
-  //     }
-
-  //     galleryFiles.forEach((file) => {
-  //       payload.append('nuevasfotosgaleria', file);
-  //     });
-
-  //     const fotosConservadas = galleryImages.filter((url) =>
-  //       url.startsWith('http'),
-  //     );
-  //     fotosConservadas.forEach((url) => {
-  //       payload.append('galeriaconservada[]', url);
-  //     });
-
-  //     await updateEmpresa(empresaId, payload);
-  //     toastSuccess(
-  //       'Datos de la empresa actualizados correctamente.',
-  //       'company-save-toast',
-  //     );
-  //   } catch (error) {
-  //     toastError(
-  //       typeof error === 'string' ? error : 'Error al guardar los datos',
-  //       'company-error',
-  //     );
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // };
 
   // <--------------- RENDER --------------->
 
@@ -321,6 +409,7 @@ const CompanyInfo = () => {
           formData={formData}
           handleInputChange={handleInputChange}
           handleLogoChange={handleLogoChange}
+          formErrors={formErrors}
         />
       </Box>
 
@@ -335,6 +424,8 @@ const CompanyInfo = () => {
         <ScheduleSection
           scheduleMap={scheduleMap}
           setScheduleMap={setScheduleMap}
+          error={formErrors.horario ? formErrors.horario[0] : null}
+          onAction={clearScheduleError}
         />
       </Box>
 
@@ -352,6 +443,7 @@ const CompanyInfo = () => {
           galleryImages={galleryImages}
           onGalleryImagesChange={handleGalleryImagesChange}
           onRemoveGalleryImage={handleRemoveGalleryImage}
+          errors={formErrors}
         />
       </Box>
 

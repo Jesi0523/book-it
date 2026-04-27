@@ -11,9 +11,13 @@ export const getEmpresa = async () => {
 };
 
 // PATCH empresa
-export const updateEmpresa = async (id, payload) => {
+export const updateEmpresa = async (payload) => {
   try {
-    const { data } = await apiClient.patch(`/empresa/${id}`, payload);
+    const { data } = await apiClient.patch('/empresa', payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return data;
   } catch (error) {
     throw error.response?.data?.msg || error.message;

@@ -22,10 +22,26 @@ const logger = winston.createLogger({
     exceptionHandlers: [
         // para errores no atrapados
         new winston.transports.File({ filename: "logs/exceptions.log" }),
+
+        //mostrar error en consola tambien
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple()
+            )
+        })
     ],
     rejectionHandlers: [
         // para promesas rechazadas no manejadas
         new winston.transports.File({ filename: "logs/rejections.log" }),
+
+        //mostrar error en consola tambien
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.simple()
+            )
+        })
     ],
 });
 

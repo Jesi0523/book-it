@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const imagenSchema = require("./imagenModel");
 
 const empresaSchema = new mongoose.Schema(
     {
@@ -26,12 +27,18 @@ const empresaSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        logoUrl: {
-            type: String,
+        logo: {
+            type: imagenSchema,
+            required: true,
         },
-        galeriaURLs: [
+        imagenPrincipal: {
+            type: imagenSchema,
+            required: true,
+        },
+        galeria: [
             {
-                type: String,
+                type: imagenSchema,
+                required: true,
             },
         ],
         horarioGlobal: [

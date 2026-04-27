@@ -1,6 +1,9 @@
 // React
 import React from 'react';
 
+// Constantes
+import { ROUTES } from '@/constants/routes';
+
 // MUI
 import Box from '@mui/material/Box';
 
@@ -44,7 +47,7 @@ const AppointmentCalendar = () => {
         {/* Boton agendar cita */}
         <MainButton
           size={{ xs: '14px', md: '16px' }}
-          to='/admin/book-appointment'
+          to={ROUTES.ADMIN.BOOK}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <CalendarIcon fontSize='small' />

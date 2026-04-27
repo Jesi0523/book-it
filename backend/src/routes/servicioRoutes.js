@@ -4,11 +4,13 @@ const router = express.Router();
 const { validarCampos } = require("../middleware/validarCampos");
 const { validarJWT } = require("../middleware/validarJWT");
 const { validarAdmin } = require("../middleware/validarAdmin");
+const validarMongoId = require("../middleware/validarMongoId");
+const subirArchivos = require("../middleware/subirArchivos");
 
 // Importar validador de campos
-const { 
-    createServicioValidator, 
-    updateServicioValidator
+const {
+    createServicioValidator,
+    updateServicioValidator,
 } = require("../validators/servicioValidator");
 
 // Importar controladores
@@ -17,38 +19,44 @@ const {
     getOneServicio,
     createServicio,
     updateServicio,
-    deleteServicio
+    deleteServicio,
 } = require("../controllers/servicioController");
-
 
 //////////////////RUTAS PÚBLICAS////////////////
 router.get("/", getAllServicios);
-router.get("/:id", getOneServicio);
+router.get("/:id", [validarMongoId()], getOneServicio);
 
 //////////////////RUTAS SOLO ADMIN////////////////
 
 router.post(
-    "/", 
-    [validarJWT, validarAdmin, createServicioValidator, validarCampos],
-    createServicio
+    "/",
+    [
+        validarJWT,
+        validarAdmin,
+        subirArchivos,
+        createServicioValidator,
+        validarCampos,
+    ],
+    createServicio,
 );
 
 router.patch(
-    "/:id", 
+    "/:id",
     [
-        validarJWT, 
+        validarJWT,
         validarAdmin,
+        subirArchivos,
+        validarMongoId(),
         updateServicioValidator,
-        validarCampos
+        validarCampos,
     ],
-    updateServicio
+    updateServicio,
 );
 
 router.delete(
-    "/:id", 
-    [validarJWT, validarAdmin],
-    deleteServicio
+    "/:id",
+    [validarJWT, validarAdmin, validarMongoId()],
+    deleteServicio,
 );
-
 
 module.exports = router;

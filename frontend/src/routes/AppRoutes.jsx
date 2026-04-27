@@ -2,9 +2,14 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-// MUI
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+// Constantes
+import { ROUTES, ROLES } from '@/constants/routes';
+
+// Context
+import { useAuth } from '@/context/AuthContext';
+
+// Componentes
+import Loader from '@/components/common/Loader';
 
 // Layouts
 import AuthLayout from '@/layouts/AuthLayout';
@@ -37,79 +42,96 @@ const Reports = lazy(() => import('@/pages/admin/Reports'));
 // Pagina Error
 const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
 
-// <--------------------------------------------------------->
+// Rutas protegidas
+import PublicRoute from '@/routes/PublicRoute';
+import ProtectedRoute from '@/routes/ProtectedRoute';
 
-// Pantalla de carga
-const FallbackLoader = () => (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      background: (theme) => theme.customGradients.mainBackground,
-    }}
-  >
-    <CircularProgress color='primary' />
-  </Box>
-);
+// <--------------------------------------------------------->
 
 // Muestra algo mientras se carga un componente
 const SuspenseLayout = ({ children }) => (
-  <Suspense fallback={<FallbackLoader />}>{children}</Suspense>
+  <Suspense fallback={<Loader />}>{children}</Suspense>
 );
 
 const AppRoutes = () => {
+  // Estado de carga desde el contexto
+  const { loading, isLoggingOut } = useAuth();
+
+  // Si esta verificando o cerrando sesion, 
+  // se muestra la pantalla de carga
+  if (loading || isLoggingOut) return <Loader />;
   return (
     <Routes>
-      {/* Auth */}
-      <Route
-        element={
-          <SuspenseLayout>
-            <AuthLayout />
-          </SuspenseLayout>
-        }
-      >
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
+      {/* Rutas publicas */}
+      <Route element={<PublicRoute />}>
+        {/* Landing Page */}
+        <Route
+          element={
+            <SuspenseLayout>
+              <ClientLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route path={ROUTES.PUBLIC.ROOT} element={<MainPage />} />
+        </Route>
+
+        {/* Auth */}
+        <Route
+          element={
+            <SuspenseLayout>
+              <AuthLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route path={ROUTES.PUBLIC.LOGIN} element={<Login />} />
+          <Route path={ROUTES.PUBLIC.SIGNUP} element={<Signup />} />
+        </Route>
       </Route>
 
       {/* Usuario */}
-      <Route
-        element={
-          <SuspenseLayout>
-            <ClientLayout />
-          </SuspenseLayout>
-        }
-      >
-        <Route path='/' element={<MainPage />} />
-        <Route path='/main' element={<MainPage />} />
-        <Route path='/book-appointment' element={<BookAppointment />} />
-        <Route path='/my-appointments' element={<MyAppointments />} />
-        <Route path='/profile' element={<Profile />} />
+      <Route element={<ProtectedRoute allowedRoles={[ROLES.CLIENT]} />}>
+        <Route
+          element={
+            <SuspenseLayout>
+              <ClientLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route path={ROUTES.CLIENT.MAIN} element={<MainPage />} />
+          <Route path={ROUTES.CLIENT.BOOK} element={<BookAppointment />} />
+          <Route
+            path={ROUTES.CLIENT.APPOINTMENTS}
+            element={<MyAppointments />}
+          />
+          <Route path={ROUTES.CLIENT.PROFILE} element={<Profile />} />
+        </Route>
       </Route>
 
       {/* Admin */}
-      <Route
-        path='/admin'
-        element={
-          <SuspenseLayout>
-            <AdminLayout />
-          </SuspenseLayout>
-        }
-      >
-        <Route path='appointment-calendar' element={<AppointmentCalendar />} />
-        <Route path='book-appointment' element={<AdminBookAppointment />} />
-        <Route path='employees' element={<Employees />} />
-        <Route path='services' element={<Services />} />
-        <Route path='company-info' element={<CompanyInfo />} />
-        <Route path='suspensions' element={<Suspensions />} />
-        <Route path='reports' element={<Reports />} />
+      <Route element={<ProtectedRoute allowedRoles={[ROLES.ADMIN]} />}>
+        <Route
+          element={
+            <SuspenseLayout>
+              <AdminLayout />
+            </SuspenseLayout>
+          }
+        >
+          <Route
+            path={ROUTES.ADMIN.CALENDAR}
+            element={<AppointmentCalendar />}
+          />
+          <Route path={ROUTES.ADMIN.BOOK} element={<AdminBookAppointment />} />
+          <Route path={ROUTES.ADMIN.EMPLOYEES} element={<Employees />} />
+          <Route path={ROUTES.ADMIN.SERVICES} element={<Services />} />
+          <Route path={ROUTES.ADMIN.COMPANY} element={<CompanyInfo />} />
+          <Route path={ROUTES.ADMIN.SUSPENSIONS} element={<Suspensions />} />
+          <Route path={ROUTES.ADMIN.REPORTS} element={<Reports />} />
+        </Route>
       </Route>
 
       {/* Error */}
-      <Route path='/404' element={<NotFound />} />
-      <Route path='*' element={<Navigate to='/404' replace />} />
+      <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
+      <Route path='*' element={<Navigate to={ROUTES.NOT_FOUND} replace />} />
     </Routes>
   );
 };

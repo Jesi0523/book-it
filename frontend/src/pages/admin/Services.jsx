@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // API
-import { getServicios, getServicio } from '@/api/servicios.api';
+import { getServicios, getServicio, deleteServicio } from '@/api/servicios.api';
 
 // Utils
 import { toastNeutral, toastError } from '@/utils/notify';
@@ -80,6 +80,7 @@ const Services = () => {
 
   // <--------------- FUNCIONES --------------->
 
+  // GET servicio
   // Funcion para editar un servicio
   const handleEdit = async (servicioSeleccionado) => {
     try {
@@ -111,9 +112,32 @@ const Services = () => {
     }
   };
 
+  // DELETE servicio
   // Funcion eliminar servicio
-  const handleDelete = () => {
-    toastNeutral('Servicio eliminado del catálogo.', 'service-delete-toast');
+  const handleDelete = async (id) => {
+    try {
+      setIsLoadingData(true);
+
+      // Se llama a la api
+      const response = await deleteServicio(id);
+
+      toastNeutral(
+        response.msg || 'Servicio eliminado del catálogo.',
+        'service-delete-toast',
+      );
+
+      // Se piden de nuevo los servicios
+      await fetchServicios();
+    } catch (error) {
+      toastError(
+        typeof error === 'string'
+          ? error
+          : 'Error al intentar eliminar el servicio.',
+        'delete-service-error',
+      );
+    } finally {
+      setIsLoadingData(false);
+    }
   };
 
   // <--------------- RENDER --------------->

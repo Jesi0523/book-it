@@ -71,3 +71,19 @@ export const updateServicio = async (id, payload) => {
     }
   }
 };
+
+// DELETE servicio
+export const deleteServicio = async (id) => {
+  try {
+    const { data } = await apiClient.delete(`/servicios/${id}`);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al eliminar el servicio.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al eliminar el servicio.';
+    }
+  }
+};

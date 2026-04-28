@@ -251,7 +251,7 @@ const Services = () => {
           {/* Buscar servicio */}
           <TextField
             fullWidth
-            placeholder='Buscar servicio por nombre'
+            placeholder='Busca un servicio por su nombre'
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             sx={{

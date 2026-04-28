@@ -1,8 +1,12 @@
 // React
 import React, { useState, useEffect } from 'react';
 
+// API
+import { getEmpleadosAdmin } from '@/api/empleados.api';
+import { getServicios } from '@/api/servicios.api';
+
 // Utils
-import { toastSuccess } from '@/utils/notify';
+import { toastSuccess, toastError } from '@/utils/notify';
 
 // MUI
 import Box from '@mui/material/Box';
@@ -23,86 +27,55 @@ import Collapsable from '@/components/common/Collapsable';
 import EmployeeHeader from '@/components/collapsable/Header/EmployeeHeader';
 import EmployeeBody from '@/components/collapsable/Body/EmployeeBody';
 import EmployeeForm from '@/components/employees/EmployeeForm';
-
-// Fotos prueba
-import avatar1 from '@/assets/dummy/perfil-1.jpg';
-import avatar2 from '@/assets/dummy/perfil-2.jpg';
-
-// <------------- DUMMY DATA ------------->
-
-// Lista de servicios
-const dummyServicios = [
-  'Corte de cabello',
-  'Tinte y luces',
-  'Manicura Spa',
-  'Pedicura Spa',
-  'Maquillaje profesional',
-];
-
-// Lista de empleados
-const dummyEmpleados = [
-  {
-    id: 1,
-    name: 'Martha Garza',
-    email: 'martha.grz@correo.com',
-    phone: '81 1234 5678',
-    birthdate: '2026-02-11',
-    info: 'Especialista en servicios de belleza con 5 años de experiencia.',
-    foto: avatar1,
-    schedule:
-      'Lunes: 08:00 - 20:00\nMartes: 08:00 - 20:00\nMiércoles: 08:00 - 20:00\nJueves: 08:00 - 20:00\nViernes: 08:00 - 20:00\nSábado: 13:00 - 17:00\nDomingo: Descanso',
-    services: [dummyServicios[0], dummyServicios[1], dummyServicios[4]],
-  },
-  {
-    id: 2,
-    name: 'Roberto Rodríguez',
-    email: 'roberto.r@correo.com',
-    phone: '81 8765 4321',
-    birthdate: '1998-05-15',
-    info: 'Atención al cliente y gestión de citas.',
-    foto: avatar2,
-    schedule:
-      'Lunes: 09:00 - 18:00\nMartes: 09:00 - 18:00\nMiércoles: 09:00 - 18:00\nJueves: 09:00 - 18:00\nViernes: 09:00 - 18:00\nSábado: 09:00 - 18:00\nDomingo: Descanso',
-    services: [dummyServicios[2], dummyServicios[3]],
-  },
-  {
-    id: 3,
-    name: 'Marcela López',
-    email: 'marcela.l@correo.com',
-    phone: '81 2345 6789',
-    birthdate: '1995-08-20',
-    info: 'Experta en cuidado de la piel y tratamientos faciales. Siempre dispuesta a brindar el mejor servicio a sus clientes.',
-    foto: avatar1,
-    schedule:
-      'Lunes: 10:00 - 19:00\nMartes: 10:00 - 19:00\nMiércoles: Descanso\nJueves: 10:00 - 19:00\nViernes: 10:00 - 19:00\nSábado: 10:00 - 15:00pm\nDomingo: Descanso',
-    services: [dummyServicios[2], dummyServicios[3], dummyServicios[4]],
-  },
-  {
-    id: 4,
-    name: 'Pedro Sánchez',
-    email: 'pedro.s@correo.com',
-    phone: '81 3456 7890',
-    birthdate: '1992-11-10',
-    info: 'Especialista en cortes modernos y estilismo para todo tipo de eventos sociales y casuales.',
-    foto: avatar2,
-    schedule:
-      'Lunes: Descanso\nMartes: 08:00 - 17:00pm\nMiércoles: 08:00 - 17:00pm\nJueves: 08:00 - 17:00pm\nViernes: 08:00 - 17:00pm\nSábado: 08:00 - 17:00pm\nDomingo: 09:00 - 14:00pm',
-    services: [dummyServicios[0], dummyServicios[1]],
-  },
-];
+import Loader from '@/components/common/Loader';
 
 const Employees = () => {
   // <--------------- ESTADOS --------------->
   const [busqueda, setBusqueda] = useState('');
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
+  const [empleados, setEmpleados] = useState([]);
+  const [listaServicios, setListaServicios] = useState([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [serverError, setServerError] = useState(false);
 
   // <--------------- DERIVADOS --------------->
+  // GET empleados
+  const fetchEmpleados = async () => {
+    try {
+      setIsLoadingData(true);
+      setServerError(false);
+      setBusqueda('');
+
+      const [empleadosData, serviciosData] = await Promise.all([
+        getEmpleadosAdmin(),
+        getServicios(),
+      ]);
+
+      if (empleadosData.ok) setEmpleados(empleadosData.empleados);
+      if (serviciosData.ok) setListaServicios(serviciosData.servicios);
+    } catch (error) {
+      setServerError(true);
+      setEmpleados([]);
+      toastError(
+        typeof error === 'string' ? error : 'Error al cargar los empleados.',
+        'get-empleados',
+      );
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
   // Busqueda de empleado
-  const empleadosFiltrados = dummyEmpleados.filter((emp) =>
-    emp.name.toLowerCase().includes(busqueda.toLowerCase()),
+  const empleadosFiltrados = empleados.filter((emp) =>
+    emp.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
 
   // <--------------- EFFECTS --------------->
+  // GET Empleados al cargar la página
+  useEffect(() => {
+    fetchEmpleados();
+  }, []);
+
   // Scroll hacia arriba al cambiar de lista/datos empleado
   useEffect(() => {
     window.scrollTo({
@@ -126,6 +99,8 @@ const Employees = () => {
   };
 
   // <--------------- RENDER --------------->
+  if (isLoadingData) return <Loader height='100%' />;
+
   return (
     <Box
       sx={{
@@ -214,21 +189,23 @@ const Employees = () => {
               />
             </Box>
             {/* Boton agregar empleado */}
-            <MainButton
-              size={{ xs: '14px', md: '16px' }}
-              onClick={() => setEmpleadoEditando({ id: 'nuevo' })}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <PersonAddIcon fontSize='small' />
-                Agregar empleado
-              </Box>
-            </MainButton>
+            {!serverError && (
+              <MainButton
+                size={{ xs: '14px', md: '16px' }}
+                onClick={() => setEmpleadoEditando({ id: 'nuevo' })}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <PersonAddIcon fontSize='small' />
+                  Agregar empleado
+                </Box>
+              </MainButton>
+            )}
           </Box>
 
           {/* Buscar empleado */}
           <TextField
             fullWidth
-            placeholder='Buscar empleado por nombre...'
+            placeholder='Busca un empleado por su nombre'
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             sx={{
@@ -252,15 +229,24 @@ const Employees = () => {
 
           {/* Lista de Empleados */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {empleadosFiltrados.length > 0 ? (
+            {/* Validamos si hay error, si está vacío o si no hay resultados */}
+            {empleados.length === 0 ? (
+              <Text
+                children='No tienes empleados registrados.'
+                color='text.disabled'
+                align='center'
+              />
+            ) : empleadosFiltrados.length > 0 ? (
               empleadosFiltrados.map((empleado) => (
                 <Collapsable
-                  key={empleado.id}
+                  key={empleado._id}
                   headerContent={<EmployeeHeader employee={empleado} />}
                 >
+                  {/* Todavía nos falta actualizar el Body, le pasamos la data real */}
                   <EmployeeBody
                     employee={empleado}
                     onEdit={setEmpleadoEditando}
+                    listaServicios={listaServicios}
                   />
                 </Collapsable>
               ))
@@ -276,6 +262,6 @@ const Employees = () => {
       )}
     </Box>
   );
-};
+};;
 
 export default Employees;

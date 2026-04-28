@@ -8,11 +8,30 @@ import Text from '@/components/common/Text';
 const EmployeeHeader = ({ employee }) => {
   // <--------------- RENDER --------------->
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%', px: 1 }}>
-      <Avatar src={employee.foto} sx={{ width: 60, height: 60 }} />
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-        <Text children={employee.name} color='white' size='22px' />
-        <Text children={employee.email} color='primary.main' size='14px' fontWeight='bold' />
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
+        width: '100%',
+        px: 1,
+      }}
+    >
+      <Avatar src={employee.foto?.url} sx={{ width: 60, height: 60 }} />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Text children={employee.nombre} color='white' size='22px' />
+        <Text
+          children={employee.correo}
+          color='primary.main'
+          size='14px'
+          fontWeight='bold'
+        />
       </Box>
     </Box>
   );

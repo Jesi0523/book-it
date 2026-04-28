@@ -284,6 +284,7 @@ function MainPage() {
             sx={{
               display: 'flex',
               alignItems: 'center',
+              whiteSpace: 'pre-line',
             }}
           >
             <Text

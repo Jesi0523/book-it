@@ -11,9 +11,14 @@ import Text from '@/components/common/Text';
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
 
-const EmployeeBody = ({ employee, onEdit }) => {
+const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
+
+  // <--------------- DERIVADO --------------->
+  const nombresServicios = employee.servicios
+    ?.map((id) => listaServicios.find((s) => s._id === id)?.nombre)
+    .filter((nombre) => nombre);
 
   // <--------------- RENDER --------------->
   return (
@@ -38,7 +43,14 @@ const EmployeeBody = ({ employee, onEdit }) => {
               align='center'
             />
             <SimpleInfoDisplay
-              title={employee.birthdate}
+              title={
+                employee.fechaNacimiento
+                  ? new Date(employee.fechaNacimiento).toLocaleDateString(
+                      'es-MX',
+                      { timeZone: 'UTC' },
+                    )
+                  : 'No especificada'
+              }
               titleColor='white'
               titleSize={{ xs: '16px', md: '16px' }}
               align='center'
@@ -62,7 +74,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
               align='center'
             />
             <SimpleInfoDisplay
-              title={employee.phone}
+              title={employee.telefono || 'No especificado'}
               titleColor='white'
               titleSize={{ xs: '16px', md: '16px' }}
               align='center'
@@ -104,7 +116,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
               }}
             >
               <Text
-                children={employee.info}
+                children={employee.informacion || 'Sin información adicional.'}
                 color='white'
                 size='14px'
                 align='center'
@@ -142,15 +154,28 @@ const EmployeeBody = ({ employee, onEdit }) => {
                 justifyContent: 'center',
               }}
             >
-              {employee.schedule.split('\n').map((linea, index) => (
+              {employee.horario && employee.horario.length > 0 ? (
+                employee.horario.map((turno) => {
+                  const diaCapitalizado =
+                    turno.dia.charAt(0).toUpperCase() + turno.dia.slice(1);
+                  return (
+                    <Text
+                      key={turno._id}
+                      children={`${diaCapitalizado}: ${turno.horaInicio} - ${turno.horaFin}`}
+                      color='white'
+                      size='14px'
+                      align='center'
+                    />
+                  );
+                })
+              ) : (
                 <Text
-                  key={index}
-                  children={linea}
-                  color='white'
+                  children='No tiene horario registrado'
+                  color='text.disabled'
                   size='14px'
                   align='center'
                 />
-              ))}
+              )}
             </Box>
           </Box>
         </Grid>
@@ -184,7 +209,11 @@ const EmployeeBody = ({ employee, onEdit }) => {
           }}
         >
           <Text
-            children={employee.services.join(' • ')}
+            children={
+              nombresServicios?.length > 0
+                ? nombresServicios.join(' • ')
+                : 'Ningún servicio asignado'
+            }
             color='white'
             size='14px'
             align='center'

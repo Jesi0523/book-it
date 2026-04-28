@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 // Utils
-import { toastSuccess } from '@/utils/notify';
+import { toastSuccess, toastError } from '@/utils/notify';
+
+// Schema
+import { servicioSchema } from '@/schemas/servicio.schema';
+
+// API
+import { createServicio } from '@/api/servicios.api';
 
 // MUI
 import Box from '@mui/material/Box';
@@ -15,11 +21,12 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
 import TextInput from '@/components/form/TextInput';
+import Text from '@/components/common/Text';
 
 // <----------- CONSTANTE ----------->
 // Opciones para la duracion de un servicio hasta 6 horas max
 const opcionesDuracion = Array.from(
-  { length: 12 },
+  { length: 6 },
   (_, i) => `${(i + 1) * 30} minutos`,
 );
 
@@ -35,6 +42,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+  const [formErrors, setFormErrors] = useState({});
 
   // <--------------- EFFECTS --------------->
   useEffect(() => {
@@ -73,6 +81,8 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (formErrors[name]) setFormErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   // Llena la foto
@@ -85,26 +95,100 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
         imagen: photoUrl,
         archivoFisico: file,
       }));
+
+      if (formErrors.foto) setFormErrors((prev) => ({ ...prev, foto: null }));
     }
   };
 
   // Boton guardar
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (isSaving) return;
+
+    // Se limpian los errores
+    setFormErrors({});
+
+    const dataToValidate = {
+      nombre: formData.nombre,
+      precio: formData.precio,
+      descripcion: formData.descripcion,
+      tiempo: formData.tiempo,
+      foto: formData.archivoFisico || formData.imagen,
+    };
+
+    // Validamos los campos
+    const validation = servicioSchema.safeParse(dataToValidate);
+
+    if (!validation.success) {
+      const fieldErrors = validation.error.flatten().fieldErrors;
+      setFormErrors(fieldErrors);
+
+      // Scroll al primer error
+      setTimeout(() => {
+        const fieldOrder = [
+          'foto',
+          'nombre',
+          'descripcion',
+          'precio',
+          'tiempo',
+        ];
+
+        for (const key of fieldOrder) {
+          if (fieldErrors[key]) {
+            const element =
+              document.getElementById(`field-${key}`) ||
+              document.querySelector(`[name="${key}"]`);
+
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              break; 
+            }
+          }
+        }
+      }, 50);
+
+      return;
+    }
+
     setIsSaving(true);
 
-    onSave({ ...service, ...formData });
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('nombre', formData.nombre);
+      formDataToSend.append('descripcion', formData.descripcion);
+      formDataToSend.append('precio', formData.precio);
+      
+      const duracionNumerica = formData.tiempo.replace(/\D/g, '');
+      formDataToSend.append('duracion', duracionNumerica);
 
-    const isNew = service.id === 'nuevo';
+      if (formData.archivoFisico) {
+        formDataToSend.append('foto', formData.archivoFisico);
+      }
 
-    toastSuccess(
-      isNew
-        ? 'Servicio agregado correctamente.'
-        : 'Servicio actualizado correctamente.',
-      'service-save-toast',
-    );
+      if (isEditing) {
+        // Actualizar servicio
+        toastSuccess('Servicio actualizado correctamente.', 'service-save-toast');
+        
+      } else {
+        // Nuevo servicio
+        const response = await createServicio(formDataToSend);
 
-    setIsSaving(false);
+        toastSuccess(
+          response.msg || 'Servicio creado exitosamente',
+          'service-save-toast',
+        );
+      }
+
+      // Se cierra y vuelve a donde estan todos los servicios
+      onSave();
+
+    } catch (error) {
+      toastError(
+        typeof error === 'string' ? error : 'Ocurrió un error al guardar.',
+        'save-error'
+      );
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // <--------------- RENDER --------------->
@@ -125,6 +209,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
           >
             {/* Foto */}
             <Box
+              id='field-foto'
               sx={{
                 width: '100%',
                 aspectRatio: '1 / 1',
@@ -137,10 +222,10 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
                 boxShadow: 'inset 0px 0px 10px rgba(0,0,0,0.1)',
               }}
             >
-              {service.foto?.url ? (
+              {formData.imagen ? (
                 <img
-                  src={service.foto.url}
-                  alt={service.nombre}
+                  src={formData.imagen}
+                  alt={formData.nombre || 'Servicio'}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (
@@ -168,11 +253,21 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               <UploadFileIcon fontSize='small' /> Subir foto
               <input
                 type='file'
-                accept='image/*'
+                accept='.png, .jpeg, .jpg, .webp'
                 onChange={handlePhotoChange}
                 style={{ display: 'none' }}
               />
             </MainButton>
+
+            {/* Error */}
+            {formErrors.foto && (
+              <Text
+                children={formErrors.foto[0]}
+                color='error.main'
+                size='12px'
+                align='center'
+              />
+            )}
           </Box>
         </Grid>
 
@@ -193,6 +288,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               value={formData.nombre}
               onChange={handleInputChange}
               placeholder='Ejemplo'
+              helperText={formErrors.nombre ? formErrors.nombre[0] : ''}
             />
 
             {/* Descripcion */}
@@ -203,6 +299,9 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
               onChange={handleInputChange}
               multiline
               placeholder='Ejemplo'
+              helperText={
+                formErrors.descripcion ? formErrors.descripcion[0] : ''
+              }
               sx={{
                 flexGrow: 1,
                 display: 'flex',
@@ -224,7 +323,8 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
             name='precio'
             value={formData.precio}
             onChange={handleInputChange}
-            placeholder='$$$$$$'
+            placeholder='$0.00'
+            helperText={formErrors.precio ? formErrors.precio[0] : ''}
           />
         </Grid>
 
@@ -236,6 +336,7 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
             name='tiempo'
             value={formData.tiempo}
             onChange={handleInputChange}
+            helperText={formErrors.tiempo ? formErrors.tiempo[0] : ''}
             SelectProps={{
               sx: { '& .MuiSvgIcon-root': { color: 'primary.light' } },
               MenuProps: {

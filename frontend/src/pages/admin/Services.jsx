@@ -27,23 +27,26 @@ import ServiceBody from '@/components/collapsable/Body/ServiceBody';
 import ServiceForm from '@/components/services/ServiceForm';
 import Loader from '@/components/common/Loader';
 
-
 const Services = () => {
   // <--------------- ESTADOS --------------->
   const [servicios, setServicios] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [servicioEditando, setServicioEditando] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [serverError, setServerError] = useState(false);
 
   // <--------------- DATOS DERIVADOS --------------->
   const fetchServicios = async () => {
     try {
       setIsLoadingData(true);
+      setServerError(false);
+      setBusqueda('');
       const data = await getServicios();
       if (data.ok) {
         setServicios(data.servicios);
       }
     } catch (error) {
+      setServerError(true);
       setServicios([]);
 
       toastError(
@@ -209,20 +212,22 @@ const Services = () => {
             </Box>
 
             {/* Agregar servicio */}
-            <MainButton
-              size={{ xs: '14px', md: '16px' }}
-              onClick={() => setServicioEditando({ id: 'nuevo' })}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <AddIcon fontSize='small' /> Agregar servicio
-              </Box>
-            </MainButton>
+            {!serverError && (
+              <MainButton
+                size={{ xs: '14px', md: '16px' }}
+                onClick={() => setServicioEditando({ id: 'nuevo' })}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <AddIcon fontSize='small' /> Agregar servicio
+                </Box>
+              </MainButton>
+            )}
           </Box>
 
           {/* Buscar servicio */}
           <TextField
             fullWidth
-            placeholder='Buscar servicio por nombre...'
+            placeholder='Buscar servicio por nombre'
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             sx={{
@@ -280,6 +285,6 @@ const Services = () => {
       )}
     </Box>
   );
-};;
+};
 
 export default Services;

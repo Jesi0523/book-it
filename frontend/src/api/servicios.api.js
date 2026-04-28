@@ -31,3 +31,23 @@ export const getServicio = async (id) => {
     }
   }
 };
+
+// POST servicio
+export const createServicio = async (payload) => {
+  try {
+    const { data } = await apiClient.post('/servicios', payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al crear el servicio.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al crear el servicio.';
+    }
+  }
+};

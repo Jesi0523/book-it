@@ -1,26 +1,34 @@
 import { z } from 'zod';
-
-// Tipos MIME permitidos
-const validImageTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
-
-// Extensiones de texto permitidas
-const validExtensions = ['.png', '.jpeg', '.jpg', '.webp'];
+import {
+  MAX_FILE_SIZE,
+  VALID_IMAGE_TYPES,
+  VALID_EXTENSIONS,
+} from '@/constants/validaciones';
 
 // Validar si una imagen ya estaba en la BD o el tipo de formato
 const isValidFile = (val) => {
   if (typeof val === 'string') return true; // Imagen que ya estaba en la BD
 
   if (val instanceof File) {
-    const hasValidType = validImageTypes.includes(val.type);
+    const hasValidType = VALID_IMAGE_TYPES.includes(val.type);
 
     const fileName = val.name.toLowerCase();
-    const hasValidExtension = validExtensions.some((ext) =>
+    const hasValidExtension = VALID_EXTENSIONS.some((ext) =>
       fileName.endsWith(ext),
     );
 
     return hasValidType && hasValidExtension;
   }
 
+  return false;
+};
+
+// Valida el tamaño de la imagen
+const isValidSize = (val) => {
+  if (typeof val === 'string') return true; // Si ya estaba en la BD, no verificamos
+  if (val instanceof File) {
+    return val.size <= MAX_FILE_SIZE;
+  }
   return false;
 };
 
@@ -31,7 +39,8 @@ export const empresaSchema = z.object({
       (val) => val !== null && val !== '',
       'El logo de la empresa es obligatorio',
     )
-    .refine(isValidFile, 'El logo debe ser PNG, JPEG, JPG o WEBP.'),
+    .refine(isValidFile, 'El logo debe ser PNG, JPEG, JPG o WEBP.')
+    .refine(isValidSize, 'El logo no debe pesar más de 5MB.'),
   nombre: z
     .string()
     .min(1, 'El nombre es obligatorio')
@@ -70,7 +79,8 @@ export const empresaSchema = z.object({
       (val) => val !== null && val !== '',
       'La imagen principal es obligatoria',
     )
-    .refine(isValidFile, 'La imagen principal debe ser PNG, JPEG, JPG o WEBP.'),
+    .refine(isValidFile, 'La imagen principal debe ser PNG, JPEG, JPG o WEBP.')
+    .refine(isValidSize, 'La imagen principal no debe pesar más de 5MB.'),
 
   galeria: z
     .any()
@@ -81,5 +91,9 @@ export const empresaSchema = z.object({
     .refine(
       (data) => data.files.every(isValidFile),
       'Una o más imágenes de la galería tienen un formato inválido. Solo PNG, JPEG, JPG o WEBP.',
+    )
+    .refine(
+      (data) => data.files.every(isValidSize),
+      'Una o más imágenes de la galería superan el límite de 5MB.',
     ),
 });

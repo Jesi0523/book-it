@@ -57,7 +57,7 @@ const EmployeeDataSection = ({
               <UploadFileIcon fontSize='small' /> Subir foto
               <input
                 type='file'
-                accept='image/*'
+                accept='.png, .jpeg, .jpg, .webp'
                 onChange={handlePhotoChange}
                 style={{ display: 'none' }}
               />

@@ -7,7 +7,7 @@ import { toastSuccess, toastError } from '@/utils/notify';
 import { servicioSchema } from '@/schemas/servicio.schema';
 
 // API
-import { createServicio } from '@/api/servicios.api';
+import { createServicio, updateServicio } from '@/api/servicios.api';
 
 // MUI
 import Box from '@mui/material/Box';
@@ -165,15 +165,20 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
       }
 
       if (isEditing) {
-        // Actualizar servicio
-        toastSuccess('Servicio actualizado correctamente.', 'service-save-toast');
+        // PATCH servicio
+        const response = await updateServicio(service._id, formDataToSend);
+
+        toastSuccess(
+          response.msg || 'Servicio actualizado correctamente.',
+          'service-save-toast',
+        );
         
       } else {
-        // Nuevo servicio
+        // POST servicio
         const response = await createServicio(formDataToSend);
 
         toastSuccess(
-          response.msg || 'Servicio creado exitosamente',
+          response.msg || 'Servicio creado correctamente',
           'service-save-toast',
         );
       }

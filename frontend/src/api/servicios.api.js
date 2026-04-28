@@ -51,3 +51,23 @@ export const createServicio = async (payload) => {
     }
   }
 };
+
+// PATCH servicio
+export const updateServicio = async (id, payload) => {
+  try {
+    const { data } = await apiClient.patch(`/servicios/${id}`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al actualizar el servicio.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al actualizar el servicio.';
+    }
+  }
+};

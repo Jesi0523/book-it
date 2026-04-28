@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // API
-import { getServicios } from '@/api/servicios.api';
+import { getServicios, getServicio } from '@/api/servicios.api';
 
 // Utils
 import { toastNeutral, toastError } from '@/utils/notify';
@@ -54,7 +54,7 @@ const Services = () => {
       setIsLoadingData(false);
     }
   };
-  
+
   // <--------------- EFFECTS --------------->
 
   // Scroll hasta arriba al cambiar de ver servicios/agregar o editar
@@ -77,6 +77,29 @@ const Services = () => {
 
   // <--------------- FUNCIONES --------------->
 
+  // Funcion para editar un servicio
+  const handleEdit = async (servicioSeleccionado) => {
+    try {
+      setIsLoadingData(true);
+
+      // Se llama a la api
+      const data = await getServicio(servicioSeleccionado._id);
+
+      if (data.ok) {
+        setServicioEditando(data.servicio);
+      }
+    } catch (error) {
+      toastError(
+        typeof error === 'string'
+          ? error
+          : 'Error al cargar los datos del servicio.',
+        'get-servicio-id',
+      );
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
   // Funcion para regresar a ver servicios y que carguen
   const handleCloseForm = (shouldRefresh = false) => {
     setServicioEditando(null);
@@ -89,7 +112,6 @@ const Services = () => {
   const handleDelete = () => {
     toastNeutral('Servicio eliminado del catálogo.', 'service-delete-toast');
   };
-
 
   // <--------------- RENDER --------------->
   if (isLoadingData) return <Loader height='100%' />;
@@ -240,7 +262,7 @@ const Services = () => {
                 >
                   <ServiceBody
                     service={servicio}
-                    onEdit={setServicioEditando}
+                    onEdit={handleEdit}
                     onDeleteConfirm={() => handleDelete(servicio._id)}
                   />
                 </Collapsable>
@@ -258,6 +280,6 @@ const Services = () => {
       )}
     </Box>
   );
-};
+};;
 
 export default Services;

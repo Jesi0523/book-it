@@ -15,3 +15,19 @@ export const getServicios = async () => {
     }
   }
 };
+
+// GET servicio por ID 
+export const getServicio = async (id) => {
+  try {
+    const { data } = await apiClient.get(`/servicios/${id}`);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al obtener los datos del servicio.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al cargar el servicio.';
+    }
+  }
+};

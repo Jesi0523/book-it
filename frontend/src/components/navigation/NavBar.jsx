@@ -1,9 +1,12 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
 
 // Contexto
 import { useAuth } from '@/context/AuthContext';
+
+// API
+import { getEmpresa } from '@/api/empresa.api';
 
 // Constantes
 import { ROUTES } from '@/constants/routes';
@@ -26,7 +29,7 @@ import NavOptions from '@/components/navigation/options/NavOptions';
 import BaseDialog from '@/components/common/BaseDialog';
 
 // ************** imagenes **************
-import logo from '@/assets/logo/Logo1.webp';
+import defaultLogo from '@/assets/logo/Logo1.webp';
 
 // ************** iconos **************
 import MenuIcon from '@mui/icons-material/Menu';
@@ -56,6 +59,26 @@ function NavBar() {
   // <--------------- ESTADOS --------------->
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [openSessionDialog, setOpenSessionDialog] = useState(false);
+  const [logoEmpresa, setLogoEmpresa] = useState(null);
+
+  // <--------------- EFFECTS --------------->
+  // Obtener el logo de la empresa
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const data = await getEmpresa();
+        if (data.empresa?.logo?.url) {
+          setLogoEmpresa(data.empresa.logo.url);
+        } else {
+          setLogoEmpresa(defaultLogo);
+        }
+      } catch (error) {
+        setLogoEmpresa(defaultLogo);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   // <--------------- FUNCIONES --------------->
   // Funcion abre menu en cel
@@ -93,22 +116,26 @@ function NavBar() {
             // Landing Page
             <>
               <Link component={RouterLink} to={ROUTES.PUBLIC.ROOT}>
-                <img
-                  src={logo}
-                  alt='Logo'
-                  style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
-                />
+                {logoEmpresa && (
+                  <img
+                    src={logoEmpresa}
+                    alt='Logo'
+                    style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
+                  />
+                )}
               </Link>
             </>
           ) : (
             // Main Page
             <>
               <Link component={RouterLink} to={ROUTES.CLIENT.MAIN}>
-                <img
-                  src={logo}
-                  alt='Logo'
-                  style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
-                />
+                {logoEmpresa && (
+                  <img
+                    src={logoEmpresa}
+                    alt='Logo'
+                    style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
+                  />
+                )}
               </Link>
             </>
           )}

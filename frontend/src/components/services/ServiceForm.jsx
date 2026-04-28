@@ -38,16 +38,18 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
 
   // <--------------- EFFECTS --------------->
   useEffect(() => {
-    if (service && service.id !== 'nuevo') {
+    if (service && service._id) {
+      // Editar servicio
       setFormData({
         nombre: service.nombre || '',
         precio: service.precio || '',
         descripcion: service.descripcion || '',
-        tiempo: service.tiempo || '30 minutos',
-        imagen: service.imagen || null,
+        tiempo: service.duracion ? `${service.duracion} minutos` : '30 minutos',
+        imagen: service.foto?.url || null,
         archivoFisico: null,
       });
     } else {
+      // Nuevo servicio
       setFormData({
         nombre: '',
         precio: '',
@@ -135,10 +137,10 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
                 boxShadow: 'inset 0px 0px 10px rgba(0,0,0,0.1)',
               }}
             >
-              {formData.imagen ? (
+              {service.foto?.url ? (
                 <img
-                  src={formData.imagen}
-                  alt='Preview'
+                  src={service.foto.url}
+                  alt={service.nombre}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (

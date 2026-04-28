@@ -127,7 +127,7 @@ const CompanyDataSection = ({
               type='email'
               value={formData.correo}
               onChange={handleInputChange}
-              placeholder='Ejemplo'
+              placeholder='ejemplo@gmail.com'
               helperText={formErrors.correo ? formErrors.correo[0] : ''}
             />
 
@@ -138,7 +138,7 @@ const CompanyDataSection = ({
               type='number'
               value={formData.telefono}
               onChange={handleInputChange}
-              placeholder='Ejemplo'
+              placeholder='Ej: 8123456789'
               helperText={formErrors.telefono ? formErrors.telefono[0] : ''}
             />
           </Box>

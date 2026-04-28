@@ -183,7 +183,7 @@ function Signup() {
               id='campo-telefono'
               type='number'
               label='Teléfono'
-              placeholder='Ejemplo'
+              placeholder='Ej: 8123456789'
               height='80px'
               value={formData.telefono}
               onChange={(e) => handleChange('telefono', e.target.value)}

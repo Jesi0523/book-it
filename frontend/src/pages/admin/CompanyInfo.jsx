@@ -153,7 +153,12 @@ const CompanyInfo = () => {
           }
         }
       } catch (error) {
-        toastError('Error al cargar los datos de la empresa.', 'get-empresa');
+        toastError(
+          typeof error === 'string'
+            ? error
+            : 'Error al cargar los datos de la empresa.',
+          'get-empresa',
+        );
       } finally {
         setIsLoadingData(false);
       }

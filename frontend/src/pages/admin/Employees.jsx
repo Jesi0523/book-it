@@ -7,12 +7,15 @@ import {
   createEmpleado,
   getEmpleado,
   updateEmpleado,
+  activateEmpleado,
+  deactivateEmpleado,
+  getEmpleadoStatus,
 } from '@/api/empleados.api';
 import { getServicios } from '@/api/servicios.api';
 import { getEmpresa } from '@/api/empresa.api';
 
 // Utils
-import { toastSuccess, toastError } from '@/utils/notify';
+import { toastSuccess, toastError, toastNeutral } from '@/utils/notify';
 
 // MUI
 import Box from '@mui/material/Box';
@@ -253,6 +256,54 @@ const Employees = () => {
     handleCloseForm();
   };
 
+  // Cambiar estado del empleado
+  const handleToggleEstado = async (empleadoId, estadoActualEnUI) => {
+    try {
+      // GET estado del empleado
+      const statusData = await getEmpleadoStatus(empleadoId);
+      const estadoReal = statusData.activo;
+
+      // Se compara el estado real con lo que el usuario ve en pantalla
+      if (estadoReal === false && estadoActualEnUI === true) {
+        // El usuario intentaba desactivarlo, pero alguien más ya lo hizo
+        toastNeutral(
+          'El empleado ya había sido desactivado previamente.',
+          'toggle-estado',
+        );
+        fetchEmpleados(); 
+        return; 
+      }
+
+      if (estadoReal === true && estadoActualEnUI === false) {
+        // El usuario intentaba activarlo, pero alguien más ya lo hizo
+        toastSuccess(
+          'El empleado ya había sido activado previamente.',
+          'toggle-estado',
+        );
+        fetchEmpleados(); 
+        return;
+      }
+
+      let response;
+      if (estadoReal) {
+        // Si está activo, lo desactivamos
+        response = await deactivateEmpleado(empleadoId);
+        toastNeutral(response.msg || 'Empleado desactivado.', 'toggle-estado');
+      } else {
+        // Si está inactivo, lo activamos
+        response = await activateEmpleado(empleadoId);
+        toastSuccess(response.msg || 'Empleado activado.', 'toggle-estado');
+      }
+
+      fetchEmpleados();
+    } catch (error) {
+      toastError(
+        typeof error === 'string' ? error : 'Error al cambiar el estado.',
+        'toggle-estado-error',
+      );
+    }
+  };
+
   // <--------------- RENDER --------------->
   if (isLoadingData) return <Loader height='100%' />;
 
@@ -421,6 +472,7 @@ const Employees = () => {
                   <EmployeeBody
                     employee={empleado}
                     onEdit={handleOpenForm}
+                    onToggleEstado={handleToggleEstado}
                     listaServicios={listaServicios}
                   />
                 </Collapsable>
@@ -437,6 +489,6 @@ const Employees = () => {
       )}
     </Box>
   );
-};;;
+};;;;
 
 export default Employees;

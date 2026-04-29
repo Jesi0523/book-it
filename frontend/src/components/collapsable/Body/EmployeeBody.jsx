@@ -17,7 +17,7 @@ import Text from '@/components/common/Text';
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
 
-const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
+const EmployeeBody = ({ employee, onEdit, onToggleEstado, listaServicios }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
@@ -30,19 +30,15 @@ const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
     .filter((nombre) => nombre);
 
   // <--------------- FUNCIONES --------------->
-  const handleToggleEstado = () => {
+  const handleToggleEstado = async () => {
     if (isToggling) return;
 
     setIsToggling(true);
 
-    toastSuccess(
-      `El empleado ahora está ${employee.activo ? 'Inactivo' : 'Activo'}.`,
-      'toggle-estado',
-    );
+    // Se llama a la API
+    await onToggleEstado(employee._id, employee.activo);
 
-    setTimeout(() => {
-      setIsToggling(false);
-    }, 2000);
+    setIsToggling(false);
   };
 
   // <--------------- RENDER --------------->

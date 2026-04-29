@@ -25,7 +25,7 @@ export const getEmpresa = async () => {
   }
 };
 
-// PATCH empresa
+// PATCH actualizar empresa
 export const updateEmpresa = async (payload) => {
   try {
     const { data } = await apiClient.patch('/empresa', payload, {

@@ -32,7 +32,7 @@ export const getServicio = async (id) => {
   }
 };
 
-// POST servicio
+// POST crear servicio
 export const createServicio = async (payload) => {
   try {
     const { data } = await apiClient.post('/servicios', payload, {
@@ -52,7 +52,7 @@ export const createServicio = async (payload) => {
   }
 };
 
-// PATCH servicio
+// PATCH actualizar servicio
 export const updateServicio = async (id, payload) => {
   try {
     const { data } = await apiClient.patch(`/servicios/${id}`, payload, {
@@ -72,7 +72,7 @@ export const updateServicio = async (id, payload) => {
   }
 };
 
-// DELETE servicio
+// DELETE eliminar servicio
 export const deleteServicio = async (id) => {
   try {
     const { data } = await apiClient.delete(`/servicios/${id}`);

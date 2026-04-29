@@ -21,6 +21,7 @@ const {
     getEmpleadoById,
     createEmpleado,
     updateEmpleado,
+    deactivateEmpleadoById
 } = require("../controllers/empleadoController");
 
 // recuperar datos de empleados
@@ -31,6 +32,9 @@ router.get(
     [validarJWT, validarAdmin, validarMongoId()],
     getEmpleadoById,
 );
+
+//desactivar empleado
+router.post("/:id/deactivate", [validarJWT, validarAdmin], deactivateEmpleadoById);
 
 // crear empleado
 router.post(

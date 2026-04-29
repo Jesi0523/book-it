@@ -2,7 +2,11 @@
 import React, { useState, useEffect } from 'react';
 
 // API
-import { getEmpleadosAdmin, createEmpleado } from '@/api/empleados.api';
+import {
+  getEmpleadosAdmin,
+  createEmpleado,
+  getEmpleado,
+} from '@/api/empleados.api';
 import { getServicios } from '@/api/servicios.api';
 import { getEmpresa } from '@/api/empresa.api';
 
@@ -110,24 +114,41 @@ const Employees = () => {
   };
 
   // Abrir formulario (Agregar/Editar)
-  const handleOpenForm = async (empleado) => {
+  const handleOpenForm = async (empleadoObj) => {
     try {
       setIsLoadingData(true);
 
-      // Traemos la información más reciente de servicios y empresa
+      const isNew = empleadoObj.id === 'nuevo';
+
+      // Se pasa la información más reciente de servicios y empresa
       const [serviciosData, empresaData] = await Promise.all([
         getServicios(),
         getEmpresa(),
       ]);
 
       if (serviciosData.ok) setListaServicios(serviciosData.servicios);
-      if (empresaData.empresa)
+      if (empresaData.empresa) {
         setEmpresaHorario(empresaData.empresa.horarioGlobal || []);
+      }
 
-      setEmpleadoEditando(empleado);
+      // Si es editar, se trae los datos del empleado
+      if (!isNew) {
+        // GET empleado
+        const data = await getEmpleado(empleadoObj._id);
+
+        if (data.ok && data.empleado) {
+          setEmpleadoEditando(data.empleado);
+        } else {
+          throw 'No se pudo obtener la información completa del empleado.';
+        }
+      } else {
+        setEmpleadoEditando(empleadoObj);
+      }
     } catch (error) {
       toastError(
-        'Error al obtener los datos actualizados del servidor.',
+        typeof error === 'string'
+          ? error
+          : 'Error al obtener los datos actualizados del servidor.',
         'fetch-fresh-data',
       );
     } finally {

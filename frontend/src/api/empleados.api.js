@@ -35,3 +35,19 @@ export const createEmpleado = async (payload) => {
     }
   }
 };
+
+// GET empleado por ID
+export const getEmpleado = async (id) => {
+  try {
+    const { data } = await apiClient.get(`/empleados/admin/${id}`);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al obtener la ficha del empleado.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al cargar la ficha del empleado.';
+    }
+  }
+};

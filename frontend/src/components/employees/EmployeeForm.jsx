@@ -49,27 +49,84 @@ const EmployeeForm = ({
   const [isSaving, setIsSaving] = useState(false);
 
   // <--------------- EFFECTS --------------->
-  // Trae los datos del empleado si existe
   useEffect(() => {
     if (employee && employee.id !== 'nuevo') {
+      const serviciosNombres = employee.servicios
+        ? employee.servicios
+            .map((id) => {
+              const s = listaServicios.find((serv) => serv._id === id);
+              return s ? s.nombre : null;
+            })
+            .filter((n) => n)
+        : [];
+
+      const newScheduleMap = {
+        Domingo: [],
+        Lunes: [],
+        Martes: [],
+        Miércoles: [],
+        Jueves: [],
+        Viernes: [],
+        Sábado: [],
+      };
+
+      if (employee.horario) {
+        const timeToMins = (timeStr) => {
+          const [h, m] = timeStr.split(':').map(Number);
+          return h * 60 + m;
+        };
+
+        const minsToTime = (mins) => {
+          const h = Math.floor(mins / 60)
+            .toString()
+            .padStart(2, '0');
+          const m = (mins % 60).toString().padStart(2, '0');
+          return `${h}:${m}`;
+        };
+
+        const diasBackendToMap = {
+          domingo: 'Domingo',
+          lunes: 'Lunes',
+          martes: 'Martes',
+          miercoles: 'Miércoles',
+          jueves: 'Jueves',
+          viernes: 'Viernes',
+          sabado: 'Sábado',
+        };
+
+        employee.horario.forEach((turno) => {
+          const diaExacto = diasBackendToMap[turno.dia];
+
+          if (diaExacto && newScheduleMap[diaExacto]) {
+            const startMins = timeToMins(turno.horaInicio);
+            const endMins = timeToMins(turno.horaFin);
+
+            const bloques = [];
+            for (let m = startMins; m < endMins; m += 30) {
+              bloques.push(`${minsToTime(m)}-${minsToTime(m + 30)}`);
+            }
+
+            newScheduleMap[diaExacto] = bloques;
+          }
+        });
+      }
+
       setFormData({
-        name: employee.name || '',
-        email: employee.email || '',
-        phone: employee.phone || '',
-        birthdate: employee.birthdate || '',
-        info: employee.info || '',
-        foto: employee.foto || null,
+        name: employee.nombre || '', 
+        email: employee.correo || '', 
+        phone: employee.telefono || '', 
+        birthdate: employee.fechaNacimiento
+          ? employee.fechaNacimiento.split('T')[0]
+          : '', 
+        info: employee.informacion || '', 
+        foto: employee.foto?.url || null,
         archivoFisico: null,
       });
-      if (employee.scheduleMap) {
-        setScheduleMap(employee.scheduleMap);
-      }
-      if (employee.services) {
-        setSelectedServices(employee.services);
-      } else {
-        setSelectedServices([]);
-      }
+
+      setScheduleMap(newScheduleMap);
+      setSelectedServices(serviciosNombres);
     } else {
+      // RESET para empleado nuevo
       setFormData({
         name: '',
         email: '',
@@ -90,7 +147,7 @@ const EmployeeForm = ({
       });
       setSelectedServices([]);
     }
-  }, [employee]);
+  }, [employee, listaServicios]);
 
   // <--------------- FUNCIONES --------------->
 

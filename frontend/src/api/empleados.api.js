@@ -51,3 +51,23 @@ export const getEmpleado = async (id) => {
     }
   }
 };
+
+// PATCH empleado
+export const updateEmpleado = async (id, payload) => {
+  try {
+    const { data } = await apiClient.patch(`/empleados/admin/${id}`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al actualizar el empleado.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al actualizar el empleado.';
+    }
+  }
+};

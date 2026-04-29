@@ -6,6 +6,7 @@ import {
   getEmpleadosAdmin,
   createEmpleado,
   getEmpleado,
+  updateEmpleado,
 } from '@/api/empleados.api';
 import { getServicios } from '@/api/servicios.api';
 import { getEmpresa } from '@/api/empresa.api';
@@ -156,13 +157,10 @@ const Employees = () => {
     }
   };
 
-  // POST empleado
+  // POST/PATCH empleado
   // Funcion guardar empleado
   const handleSaveEmployee = async (employeeData) => {
     const isNew = employeeData.id === 'nuevo';
-
-    // Temporal, por ahora solo me enfocare en crear empleado
-    if (!isNew) return;
 
     const formData = new FormData();
     formData.append('nombre', employeeData.name);
@@ -171,6 +169,7 @@ const Employees = () => {
     formData.append('fechaNacimiento', employeeData.birthdate);
     formData.append('informacion', employeeData.info);
 
+    // Solo adjuntamos la foto si el usuario cargo una nueva
     if (employeeData.archivoFisico) {
       formData.append('foto', employeeData.archivoFisico);
     }
@@ -236,11 +235,18 @@ const Employees = () => {
 
     formData.append('horario', JSON.stringify(horarioFinal));
 
-    // Se manda a llamar la API
-    const response = await createEmpleado(formData);
+    let response;
+    if (isNew) {
+      // POST empleado
+      response = await createEmpleado(formData);
+    } else {
+      // PATCH empleado
+      response = await updateEmpleado(employeeData._id, formData);
+    }
 
     toastSuccess(
-      response.msg || 'Empleado agregado correctamente.',
+      response.msg ||
+        `Empleado ${isNew ? 'agregado' : 'actualizado'} correctamente.`,
       'employee-save-toast',
     );
 
@@ -431,6 +437,6 @@ const Employees = () => {
       )}
     </Box>
   );
-};;
+};;;
 
 export default Employees;

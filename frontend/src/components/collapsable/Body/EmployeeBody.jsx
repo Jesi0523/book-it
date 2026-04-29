@@ -196,7 +196,6 @@ const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
               ) : (
                 <Text
                   children='No tiene horario registrado'
-                  color='text.disabled'
                   size='14px'
                   align='center'
                 />
@@ -250,25 +249,27 @@ const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' }, 
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'center',
           gap: 4,
           mt: 2,
         }}
       >
         {/* Boton editar */}
-        <MainButton
-          size={{ xs: '14px', md: '16px' }}
-          onClick={() => onEdit(employee)}
-          sx={{
-            backgroundColor: 'primary.light',
-            display: 'flex',
-            gap: 1,
-            alignItems: 'center',
-          }}
-        >
-          <EditIcon fontSize='small' /> Editar información
-        </MainButton>
+        {employee.activo && (
+          <MainButton
+            size={{ xs: '14px', md: '16px' }}
+            onClick={() => onEdit(employee)}
+            sx={{
+              backgroundColor: 'primary.light',
+              display: 'flex',
+              gap: 1,
+              alignItems: 'center',
+            }}
+          >
+            <EditIcon fontSize='small' /> Editar información
+          </MainButton>
+        )}
 
         {/* Boton estado */}
         <MainButton

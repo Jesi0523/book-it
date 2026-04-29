@@ -220,7 +220,7 @@ const updateEmpleado = async (req, res) => {
 };
 
 
-// @route POST /api/empleados/:id/deactivate
+// @route POST /api/empleados/admin/:id/deactivate
 // @desc desactiva empleado
 // @access Admin only
 const deactivateEmpleadoById = async (req, res) => {
@@ -269,6 +269,45 @@ const deactivateEmpleadoById = async (req, res) => {
     }
 };
 
+// @route POST /api/empleados/admin/:id/activate
+// @desc activa empleado
+// @access Admin only
+const activateEmpleadoById = async (req, res) => {
+    try {
+        const { id } = req.params; //extraer id de la URL
+
+        const empleado = await Empleado.findById(id); // trae el empleado por ID
+
+        if (!empleado) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Empleado no encontrado",
+            });
+        }
+
+        //activar empleado
+        empleado.activo = true;
+        
+        await empleado.save();
+
+        //completado
+        res.status(200).json({
+            ok: true,
+            id: empleado.id,
+            nombre: empleado.nombre,
+            msg: "Empleado reactivado correctamente",
+        });
+
+    } catch (error) {
+        logger.error("Error al reactivar al empleado: ", error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error Interno: " + error.message,
+        });
+    }
+};
+
+
 
 module.exports = {
     getEmpleadosByServicio,
@@ -277,5 +316,6 @@ module.exports = {
     createEmpleado,
     updateEmpleado,
     getStatusEmpleadoById,
-    deactivateEmpleadoById
+    deactivateEmpleadoById,
+    activateEmpleadoById
 };

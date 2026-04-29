@@ -38,6 +38,7 @@ import EmployeeBody from '@/components/collapsable/Body/EmployeeBody';
 import EmployeeForm from '@/components/employees/EmployeeForm';
 import Loader from '@/components/common/Loader';
 import Combobox from '@/components/form/Combobox';
+import ErrorScreen from '@/components/common/ErrorScreen';
 
 const Employees = () => {
   // <--------------- ESTADOS --------------->
@@ -71,10 +72,6 @@ const Employees = () => {
     } catch (error) {
       setServerError(true);
       setEmpleados([]);
-      toastError(
-        typeof error === 'string' ? error : 'Error al cargar los empleados.',
-        'get-empleados',
-      );
     } finally {
       setIsLoadingData(false);
     }
@@ -306,6 +303,16 @@ const Employees = () => {
 
   // <--------------- RENDER --------------->
   if (isLoadingData) return <Loader height='100%' />;
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchEmpleados}
+        offsetMobile='64px'
+        offsetDesktop='80px'
+      />
+    );
+  }
 
   return (
     <Box

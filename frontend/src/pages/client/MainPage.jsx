@@ -30,6 +30,7 @@ import TextWIcon from '@/components/common/TextWIcon';
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 // |  main
 import CardServices from '@/components/main/CardServices';
 // ************** iconos **************
@@ -112,41 +113,11 @@ function MainPage() {
   // Si no hay conexion
   if (hasError) {
     return (
-      <Box
-        sx={{
-          height: 'calc(100vh - 64px)',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: (theme) => theme.customGradients.mainBackground,
-          gap: 3,
-          p: 3,
-          textAlign: 'center',
-          overflow: 'hidden',
-        }}
-      >
-        <ErrorOutlineIcon sx={{ fontSize: 80, color: 'text.disabled' }} />
-
-        <Title
-          children='¡Ups! Hubo un problema de conexión'
-          color='white'
-          align='center'
-        />
-
-        <Box sx={{ maxWidth: '500px' }}>
-          <Text
-            children='No pudimos cargar la información de la página. Por favor, verifica tu conexión a internet o intenta más tarde.'
-            color='text.secondary'
-            align='center'
-          />
-        </Box>
-
-        <Box sx={{ mt: 2 }}>
-          <MainButton onClick={fetchLandingData}>Reintentar</MainButton>
-        </Box>
-      </Box>
+      <ErrorScreen
+        onRetry={fetchLandingData}
+        offsetMobile='64px'
+        offsetDesktop='64px'
+      />
     );
   }
 

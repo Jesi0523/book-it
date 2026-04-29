@@ -26,6 +26,7 @@ import ServiceHeader from '@/components/collapsable/Header/ServiceHeader';
 import ServiceBody from '@/components/collapsable/Body/ServiceBody';
 import ServiceForm from '@/components/services/ServiceForm';
 import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 
 const Services = () => {
   // <--------------- ESTADOS --------------->
@@ -48,11 +49,6 @@ const Services = () => {
     } catch (error) {
       setServerError(true);
       setServicios([]);
-
-      toastError(
-        typeof error === 'string' ? error : 'Error al cargar los servicios.',
-        'get-servicios',
-      );
     } finally {
       setIsLoadingData(false);
     }
@@ -142,6 +138,16 @@ const Services = () => {
 
   // <--------------- RENDER --------------->
   if (isLoadingData) return <Loader height='100%' />;
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchServicios}
+        offsetMobile='64px'
+        offsetDesktop='80px'
+      />
+    );
+  }
 
   return (
     <Box

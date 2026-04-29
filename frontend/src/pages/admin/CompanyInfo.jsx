@@ -18,6 +18,7 @@ import CompanyDataSection from '@/components/company/CompanyDataSection';
 import ScheduleSection from '@/components/common/ScheduleSection';
 import CompanyGallerySection from '@/components/company/CompanyGallerySection';
 import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 
 const CompanyInfo = () => {
   // <--------------- ESTADOS --------------->
@@ -52,13 +53,15 @@ const CompanyInfo = () => {
   const [empresaId, setEmpresaId] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [formErrors, setFormErrors] = useState({});
+  const [serverError, setServerError] = useState(false);
 
-  // <--------------- EFFECTS --------------->
-
+  // <--------------- DERIVADOS --------------->
   // GET datos de la empresa
-  useEffect(() => {
-    const fetchDatos = async () => {
+  const fetchDatos = async () => {
       try {
+        setIsLoadingData(true);
+        setServerError(false);
+        
         const response = await getEmpresa();
         const data = response.empresa;
 
@@ -153,16 +156,14 @@ const CompanyInfo = () => {
           }
         }
       } catch (error) {
-        toastError(
-          typeof error === 'string'
-            ? error
-            : 'Error al cargar los datos de la empresa.',
-          'get-empresa',
-        );
+        setServerError(true);
       } finally {
         setIsLoadingData(false);
       }
     };
+
+  // <--------------- EFFECTS --------------->
+  useEffect(() => {
     fetchDatos();
   }, []);
 
@@ -363,7 +364,6 @@ const CompanyInfo = () => {
           };
         });
 
-
       payload.append('galeriaConservada', JSON.stringify(fotosAntiguas));
 
       // Se hace la peticion
@@ -386,6 +386,16 @@ const CompanyInfo = () => {
   // <--------------- RENDER --------------->
 
   if (isLoadingData) return <Loader height='100%' />;
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchDatos}
+        offsetMobile='64px'
+        offsetDesktop='80px'
+      />
+    );
+  }
 
   return (
     <Box

@@ -1,3 +1,8 @@
+import React, { useState } from 'react';
+
+// Utils
+import { toastSuccess } from '@/utils/notify';
+
 // MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -5,6 +10,7 @@ import Grid from '@mui/material/Grid';
 
 // Icono
 import EditIcon from '@mui/icons-material/Edit';
+import SyncIcon from '@mui/icons-material/Sync';
 
 // Componentes propios
 import Text from '@/components/common/Text';
@@ -15,10 +21,29 @@ const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
 
+  // <--------------- ESTADOS --------------->
+  const [isToggling, setIsToggling] = useState(false);
+
   // <--------------- DERIVADO --------------->
   const nombresServicios = employee.servicios
     ?.map((id) => listaServicios.find((s) => s._id === id)?.nombre)
     .filter((nombre) => nombre);
+
+  // <--------------- FUNCIONES --------------->
+  const handleToggleEstado = () => {
+    if (isToggling) return;
+
+    setIsToggling(true);
+
+    toastSuccess(
+      `El empleado ahora está ${employee.activo ? 'Inactivo' : 'Activo'}.`,
+      'toggle-estado',
+    );
+
+    setTimeout(() => {
+      setIsToggling(false);
+    }, 2000);
+  };
 
   // <--------------- RENDER --------------->
   return (
@@ -221,8 +246,17 @@ const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
         </Box>
       </Box>
 
-      {/* Boton editar */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      {/* Botones */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' }, 
+          justifyContent: 'center',
+          gap: 4,
+          mt: 2,
+        }}
+      >
+        {/* Boton editar */}
         <MainButton
           size={{ xs: '14px', md: '16px' }}
           onClick={() => onEdit(employee)}
@@ -234,6 +268,33 @@ const EmployeeBody = ({ employee, onEdit, listaServicios }) => {
           }}
         >
           <EditIcon fontSize='small' /> Editar información
+        </MainButton>
+
+        {/* Boton estado */}
+        <MainButton
+          size={{ xs: '14px', md: '16px' }}
+          onClick={handleToggleEstado}
+          disabled={isToggling}
+          sx={{
+            backgroundColor: isToggling
+              ? 'action.disabledBackground'
+              : 'primary.light',
+            color: isToggling ? 'action.disabled' : 'primary.contrastText',
+            display: 'flex',
+            gap: 1,
+            alignItems: 'center',
+            cursor: isToggling ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
+          }}
+        >
+          <SyncIcon
+            fontSize='small'
+            sx={{
+              animation: isToggling ? 'spin 2s linear infinite' : 'none',
+              '@keyframes spin': { '100%': { transform: 'rotate(360deg)' } },
+            }}
+          />
+          {isToggling ? 'Cambiando' : 'Cambiar estado'}
         </MainButton>
       </Box>
     </Box>

@@ -48,6 +48,8 @@ const theme = createTheme({
       whiteSelected: 'rgba(255, 255, 255, 0.2)',
       whiteHover: 'rgba(255, 255, 255, 0.3)',
       activeMenuItem: 'rgba(255, 255, 255, 0.08)',
+      statusActive: 'rgba(76, 175, 80, 0.1)',
+      statusInactive: 'rgba(244, 67, 54, 0.1)',
     },
     action: {
       disabledBackground: '#a9a9a9',
@@ -74,6 +76,8 @@ const theme = createTheme({
       sidebar: '1px solid rgba(255, 255, 255, 0.05)',
       primaryMain: '1px solid rgba(255, 181, 80, 0.5)',
       inputHover: '1px solid rgba(255, 255, 255, 0.3)',
+      statusActive: '1px solid rgba(76, 175, 80, 0.5)',
+      statusInactive: '1px solid rgba(244, 67, 54, 0.5)',
     },
     customShadows: {
       card: '#787ff6',

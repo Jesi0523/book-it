@@ -27,12 +27,16 @@ const Combobox = ({
   hasImage = false,
   placeholder,
   defaultValue = '',
+  onValueChange,
 }) => {
   const theme = useTheme();
   const [labelName, setLabelName] = useState(defaultValue);
 
   const handleChange = (event) => {
     setLabelName(event.target.value);
+    if (onValueChange) {
+      onValueChange(event.target.value); 
+    }
   };
 
   return (
@@ -100,10 +104,12 @@ const Combobox = ({
                 py: 1.5,
               },
               '& .MuiMenuItem-root:hover': {
-                backgroundColor: (theme) => `${theme.palette.background.menuHover} !important`,
+                backgroundColor: (theme) =>
+                  `${theme.palette.background.menuHover} !important`,
               },
               '& .MuiMenuItem-root.Mui-selected': {
-                backgroundColor: (theme) => `${theme.palette.background.menuSelected} !important`,
+                backgroundColor: (theme) =>
+                  `${theme.palette.background.menuSelected} !important`,
                 color: 'text.primary',
               },
             },
@@ -121,7 +127,9 @@ const Combobox = ({
             paddingRight: '40px !important',
             boxSizing: 'border-box',
           },
-          '.MuiSvgIcon-root': { fill: (theme) => theme.palette.primary.main + ' !important' },
+          '.MuiSvgIcon-root': {
+            fill: (theme) => theme.palette.primary.main + ' !important',
+          },
           '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
         }}
       >

@@ -29,10 +29,12 @@ import EmployeeHeader from '@/components/collapsable/Header/EmployeeHeader';
 import EmployeeBody from '@/components/collapsable/Body/EmployeeBody';
 import EmployeeForm from '@/components/employees/EmployeeForm';
 import Loader from '@/components/common/Loader';
+import Combobox from '@/components/form/Combobox';
 
 const Employees = () => {
   // <--------------- ESTADOS --------------->
   const [busqueda, setBusqueda] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('Todos');
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
   const [empleados, setEmpleados] = useState([]);
   const [listaServicios, setListaServicios] = useState([]);
@@ -71,9 +73,20 @@ const Employees = () => {
   };
 
   // Busqueda de empleado
-  const empleadosFiltrados = empleados.filter((emp) =>
-    emp.nombre.toLowerCase().includes(busqueda.toLowerCase()),
-  );
+  const empleadosFiltrados = empleados.filter((emp) => {
+    const coincideBusqueda = emp.nombre
+      .toLowerCase()
+      .includes(busqueda.toLowerCase());
+
+    let coincideEstado = true;
+    if (filtroEstado === 'Activos') {
+      coincideEstado = emp.activo === true;
+    } else if (filtroEstado === 'Inactivos') {
+      coincideEstado = emp.activo === false;
+    }
+
+    return coincideBusqueda && coincideEstado;
+  });
 
   // <--------------- EFFECTS --------------->
   // GET Empleados al cargar la página
@@ -319,30 +332,50 @@ const Employees = () => {
             )}
           </Box>
 
-          {/* Buscar empleado */}
-          <TextField
-            fullWidth
-            placeholder='Busca un empleado por su nombre'
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+          {/* Barra de busqueda y Filtros */}
+          <Box
             sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              gap: 2,
               mb: 4,
-              '& .MuiOutlinedInput-root': {
-                color: 'white',
-                background: (theme) => theme.customGradients.searchBar,
-                borderRadius: '50px',
-                fontFamily: "'Montserrat', sans-serif",
-                '& fieldset': { border: 'none' },
-              },
             }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <SearchIcon sx={{ color: 'rgba(255,255,255,0.5)' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
+          >
+            {/* Buscar empleado */}
+            <TextField
+              fullWidth
+              placeholder='Busca un empleado por su nombre'
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              sx={{
+                flexGrow: 1,
+                '& .MuiOutlinedInput-root': {
+                  color: 'white',
+                  background: (theme) => theme.customGradients.searchBar,
+                  borderRadius: '50px',
+                  fontFamily: "'Montserrat', sans-serif",
+                  '& fieldset': { border: 'none' },
+                },
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <SearchIcon sx={{ color: 'rgba(255,255,255,0.5)' }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {/* Combobox de Estado */}
+            <Box sx={{ minWidth: { xs: '100%', md: '200px' } }}>
+              <Combobox
+                name='Estado'
+                array={['Todos', 'Activos', 'Inactivos']}
+                defaultValue='Todos'
+                onValueChange={(val) => setFiltroEstado(val)}
+              />
+            </Box>
+          </Box>
 
           {/* Lista de Empleados */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

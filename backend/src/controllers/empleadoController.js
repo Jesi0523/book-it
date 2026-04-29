@@ -1,9 +1,14 @@
 const logger = require("../config/logger");
+
 const Servicio = require("../models/servicioModel");
 const Empleado = require("../models/empleadoModel");
+const Cita = require("../models/citaModel");
+const Suspension = require("../models/suspensionModel");
+
 const mongoose = require("mongoose");
 const { matchedData } = require("express-validator");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
+
 
 // @route GET /api/empleados?servicioId=
 // @desc GET empleados name and photo from X service
@@ -79,7 +84,7 @@ const getAllEmpleados = async (req, res) => {
     }
 };
 
-// @route GET /api/empleados/:id
+// @route GET /api/empleados/admin/:id
 // @desc GET details one empleado
 // @access Admin only
 const getEmpleadoById = async (req, res) => {
@@ -98,6 +103,37 @@ const getEmpleadoById = async (req, res) => {
         res.status(200).json({
             ok: true,
             empleado,
+        });
+    } catch (error) {
+        logger.error("Error al obtener empleado: ", error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error Interno: Revisa que el ID sea válido",
+        });
+    }
+};
+
+// @route GET /api/empleados/admin/:id/status
+// @desc GET status de un empleado
+// @access Admin only
+const getStatusEmpleadoById = async (req, res) => {
+    try {
+        const { id } = req.params; //extraer id de la URL
+
+        const empleado = await Empleado.findById(id); // trae el empleado por ID
+
+        if (!empleado) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Empleado no encontrado",
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            id: empleado.id,
+            nombre: empleado.nombre,
+            activo: empleado.activo
         });
     } catch (error) {
         logger.error("Error al obtener empleado: ", error);
@@ -183,10 +219,103 @@ const updateEmpleado = async (req, res) => {
     }
 };
 
+
+// @route POST /api/empleados/admin/:id/deactivate
+// @desc desactiva empleado
+// @access Admin only
+const deactivateEmpleadoById = async (req, res) => {
+    try {
+        const { id } = req.params; //extraer id de la URL
+
+        const empleado = await Empleado.findById(id); // trae el empleado por ID
+
+        if (!empleado) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Empleado no encontrado",
+            });
+        }
+
+        //desactivar empleado
+        empleado.activo = false;
+        
+        //Cancelar citas, suspensiones, horario y servicios
+        await Cita.updateMany(
+            { empleadoId: id, estado: "pendiente" }, // filtro
+            { estado: "cancelada" }                 // cambio
+        );
+        await Suspension.updateMany(
+            { empleadoId: id, activo: true },
+            { activo: false }
+        );
+        empleado.horario = [];
+        empleado.servicios = [];
+        await empleado.save();
+
+        //completado
+        res.status(200).json({
+            ok: true,
+            id: empleado.id,
+            nombre: empleado.nombre,
+            msg: "Empleado desactivado correctamente",
+        });
+
+    } catch (error) {
+        logger.error("Error al dar de baja al empleado: ", error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error Interno: " + error.message,
+        });
+    }
+};
+
+// @route POST /api/empleados/admin/:id/activate
+// @desc activa empleado
+// @access Admin only
+const activateEmpleadoById = async (req, res) => {
+    try {
+        const { id } = req.params; //extraer id de la URL
+
+        const empleado = await Empleado.findById(id); // trae el empleado por ID
+
+        if (!empleado) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Empleado no encontrado",
+            });
+        }
+
+        //activar empleado
+        empleado.activo = true;
+        
+        await empleado.save();
+
+        //completado
+        res.status(200).json({
+            ok: true,
+            id: empleado.id,
+            nombre: empleado.nombre,
+            msg: "Empleado reactivado correctamente",
+        });
+
+    } catch (error) {
+        logger.error("Error al reactivar al empleado: ", error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error Interno: " + error.message,
+        });
+    }
+};
+
+
+
 module.exports = {
     getEmpleadosByServicio,
     getAllEmpleados,
     getEmpleadoById,
     createEmpleado,
     updateEmpleado,
+    getStatusEmpleadoById,
+    deactivateEmpleadoById,
+    activateEmpleadoById
 };

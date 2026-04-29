@@ -84,7 +84,7 @@ const getAllEmpleados = async (req, res) => {
     }
 };
 
-// @route GET /api/empleados/:id
+// @route GET /api/empleados/admin/:id
 // @desc GET details one empleado
 // @access Admin only
 const getEmpleadoById = async (req, res) => {
@@ -103,6 +103,37 @@ const getEmpleadoById = async (req, res) => {
         res.status(200).json({
             ok: true,
             empleado,
+        });
+    } catch (error) {
+        logger.error("Error al obtener empleado: ", error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error Interno: Revisa que el ID sea válido",
+        });
+    }
+};
+
+// @route GET /api/empleados/admin/:id/status
+// @desc GET status de un empleado
+// @access Admin only
+const getStatusEmpleadoById = async (req, res) => {
+    try {
+        const { id } = req.params; //extraer id de la URL
+
+        const empleado = await Empleado.findById(id); // trae el empleado por ID
+
+        if (!empleado) {
+            return res.status(404).json({
+                ok: false,
+                msg: "Empleado no encontrado",
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            id: empleado.id,
+            nombre: empleado.nombre,
+            activo: empleado.activo
         });
     } catch (error) {
         logger.error("Error al obtener empleado: ", error);
@@ -245,5 +276,6 @@ module.exports = {
     getEmpleadoById,
     createEmpleado,
     updateEmpleado,
+    getStatusEmpleadoById,
     deactivateEmpleadoById
 };

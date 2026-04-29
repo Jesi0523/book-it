@@ -21,6 +21,7 @@ const {
     getEmpleadoById,
     createEmpleado,
     updateEmpleado,
+    getStatusEmpleadoById,
     deactivateEmpleadoById
 } = require("../controllers/empleadoController");
 
@@ -32,9 +33,10 @@ router.get(
     [validarJWT, validarAdmin, validarMongoId()],
     getEmpleadoById,
 );
+router.get("/admin/:id/status", [validarJWT, validarAdmin, validarMongoId()], getStatusEmpleadoById);
 
 //desactivar empleado
-router.post("/admin/:id/deactivate", [validarJWT, validarAdmin], deactivateEmpleadoById);
+router.post("/admin/:id/deactivate", [validarJWT, validarAdmin, validarMongoId()], deactivateEmpleadoById);
 
 // crear empleado
 router.post(

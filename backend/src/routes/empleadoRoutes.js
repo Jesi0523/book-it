@@ -34,7 +34,7 @@ router.get(
 );
 
 //desactivar empleado
-router.post("/:id/deactivate", [validarJWT, validarAdmin], deactivateEmpleadoById);
+router.post("/admin/:id/deactivate", [validarJWT, validarAdmin], deactivateEmpleadoById);
 
 // crear empleado
 router.post(

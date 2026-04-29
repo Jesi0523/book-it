@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 
 // API
-import { getEmpleadosAdmin } from '@/api/empleados.api';
+import { getEmpleadosAdmin, createEmpleado } from '@/api/empleados.api';
 import { getServicios } from '@/api/servicios.api';
+import { getEmpresa } from '@/api/empresa.api';
 
 // Utils
 import { toastSuccess, toastError } from '@/utils/notify';
@@ -35,6 +36,7 @@ const Employees = () => {
   const [empleadoEditando, setEmpleadoEditando] = useState(null);
   const [empleados, setEmpleados] = useState([]);
   const [listaServicios, setListaServicios] = useState([]);
+  const [empresaHorario, setEmpresaHorario] = useState([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [serverError, setServerError] = useState(false);
 
@@ -46,13 +48,16 @@ const Employees = () => {
       setServerError(false);
       setBusqueda('');
 
-      const [empleadosData, serviciosData] = await Promise.all([
+      const [empleadosData, serviciosData, empresaData] = await Promise.all([
         getEmpleadosAdmin(),
         getServicios(),
+        getEmpresa(),
       ]);
 
       if (empleadosData.ok) setEmpleados(empleadosData.empleados);
       if (serviciosData.ok) setListaServicios(serviciosData.servicios);
+      if (empresaData.empresa)
+        setEmpresaHorario(empresaData.empresa.horarioGlobal || []);
     } catch (error) {
       setServerError(true);
       setEmpleados([]);
@@ -85,17 +90,127 @@ const Employees = () => {
 
   // <--------------- FUNCIONES --------------->
 
+  // Boton regresar a la lista de empleados
+  const handleCloseForm = () => {
+    setEmpleadoEditando(null);
+    fetchEmpleados(); // Pedimos de nuevo los empleados
+  };
+
+  // Abrir formulario (Agregar/Editar)
+  const handleOpenForm = async (empleado) => {
+    try {
+      setIsLoadingData(true);
+
+      // Traemos la información más reciente de servicios y empresa
+      const [serviciosData, empresaData] = await Promise.all([
+        getServicios(),
+        getEmpresa(),
+      ]);
+
+      if (serviciosData.ok) setListaServicios(serviciosData.servicios);
+      if (empresaData.empresa)
+        setEmpresaHorario(empresaData.empresa.horarioGlobal || []);
+
+      setEmpleadoEditando(empleado);
+    } catch (error) {
+      toastError(
+        'Error al obtener los datos actualizados del servidor.',
+        'fetch-fresh-data',
+      );
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  // POST empleado
   // Funcion guardar empleado
-  const handleSaveEmployee = (employeeData) => {
+  const handleSaveEmployee = async (employeeData) => {
     const isNew = employeeData.id === 'nuevo';
+
+    // Temporal, por ahora solo me enfocare en crear empleado
+    if (!isNew) return;
+
+    const formData = new FormData();
+    formData.append('nombre', employeeData.name);
+    formData.append('correo', employeeData.email);
+    formData.append('telefono', employeeData.phone);
+    formData.append('fechaNacimiento', employeeData.birthdate);
+    formData.append('informacion', employeeData.info);
+
+    if (employeeData.archivoFisico) {
+      formData.append('foto', employeeData.archivoFisico);
+    }
+
+    // Pasa los nombres de los servicios a ID
+    const serviciosIds = employeeData.services
+      .map((nombreServicio) => {
+        const serv = listaServicios.find((s) => s.nombre === nombreServicio);
+        return serv ? serv._id : null;
+      })
+      .filter((id) => id !== null);
+
+    formData.append('servicios', JSON.stringify(serviciosIds));
+
+    // Formatea el horario
+    const diasReverseMap = {
+      Domingo: 'domingo',
+      Lunes: 'lunes',
+      Martes: 'martes',
+      Miércoles: 'miercoles',
+      Jueves: 'jueves',
+      Viernes: 'viernes',
+      Sábado: 'sabado',
+    };
+
+    const timeToMins = (timeStr) => {
+      const [h, m] = timeStr.split(':').map(Number);
+      return h * 60 + m;
+    };
+
+    const minsToTime = (mins) => {
+      const h = Math.floor(mins / 60)
+        .toString()
+        .padStart(2, '0');
+      const m = (mins % 60).toString().padStart(2, '0');
+      return `${h}:${m}`;
+    };
+
+    const horarioFinal = [];
+
+    for (const [dia, bloques] of Object.entries(employeeData.scheduleMap)) {
+      if (!bloques || bloques.length === 0) continue;
+
+      let minInicioGlobal = Infinity;
+      let maxFinGlobal = -Infinity;
+
+      // Recorre todos los bloques del día para encontrar el punto más temprano y el más tardío
+      bloques.forEach((b) => {
+        const [start, end] = b.split('-');
+        const startMins = timeToMins(start);
+        const endMins = timeToMins(end);
+
+        if (startMins < minInicioGlobal) minInicioGlobal = startMins;
+        if (endMins > maxFinGlobal) maxFinGlobal = endMins;
+      });
+
+      horarioFinal.push({
+        dia: diasReverseMap[dia],
+        horaInicio: minsToTime(minInicioGlobal),
+        horaFin: minsToTime(maxFinGlobal),
+      });
+    }
+
+    formData.append('horario', JSON.stringify(horarioFinal));
+
+    // Se manda a llamar la API
+    const response = await createEmpleado(formData);
+
     toastSuccess(
-      isNew
-        ? 'Empleado agregado exitosamente.'
-        : 'Datos del empleado actualizados correctamente.',
+      response.msg || 'Empleado agregado correctamente.',
       'employee-save-toast',
     );
 
-    setEmpleadoEditando(null);
+    handleCloseForm();
   };
 
   // <--------------- RENDER --------------->
@@ -127,7 +242,7 @@ const Employees = () => {
           >
             {/* Flecha */}
             <IconButton
-              onClick={() => setEmpleadoEditando(null)}
+              onClick={handleCloseForm}
               sx={{
                 color: 'white',
                 backgroundColor: 'background.hoverLighter',
@@ -160,7 +275,9 @@ const Employees = () => {
           {/* Componente del formulario */}
           <EmployeeForm
             employee={empleadoEditando}
-            onCancel={() => setEmpleadoEditando(null)}
+            empresaHorario={empresaHorario}
+            listaServicios={listaServicios}
+            onCancel={handleCloseForm}
             onSave={handleSaveEmployee}
           />
         </Box>
@@ -192,7 +309,7 @@ const Employees = () => {
             {!serverError && (
               <MainButton
                 size={{ xs: '14px', md: '16px' }}
-                onClick={() => setEmpleadoEditando({ id: 'nuevo' })}
+                onClick={() => handleOpenForm({ id: 'nuevo' })}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <PersonAddIcon fontSize='small' />
@@ -229,7 +346,6 @@ const Employees = () => {
 
           {/* Lista de Empleados */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Validamos si hay error, si está vacío o si no hay resultados */}
             {empleados.length === 0 ? (
               <Text
                 children='No tienes empleados registrados.'
@@ -242,10 +358,9 @@ const Employees = () => {
                   key={empleado._id}
                   headerContent={<EmployeeHeader employee={empleado} />}
                 >
-                  {/* Todavía nos falta actualizar el Body, le pasamos la data real */}
                   <EmployeeBody
                     employee={empleado}
-                    onEdit={setEmpleadoEditando}
+                    onEdit={handleOpenForm}
                     listaServicios={listaServicios}
                   />
                 </Collapsable>

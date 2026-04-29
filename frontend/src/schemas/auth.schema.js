@@ -27,6 +27,7 @@ export const signupSchema = z
   .object({
     nombre: z
       .string()
+      .min(1, { message: 'El nombre no puede estar vacío.' })
       .min(3, 'El nombre debe tener al menos 3 caracteres')
       .max(80, 'El nombre no puede exceder los 80 caracteres'),
     sexo: z

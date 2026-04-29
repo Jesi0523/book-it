@@ -167,10 +167,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap, error, onAction }) => {
 
   // <--------------- RENDER --------------->
   return (
-    <Box
-      id='field-horario'
-      sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       {/* Seccion superior */}
       <Box
         sx={{
@@ -185,6 +182,7 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap, error, onAction }) => {
       >
         {/* Titulo y dia */}
         <Box
+          id='field-horario'
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -364,6 +362,17 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap, error, onAction }) => {
         </Box>
       </Box>
 
+      {/* Error */}
+      {error && (
+        <Text
+          children={error}
+          color='error.main'
+          size='14px'
+          sx={{ mb: 3 }}
+          align='center'
+        />
+      )}
+      
       {/* Horario dinamico */}
       {bloquesDinamicos.length === 0 ? (
         // No hay horario
@@ -474,17 +483,6 @@ const ScheduleSection = ({ scheduleMap, setScheduleMap, error, onAction }) => {
             ))}
           </Box>
         </Box>
-      )}
-
-      {/* Error */}
-      {error && (
-        <Text
-          children={error}
-          color='error.main'
-          size='14px'
-          sx={{ mt: 2 }}
-          align='center'
-        />
       )}
 
       {/* Modal de confirmación */}

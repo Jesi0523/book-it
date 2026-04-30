@@ -20,6 +20,7 @@ const GenderSelect = ({
   value,
   onChange,
   helperText,
+  disabled = false,
 }) => {
   // <--------------- RENDER --------------->
   return (
@@ -35,13 +36,21 @@ const GenderSelect = ({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          backgroundColor: background || 'background.paper',
+          backgroundColor: disabled
+            ? 'rgba(255, 255, 255, 0.03)'
+            : background || 'background.paper',
           boxSizing: 'border-box',
+          borderColor: disabled ? 'rgba(255, 255, 255, 0.3)' : 'secondary.main',
+          borderWidth: '2px',
+          borderStyle: 'solid',
+          '&:hover': {
+            borderColor: 'secondary.blueShade',
+          },
         }}
       >
         <Typography
           sx={{
-            color: 'primary.main',
+            color: disabled ? 'rgba(255, 255, 255, 0.5)' : 'primary.main',
             fontWeight: 'bold',
             fontSize: { xs: '12px', md: '14px' },
             position: 'absolute',
@@ -61,7 +70,8 @@ const GenderSelect = ({
           }}
         >
           <IconButton
-            onClick={() => onChange('M')}
+            onClick={() => !disabled && onChange('M')}
+            disableRipple={disabled}
             sx={{
               color:
                 value === 'M' ? 'primary.main' : 'rgba(255, 255, 255, 0.2)',
@@ -71,14 +81,27 @@ const GenderSelect = ({
                   : 'rgba(255, 255, 255, 0.05)',
               borderRadius: '12px',
               padding: { xs: '4px', md: '6px' },
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              cursor: disabled ? 'default' : 'pointer',
+              '&:hover': {
+                backgroundColor: disabled
+                  ? value === 'M'
+                    ? 'rgba(255, 157, 64, 0.15)'
+                    : 'rgba(255, 255, 255, 0.05)'
+                  : 'rgba(255, 255, 255, 0.1)',
+              },
             }}
           >
-            <Man sx={{ fontSize: { xs: '1.2rem', md: '1.5rem' } }} />
+            <Man
+              sx={{
+                fontSize: { xs: '1.2rem', md: '1.5rem' },
+                color: disabled ? 'rgba(255, 255, 255, 0.3)' : 'inherit',
+              }}
+            />
           </IconButton>
 
           <IconButton
-            onClick={() => onChange('F')}
+            onClick={() => !disabled && onChange('F')}
+            disableRipple={disabled}
             sx={{
               color:
                 value === 'F' ? 'primary.main' : 'rgba(255, 255, 255, 0.2)',
@@ -88,10 +111,22 @@ const GenderSelect = ({
                   : 'rgba(255, 255, 255, 0.05)',
               borderRadius: '12px',
               padding: { xs: '4px', md: '6px' },
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              cursor: disabled ? 'default' : 'pointer',
+              '&:hover': {
+                backgroundColor: disabled
+                  ? value === 'F'
+                    ? 'rgba(255, 157, 64, 0.15)'
+                    : 'rgba(255, 255, 255, 0.05)'
+                  : 'rgba(255, 255, 255, 0.1)',
+              },
             }}
           >
-            <Woman sx={{ fontSize: { xs: '1.2rem', md: '1.5rem' } }} />
+            <Woman
+              sx={{
+                fontSize: { xs: '1.2rem', md: '1.5rem' },
+                color: disabled ? 'rgba(255, 255, 255, 0.3)' : 'inherit',
+              }}
+            />
           </IconButton>
         </Box>
       </Box>

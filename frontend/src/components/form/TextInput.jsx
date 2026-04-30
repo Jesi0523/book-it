@@ -1,13 +1,14 @@
 import TextField from '@mui/material/TextField';
 
 const TextInput = ({
-  label = "Lorem ipsum",
-  type = "text",
-  placeholder = "lorem ipsum",
-  height = "auto",
+  label = 'Lorem ipsum',
+  type = 'text',
+  placeholder = 'lorem ipsum',
+  height = 'auto',
   background,
   border = 'secondary.main',
   borderHover = 'secondary.light',
+  disabled,
   sx,
   ...props
 }) => {
@@ -18,6 +19,7 @@ const TextInput = ({
       placeholder={placeholder}
       variant='outlined'
       fullWidth
+      disabled={disabled}
       InputLabelProps={{ shrink: true }}
       InputProps={{ notched: false }}
       FormHelperTextProps={{
@@ -29,6 +31,7 @@ const TextInput = ({
       {...props}
       sx={[
         {
+          opacity: disabled ? 0.7 : 1,
           '& .MuiOutlinedInput-root': {
             borderRadius: '50px',
             height: height,
@@ -37,20 +40,29 @@ const TextInput = ({
             backgroundColor: background || 'background.paper',
 
             '& fieldset': {
-              borderColor: border,
+              borderColor: disabled ? 'rgba(255, 255, 255, 0.3)' : border,
               borderWidth: '1.5px',
             },
             '&:hover fieldset': {
-              borderColor: borderHover,
+              borderColor: 'secondary.blueShade',
             },
             '&.Mui-focused fieldset': {
-              borderColor: border,
+              borderColor: disabled ? 'rgba(255, 255, 255, 0.3)' : border,
               borderWidth: '2px',
             },
 
             '& input::placeholder, & textarea::placeholder': {
               color: 'text.placeholder',
               opacity: 1,
+            },
+
+            '& input': {
+              color: disabled
+                ? 'rgba(255, 255, 255, 0.5) !important'
+                : 'inherit',
+              WebkitTextFillColor: disabled
+                ? 'rgba(255, 255, 255, 0.5) !important'
+                : 'inherit',
             },
 
             '&.MuiInputBase-multiline': {
@@ -63,7 +75,9 @@ const TextInput = ({
           },
 
           '& .MuiInputLabel-root': {
-            color: 'primary.main',
+            color: disabled
+              ? 'rgba(255, 255, 255, 0.5) !important'
+              : 'primary.main',
             fontSize: '18px',
             fontWeight: '600',
             transform: 'translate(24px, 10px) scale(0.75) !important',

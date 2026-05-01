@@ -1,30 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Utils
-import { toastSuccess, toastNeutral } from '@/utils/notify';
+import { toastSuccess, toastNeutral, toastError } from '@/utils/notify';
 
 // Dayjs
 import dayjs from 'dayjs';
+import 'dayjs/locale/es';
+dayjs.locale('es');
 
 // MUI
 import Box from '@mui/material/Box';
+
+// API
+import { getSuspensiones } from '@/api/suspensiones.api';
+import { getEmpleadosAdmin } from '@/api/empleados.api';
 
 // Componentes propios
 import Title from '@/components/common/Title';
 import SuspensionForm from '@/components/suspensions/SuspensionForm';
 import SuspensionList from '@/components/suspensions/SuspensionList';
+import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 
-// <---------- DUMMY DATA ---------->
-const dummyEmpleados = [
-  { id: 'todos', nombre: 'Todos los empleados' },
-  { id: 1, nombre: 'Martha Garza' },
-  { id: 2, nombre: 'Roberto Rodríguez' },
-];
-
-const dummySuspensiones = [
-  { id: 1, texto: 'Lunes 16 de febrero 2026 de 8:00 a 14:00' },
-  { id: 2, texto: 'Martes 17 de febrero 2026 de 10:00 a 12:00' },
-  { id: 3, texto: 'Miércoles 18 de febrero 2026 (Todo el día)' },
+const NOMBRES_MESES = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
 ];
 
 const Suspensions = () => {
@@ -34,13 +44,129 @@ const Suspensions = () => {
   const [horaInicio, setHoraInicio] = useState('07:00');
   const [horaFin, setHoraFin] = useState('12:00');
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState('todos');
-  const [mesFiltro, setMesFiltro] = useState('Febrero');
-  const [anioFiltro, setAnioFiltro] = useState(2026);
-  const [listaSuspensiones, setListaSuspensiones] = useState(dummySuspensiones);
+  const [mesFiltro, setMesFiltro] = useState(NOMBRES_MESES[dayjs().month()]);
+  const [anioFiltro, setAnioFiltro] = useState(dayjs().year());
+  const [listaSuspensiones, setListaSuspensiones] = useState([]);
+  const [listaEmpleados, setListaEmpleados] = useState([]);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [isListLoading, setIsListLoading] = useState(false);
+  const [serverError, setServerError] = useState(false);
+
+  // <--------------- DATOS DERIVADOS --------------->
+  // Carga inicial
+  const fetchInitialData = async () => {
+    try {
+      setIsPageLoading(true);
+      setServerError(false);
+      const resEmpleados = await getEmpleadosAdmin();
+
+      if (resEmpleados.ok) {
+        const empList = [
+          { id: 'todos', nombre: 'Todos los empleados' },
+          ...resEmpleados.empleados
+            .filter((emp) => emp.activo === true)
+            .map((emp) => ({
+              id: emp._id?.$oid || emp._id,
+              nombre: emp.nombre,
+            })),
+        ];
+        setListaEmpleados(empList);
+      }
+    } catch (error) {
+      setServerError(true);
+    } finally {
+      setIsPageLoading(false);
+    }
+  };
+
+  // Carga de la lista de suspensiones
+  const fetchSuspensionesList = async () => {
+    try {
+      setIsListLoading(true);
+      const mesesMap = {
+        Enero: 1,
+        Febrero: 2,
+        Marzo: 3,
+        Abril: 4,
+        Mayo: 5,
+        Junio: 6,
+        Julio: 7,
+        Agosto: 8,
+        Septiembre: 9,
+        Octubre: 10,
+        Noviembre: 11,
+        Diciembre: 12,
+      };
+      const numeroMes = mesesMap[mesFiltro] || null;
+
+      const resSuspensiones = await getSuspensiones(numeroMes, anioFiltro);
+
+      if (resSuspensiones.ok) {
+        const mappedSuspensiones = resSuspensiones.suspensiones.map((susp) => {
+         const fechaString = susp.fecha?.$date || susp.fecha;
+         const fechaLocal = fechaString.split('T')[0];
+
+         const fechaCruda = dayjs(fechaLocal).format('dddd D [de] MMMM YYYY');
+
+         const fechaCapitalizada =
+           fechaCruda.charAt(0).toUpperCase() + fechaCruda.slice(1);
+
+         let textoBase = susp.todoElDia
+           ? `${fechaCapitalizada} (Todo el día)`
+           : `${fechaCapitalizada} de ${susp.horaInicio} a ${susp.horaFin}`;
+
+          const empId = susp.empleadoId?.$oid || susp.empleadoId;
+
+          if (empId) {
+            const empleadoEncontrado = listaEmpleados.find(
+              (emp) => emp.id === empId,
+            );
+
+            if (empleadoEncontrado) {
+              textoBase += ` - (Solo ${empleadoEncontrado.nombre})`;
+            } else {
+              textoBase += ` - (Empleado específico)`;
+            }
+          }
+
+          return {
+            id: susp._id?.$oid || susp._id,
+            texto: textoBase,
+          };
+        });
+
+        setListaSuspensiones(mappedSuspensiones);
+      }
+    } catch (error) {
+      setListaSuspensiones([]);
+      toastError(
+        typeof error === 'string'
+          ? error
+          : 'Error al cargar las suspensiones de este periodo.',
+        'error-lista',
+      );
+    } finally {
+      setIsListLoading(false);
+    }
+  };
+
+  // <--------------- EFFECTS --------------->
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    if (!isPageLoading) {
+      fetchSuspensionesList();
+    }
+  }, [mesFiltro, anioFiltro, isPageLoading]);
 
   // <--------------- FUNCIONES --------------->
   const handleAplicar = () => {
-    toastSuccess('Suspensión registrada correctamente.', 'suspension-save-toast');
+    toastSuccess(
+      'Suspensión registrada correctamente.',
+      'suspension-save-toast',
+    );
   };
 
   const handleEliminarSuspension = (id) => {
@@ -75,6 +201,21 @@ const Suspensions = () => {
     '& .MuiSvgIcon-root': { color: 'primary.light' },
   };
 
+  // <--------------- RENDER --------------->
+  if (isPageLoading) {
+    return <Loader height='100%' />;
+  }
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchData}
+        offsetMobile='64px'
+        offsetDesktop='80px'
+      />
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -106,7 +247,7 @@ const Suspensions = () => {
         setHoraFin={setHoraFin}
         empleadoSeleccionado={empleadoSeleccionado}
         setEmpleadoSeleccionado={setEmpleadoSeleccionado}
-        dummyEmpleados={dummyEmpleados}
+        dummyEmpleados={listaEmpleados}
         handleAplicar={handleAplicar}
         selectMenuProps={selectMenuProps}
         selectEstilos={selectEstilos}
@@ -117,6 +258,8 @@ const Suspensions = () => {
         mesFiltro={mesFiltro}
         setMesFiltro={setMesFiltro}
         anioFiltro={anioFiltro}
+        setAnioFiltro={setAnioFiltro}
+        isListLoading={isListLoading}
         listaSuspensiones={listaSuspensiones}
         handleEliminarSuspension={handleEliminarSuspension}
         selectMenuProps={selectMenuProps}
@@ -124,6 +267,6 @@ const Suspensions = () => {
       />
     </Box>
   );
-};
+};;
 
 export default Suspensions;

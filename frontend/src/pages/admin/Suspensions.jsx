@@ -12,7 +12,11 @@ dayjs.locale('es');
 import Box from '@mui/material/Box';
 
 // API
-import { getSuspensiones, createSuspension } from '@/api/suspensiones.api';
+import {
+  getSuspensiones,
+  createSuspension,
+  deleteSuspension,
+} from '@/api/suspensiones.api';
 import { getEmpleadosAdmin } from '@/api/empleados.api';
 
 // Componentes propios
@@ -219,9 +223,25 @@ const Suspensions = () => {
     }
   };
 
-  const handleEliminarSuspension = (id) => {
-    setListaSuspensiones((prev) => prev.filter((susp) => susp.id !== id));
-    toastNeutral('La suspensión ha sido eliminada.', 'suspension-delete-toast');
+  // DELETE suspension
+  const handleEliminarSuspension = async (id) => {
+    try {
+      const response = await deleteSuspension(id);
+
+      setListaSuspensiones((prev) => prev.filter((susp) => susp.id !== id));
+
+      toastNeutral(
+        response.msg || 'La suspensión ha sido eliminada.',
+        'suspension-delete-toast',
+      );
+    } catch (error) {
+      toastError(
+        typeof error === 'string'
+          ? error
+          : 'Ocurrió un error al eliminar la suspensión.',
+        'error-delete-suspension',
+      );
+    }
   };
 
   // <--------------- CONFIG DE UI --------------->

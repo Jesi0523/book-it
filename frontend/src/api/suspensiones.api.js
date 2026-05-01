@@ -41,3 +41,19 @@ export const createSuspension = async (payload) => {
     }
   }
 };
+
+// DELETE eliminar suspension
+export const deleteSuspension = async (id) => {
+  try {
+    const { data } = await apiClient.delete(`/suspensiones/${id}`);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al eliminar la suspensión.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al eliminar la suspensión.';
+    }
+  }
+};

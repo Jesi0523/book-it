@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 
-// Utils
-import { toastSuccess } from '@/utils/notify';
-
 // MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -11,11 +8,13 @@ import Grid from '@mui/material/Grid';
 // Icono
 import EditIcon from '@mui/icons-material/Edit';
 import SyncIcon from '@mui/icons-material/Sync';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Componentes propios
 import Text from '@/components/common/Text';
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog';
 
 const EmployeeBody = ({ employee, onEdit, onToggleEstado, listaServicios }) => {
   // <--------------- CONTEXTO --------------->
@@ -23,6 +22,7 @@ const EmployeeBody = ({ employee, onEdit, onToggleEstado, listaServicios }) => {
 
   // <--------------- ESTADOS --------------->
   const [isToggling, setIsToggling] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // <--------------- DERIVADO --------------->
   const nombresServicios = employee.servicios
@@ -30,14 +30,29 @@ const EmployeeBody = ({ employee, onEdit, onToggleEstado, listaServicios }) => {
     .filter((nombre) => nombre);
 
   // <--------------- FUNCIONES --------------->
-  const handleToggleEstado = async () => {
+  // Abre el dialogo
+  const handleToggleEstado = () => {
     if (isToggling) return;
 
+    if (employee.activo) {
+      setIsDialogOpen(true);
+    } else {
+      executeToggle();
+    }
+  };
+
+  // Cerrar dialogo
+  const handleCloseDialog = (hasAccepted) => {
+    setIsDialogOpen(false);
+    if (hasAccepted) {
+      executeToggle();
+    }
+  };
+
+  // Funcion que llama a la API
+  const executeToggle = async () => {
     setIsToggling(true);
-
-    // Se llama a la API
     await onToggleEstado(employee._id, employee.activo);
-
     setIsToggling(false);
   };
 
@@ -294,6 +309,26 @@ const EmployeeBody = ({ employee, onEdit, onToggleEstado, listaServicios }) => {
           {isToggling ? 'Cambiando' : 'Cambiar estado'}
         </MainButton>
       </Box>
+
+      {/* Dialogo */}
+      <BaseDialog
+        id='toggle-employee-dialog'
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        title={'Advertencia'}
+        fontSizeContent={18}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            Al desactivar a este empleado, su horario será eliminado, se le
+            desasignarán los servicios y{' '}
+            <b>todas sus citas pendientes serán canceladas.</b>
+            <br />
+            <br />
+            ¿Desea continuar?
+          </>
+        }
+      />
     </Box>
   );
 };

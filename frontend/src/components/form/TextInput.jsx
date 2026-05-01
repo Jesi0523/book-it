@@ -37,10 +37,12 @@ const TextInput = ({
             height: height,
             color: 'white',
             fontFamily: "'Montserrat', sans-serif",
-            backgroundColor: background || 'background.paper',
+            backgroundColor: disabled
+              ? 'background.default'
+              : background || 'background.paper',
 
             '& fieldset': {
-              borderColor: disabled ? 'rgba(255, 255, 255, 0.3)' : border,
+              borderColor: border,
               borderWidth: '1.5px',
             },
             '&:hover fieldset': {
@@ -57,12 +59,8 @@ const TextInput = ({
             },
 
             '& input': {
-              color: disabled
-                ? 'rgba(255, 255, 255, 0.5) !important'
-                : 'inherit',
-              WebkitTextFillColor: disabled
-                ? 'rgba(255, 255, 255, 0.5) !important'
-                : 'inherit',
+              color: 'inherit',
+              WebkitTextFillColor: 'inherit',
             },
 
             '&.MuiInputBase-multiline': {
@@ -75,9 +73,7 @@ const TextInput = ({
           },
 
           '& .MuiInputLabel-root': {
-            color: disabled
-              ? 'rgba(255, 255, 255, 0.5) !important'
-              : 'primary.main',
+            color: disabled ? 'primary.dark' : 'primary.main',
             fontSize: '18px',
             fontWeight: '600',
             transform: 'translate(24px, 10px) scale(0.75) !important',

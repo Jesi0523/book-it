@@ -37,10 +37,11 @@ const GenderSelect = ({
           flexDirection: 'column',
           justifyContent: 'center',
           backgroundColor: disabled
-            ? 'rgba(255, 255, 255, 0.03)'
+            ? 'background.default'
             : background || 'background.paper',
           boxSizing: 'border-box',
           borderColor: disabled ? 'rgba(255, 255, 255, 0.3)' : 'secondary.main',
+          opacity: disabled ? 0.7 : 1,
           borderWidth: '2px',
           borderStyle: 'solid',
           '&:hover': {
@@ -50,7 +51,7 @@ const GenderSelect = ({
       >
         <Typography
           sx={{
-            color: disabled ? 'rgba(255, 255, 255, 0.5)' : 'primary.main',
+            color: disabled ? 'primary.dark' : 'primary.main',
             fontWeight: 'bold',
             fontSize: { xs: '12px', md: '14px' },
             position: 'absolute',
@@ -94,7 +95,7 @@ const GenderSelect = ({
             <Man
               sx={{
                 fontSize: { xs: '1.2rem', md: '1.5rem' },
-                color: disabled ? 'rgba(255, 255, 255, 0.3)' : 'inherit',
+                color: 'inherit',
               }}
             />
           </IconButton>
@@ -124,7 +125,7 @@ const GenderSelect = ({
             <Woman
               sx={{
                 fontSize: { xs: '1.2rem', md: '1.5rem' },
-                color: disabled ? 'rgba(255, 255, 255, 0.3)' : 'inherit',
+                color: 'inherit',
               }}
             />
           </IconButton>

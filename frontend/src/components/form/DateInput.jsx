@@ -23,33 +23,29 @@ const DateInput = ({
         fontSize: '14px',
         opacity: disabled ? 0.7 : 1,
         '& .MuiOutlinedInput-root': {
-          bgcolor: 'background.paper',
+          bgcolor: disabled ? 'background.default' : 'background.paper',
           borderRadius: '35px',
           color: 'white',
           height: '85px',
           '& fieldset': {
-            borderColor: disabled
-              ? 'rgba(255, 255, 255, 0.1)'
-              : 'secondary.main',
+            borderColor: 'secondary.main',
             borderWidth: '2px',
           },
           '&:hover fieldset': {
             borderColor: 'secondary.blueShade',
           },
           '& input': {
-            backgroundColor: disabled ? 'transparent' : 'background.inputInner',
+            backgroundColor: disabled
+              ? 'background.default'
+              : 'background.inputInner',
             margin: '24px 15px 5px 15px',
             padding: '8px 0',
             textAlign: 'center',
 
             borderRadius: '10px',
             fontSize: '1rem',
-            color: disabled
-              ? 'rgba(255, 255, 255, 0.4) !important'
-              : 'rgba(255, 255, 255, 0.9)',
-            WebkitTextFillColor: disabled
-              ? 'rgba(255, 255, 255, 0.4) !important'
-              : 'rgba(255, 255, 255, 0.9)',
+            color: 'rgba(255, 255, 255, 0.9)',
+            WebkitTextFillColor: 'rgba(255, 255, 255, 0.9)',
           },
 
           '& input::-webkit-calendar-picker-indicator': {
@@ -61,9 +57,7 @@ const DateInput = ({
           },
         },
         '& .MuiInputLabel-root': {
-          color: disabled
-            ? 'rgba(255, 255, 255, 0.5) !important'
-            : 'primary.main',
+          color: disabled ? 'primary.dark' : 'primary.main',
           fontWeight: 'bold',
           fontSize: '14px',
           transform: 'translate(24px, 12px) scale(0.9)',

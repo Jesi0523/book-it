@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import dayjs from 'dayjs';
 
 export default function Calendar({ value, onChange }) {
   // <--------------- CONTEXTO --------------->
@@ -14,6 +15,8 @@ export default function Calendar({ value, onChange }) {
       <DateCalendar
         value={value}
         onChange={onChange}
+        disablePast
+        maxDate={dayjs('2099-12-31')}
         sx={{
           background: (theme) => theme.customGradients.calendar,
           borderRadius: '15px',
@@ -22,7 +25,10 @@ export default function Calendar({ value, onChange }) {
 
           '& .MuiPickersCalendarHeader-root': { color: 'text.primary' },
           '& .MuiIconButton-root': { color: 'text.primary' },
-          '& .MuiDayCalendar-weekDayLabel': { color: 'secondary.calendarLabel', fontWeight: 'bold' },
+          '& .MuiDayCalendar-weekDayLabel': {
+            color: 'secondary.calendarLabel',
+            fontWeight: 'bold',
+          },
           '& .MuiPickersDay-root': { color: 'text.primary', fontSize: '1rem' },
           '& .MuiPickersDay-root.Mui-selected': {
             backgroundColor: 'primary.light !important',
@@ -33,7 +39,8 @@ export default function Calendar({ value, onChange }) {
             backgroundColor: 'primary.main !important',
           },
           '& .MuiPickersDay-today': {
-            border: (theme) => `1px solid ${theme.palette.primary.light} !important`,
+            border: (theme) =>
+              `1px solid ${theme.palette.primary.light} !important`,
           },
         }}
       />

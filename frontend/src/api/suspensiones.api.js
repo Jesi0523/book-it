@@ -25,3 +25,19 @@ export const getSuspensiones = async (mes, anio) => {
     }
   }
 };
+
+// POST crear suspension
+export const createSuspension = async (payload) => {
+  try {
+    const { data } = await apiClient.post('/suspensiones', payload);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al crear la suspensión.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al crear la suspensión.';
+    }
+  }
+};

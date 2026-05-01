@@ -12,7 +12,7 @@ dayjs.locale('es');
 import Box from '@mui/material/Box';
 
 // API
-import { getSuspensiones } from '@/api/suspensiones.api';
+import { getSuspensiones, createSuspension } from '@/api/suspensiones.api';
 import { getEmpleadosAdmin } from '@/api/empleados.api';
 
 // Componentes propios
@@ -102,18 +102,31 @@ const Suspensions = () => {
       const resSuspensiones = await getSuspensiones(numeroMes, anioFiltro);
 
       if (resSuspensiones.ok) {
-        const mappedSuspensiones = resSuspensiones.suspensiones.map((susp) => {
-         const fechaString = susp.fecha?.$date || susp.fecha;
-         const fechaLocal = fechaString.split('T')[0];
+        const suspensionesOrdenadas = resSuspensiones.suspensiones.sort(
+          (a, b) => {
+            const fechaA = new Date(a.fecha?.$date || a.fecha).getTime();
+            const fechaB = new Date(b.fecha?.$date || b.fecha).getTime();
 
-         const fechaCruda = dayjs(fechaLocal).format('dddd D [de] MMMM YYYY');
+            if (fechaA === fechaB) {
+              return a.horaInicio.localeCompare(b.horaInicio);
+            }
 
-         const fechaCapitalizada =
-           fechaCruda.charAt(0).toUpperCase() + fechaCruda.slice(1);
+            return fechaA - fechaB;
+          },
+        );
 
-         let textoBase = susp.todoElDia
-           ? `${fechaCapitalizada} (Todo el día)`
-           : `${fechaCapitalizada} de ${susp.horaInicio} a ${susp.horaFin}`;
+        const mappedSuspensiones = suspensionesOrdenadas.map((susp) => {
+          const fechaString = susp.fecha?.$date || susp.fecha;
+          const fechaLocal = fechaString.split('T')[0];
+
+          const fechaCruda = dayjs(fechaLocal).format('dddd D [de] MMMM YYYY');
+
+          const fechaCapitalizada =
+            fechaCruda.charAt(0).toUpperCase() + fechaCruda.slice(1);
+
+          let textoBase = susp.todoElDia
+            ? `${fechaCapitalizada} (Todo el día)`
+            : `${fechaCapitalizada} de ${susp.horaInicio} a ${susp.horaFin}`;
 
           const empId = susp.empleadoId?.$oid || susp.empleadoId;
 
@@ -162,11 +175,48 @@ const Suspensions = () => {
   }, [mesFiltro, anioFiltro, isPageLoading]);
 
   // <--------------- FUNCIONES --------------->
-  const handleAplicar = () => {
-    toastSuccess(
-      'Suspensión registrada correctamente.',
-      'suspension-save-toast',
-    );
+  // POST suspension
+  const handleAplicar = async () => {
+    try {
+      const payload = {
+        fecha: fechaSeleccionada.format('YYYY-MM-DD'),
+        todoElDia: tipoSuspension === 'todo_dia',
+        horaInicio: tipoSuspension === 'todo_dia' ? '00:00' : horaInicio,
+        horaFin: tipoSuspension === 'todo_dia' ? '23:59' : horaFin,
+        empleadoId:
+          empleadoSeleccionado === 'todos' ? null : empleadoSeleccionado,
+      };
+
+      // Se llama a la API
+      const response = await createSuspension(payload);
+
+      toastSuccess(
+        response.msg || 'Suspensión registrada correctamente.',
+        'suspension-save-toast',
+      );
+
+      // Se resetean los datos
+      setTipoSuspension('horario');
+      setHoraInicio('07:00');
+      setHoraFin('12:00');
+      setEmpleadoSeleccionado('todos');
+
+      fetchSuspensionesList();
+    } catch (error) {
+      let mensajeError = 'Ocurrió un error al crear la suspensión.';
+
+      if (typeof error === 'string') {
+        mensajeError = error;
+      } else if (typeof error === 'object' && error !== null) {
+        const primerCampoError = Object.keys(error)[0];
+
+        if (primerCampoError && error[primerCampoError]?.msg) {
+          mensajeError = error[primerCampoError].msg;
+        }
+      }
+
+      toastError(mensajeError, 'error-create-suspension');
+    }
   };
 
   const handleEliminarSuspension = (id) => {

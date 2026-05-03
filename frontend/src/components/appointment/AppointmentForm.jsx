@@ -17,7 +17,7 @@ import { toastError } from '@/utils/notify';
 // APIs
 import { getServicios } from '@/api/servicios.api';
 import { getEmpleadosPublicos } from '@/api/empleados.api';
-import { getDisponibilidad } from '@/api/citas.api';
+import { getDisponibilidad, createCita } from '@/api/citas.api';
 import { getPerfil } from '@/api/usuarios.api';
 
 // Schema
@@ -70,6 +70,8 @@ function AppointmentForm() {
     correo: '',
   });
   const [formErrors, setFormErrors] = useState({});
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // <--------------- DERIVADO --------------->
   // Carga los servicios al iniciar
@@ -290,7 +292,9 @@ function AppointmentForm() {
   };
 
   // Funcion boton agendar
-  const handleSchedule = () => {
+  const handleSchedule = async () => {
+
+    // Valida los campos
     const result = citaClientSchema.safeParse(clientData);
 
     if (!result.success) {
@@ -300,7 +304,6 @@ function AppointmentForm() {
       });
       setFormErrors(errorsObj);
 
-      // Scroll al primer error detectado
       const firstErrorField = result.error.issues[0].path[0];
       const element = document.getElementById(firstErrorField);
 
@@ -309,12 +312,62 @@ function AppointmentForm() {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
       }
-
       return;
     }
 
     setFormErrors({});
-    setIsSuccessDialogOpen(true);
+
+    // Prepara los datos para el backend
+    const servicioEncontrado = rawServicios.find(
+      (s) => s.nombre === servicioSeleccionado,
+    );
+    const empleadoEncontrado = rawEmpleados.find(
+      (e) => e.nombre === empleadoSeleccionado,
+    );
+
+    const payload = {
+      empleadoId: extraerId(empleadoEncontrado),
+      servicioId: extraerId(servicioEncontrado),
+      fecha: dayjs(fecha).format('YYYY-MM-DD'),
+      horaInicio: horarioSeleccionado,
+      nombre: clientData.nombre,
+      correo: clientData.correo,
+      sexo: clientData.sexo === 'M' ? 'Masculino' : 'Femenino',
+      telefono: clientData.telefono,
+      edad: Number(clientData.edad),
+    };
+
+    try {
+      setIsSubmitting(true);
+      // POST crear cita
+      const response = await createCita(payload);
+
+      setIsSuccessDialogOpen(true);
+    } catch (error) {
+      const isValidationError = typeof error === 'object' && error !== null;
+
+      if (isValidationError) {
+        const fieldName = Object.keys(error)[0];
+        const errorMsg = error[fieldName].msg || error[fieldName];
+
+        setFormErrors({ [fieldName]: errorMsg });
+
+        setTimeout(() => {
+          const element = document.getElementById(fieldName);
+          if (element)
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      } else {
+        toastError(
+          typeof error === 'string'
+            ? error
+            : 'Ocurrió un error al intentar agendar la cita.',
+          'submit-error',
+        );
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Funcion dialogo
@@ -758,9 +811,20 @@ function AppointmentForm() {
       </Box>
 
       {/* Boton agendar */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-        <MainButton onClick={handleSchedule} disabled={!isReadyToConfirm}>
-          Agendar
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          p: 2,
+          gap: 1,
+        }}
+      >
+        <MainButton
+          onClick={handleSchedule}
+          disabled={!isReadyToConfirm || isSubmitting}
+        >
+          {isSubmitting ? 'Agendando' : 'Agendar'}
         </MainButton>
       </Box>
 

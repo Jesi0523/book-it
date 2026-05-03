@@ -16,3 +16,22 @@ export const getDisponibilidad = async (fecha, empleadoId, servicioId) => {
     }
   }
 };
+
+// POST crear cita
+export const createCita = async (payload) => {
+  try {
+    const { data } = await apiClient.post('/citas', payload);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      if (typeof error.response.data?.msg === 'object') {
+        throw error.response.data.msg; 
+      }
+      throw error.response.data?.msg || 'Error al agendar la cita.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al crear la cita.';
+    }
+  }
+};

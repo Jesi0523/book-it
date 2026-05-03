@@ -14,10 +14,14 @@ import { useTheme } from '@mui/material/styles';
 // Utils
 import { toastError } from '@/utils/notify';
 
-// APIs (NUEVO)
+// APIs
 import { getServicios } from '@/api/servicios.api';
 import { getEmpleadosPublicos } from '@/api/empleados.api';
 import { getDisponibilidad } from '@/api/citas.api';
+import { getPerfil } from '@/api/usuarios.api';
+
+// Schema
+import { citaClientSchema } from '@/schemas/citas.schema';
 
 // ************** componentes propios :3 **************
 // |  common
@@ -58,6 +62,15 @@ function AppointmentForm() {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [serverError, setServerError] = useState(false);
 
+  const [clientData, setClientData] = useState({
+    nombre: '',
+    edad: '',
+    telefono: '',
+    sexo: '',
+    correo: '',
+  });
+  const [formErrors, setFormErrors] = useState({});
+
   // <--------------- DERIVADO --------------->
   // Carga los servicios al iniciar
   const fetchInitialServices = async () => {
@@ -81,6 +94,25 @@ function AppointmentForm() {
     } finally {
       setIsPageLoading(false);
     }
+  };
+
+  // Calcula edad
+  const calcularEdad = (dateString) => {
+    if (!dateString) return '';
+    const today = new Date();
+    const [year, month, day] = dateString.split('T')[0].split('-');
+    const birthDate = new Date(year, month - 1, day);
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
   };
 
   // Se valida si ya se seleccionaron todos los combobox para la confirmacion
@@ -219,6 +251,36 @@ function AppointmentForm() {
     rawEmpleados,
   ]);
 
+  // Autocompleta el perfil si es cliente
+  useEffect(() => {
+    const fetchClientProfile = async () => {
+      if (location.pathname !== ROUTES.ADMIN.BOOK) {
+        try {
+          const res = await getPerfil();
+          if (res && res.ok) {
+            let sexoMapeado = '';
+            if (res.sexo) {
+              sexoMapeado = res.sexo.toLowerCase() === 'masculino' ? 'M' : 'F';
+            }
+
+            setClientData({
+              nombre: res.nombre || '',
+              edad: res.fechaNacimiento
+                ? calcularEdad(res.fechaNacimiento)
+                : '',
+              telefono: res.telefono || '',
+              sexo: sexoMapeado,
+              correo: res.correo || '',
+            });
+          }
+        } catch (error) {
+          console.error('Error al cargar los datos del usuario');
+        }
+      }
+    };
+    fetchClientProfile();
+  }, [location.pathname]);
+
   // <--------------- FUNCIONES --------------->
 
   // Extraer ID
@@ -229,6 +291,29 @@ function AppointmentForm() {
 
   // Funcion boton agendar
   const handleSchedule = () => {
+    const result = citaClientSchema.safeParse(clientData);
+
+    if (!result.success) {
+      const errorsObj = {};
+      result.error.issues.forEach((issue) => {
+        errorsObj[issue.path[0]] = issue.message;
+      });
+      setFormErrors(errorsObj);
+
+      // Scroll al primer error detectado
+      const firstErrorField = result.error.issues[0].path[0];
+      const element = document.getElementById(firstErrorField);
+
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+
+      return;
+    }
+
+    setFormErrors({});
     setIsSuccessDialogOpen(true);
   };
 
@@ -237,11 +322,20 @@ function AppointmentForm() {
     setIsSuccessDialogOpen(false);
   };
 
+  // Redireccion segun rol
   const handleNavigation = () => {
     if (location.pathname === ROUTES.ADMIN.BOOK) {
       navigate(ROUTES.ADMIN.CALENDAR);
     } else {
       navigate(ROUTES.CLIENT.APPOINTMENTS);
+    }
+  };
+
+  // Inputs
+  const handleClientChange = (field, value) => {
+    setClientData((prev) => ({ ...prev, [field]: value }));
+    if (formErrors[field]) {
+      setFormErrors((prev) => ({ ...prev, [field]: null }));
     }
   };
 
@@ -486,8 +580,12 @@ function AppointmentForm() {
             {/* Nombre */}
             <Grid size={{ xs: 12, md: 5 }}>
               <TextInput
+                id='nombre'
                 label='Nombre Completo'
                 placeholder='Ingrese su nombre'
+                value={clientData.nombre}
+                onChange={(e) => handleClientChange('nombre', e.target.value)}
+                helperText={formErrors.nombre}
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
               />
@@ -496,9 +594,13 @@ function AppointmentForm() {
             {/* Edad */}
             <Grid size={{ xs: 4, md: 2 }}>
               <TextInput
+                id='edad'
                 label='Edad'
                 placeholder='Ej: 18'
                 type='number'
+                value={clientData.edad}
+                onChange={(e) => handleClientChange('edad', e.target.value)}
+                helperText={formErrors.edad}
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
                 sx={{
@@ -513,9 +615,13 @@ function AppointmentForm() {
             {/* Telefono */}
             <Grid size={{ xs: 8, md: 5 }}>
               <TextInput
+                id='telefono'
                 label='Número telefónico'
                 type='number'
                 placeholder='Ej: 8101010011'
+                value={clientData.telefono}
+                onChange={(e) => handleClientChange('telefono', e.target.value)}
+                helperText={formErrors.telefono}
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
               />
@@ -535,6 +641,10 @@ function AppointmentForm() {
             {/* Sexo */}
             <Grid size={{ xs: 12, md: 3 }}>
               <GenderSelect
+                id='sexo'
+                value={clientData.sexo}
+                onChange={(val) => handleClientChange('sexo', val)}
+                helperText={formErrors.sexo}
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
               />
@@ -543,9 +653,13 @@ function AppointmentForm() {
             {/* Correo */}
             <Grid size={{ xs: 12, md: 6 }}>
               <TextInput
+                id='correo'
                 label='Correo electrónico'
                 type='email'
                 placeholder='Ingrese su correo'
+                value={clientData.correo}
+                onChange={(e) => handleClientChange('correo', e.target.value)}
+                helperText={formErrors.correo}
                 background={(theme) => theme.customGradients.collapsableHeader}
                 border={(theme) => theme.palette.customBorders.form}
               />
@@ -645,7 +759,9 @@ function AppointmentForm() {
 
       {/* Boton agendar */}
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-        <MainButton onClick={handleSchedule}>Agendar</MainButton>
+        <MainButton onClick={handleSchedule} disabled={!isReadyToConfirm}>
+          Agendar
+        </MainButton>
       </Box>
 
       {/* Dialogo inmediato */}

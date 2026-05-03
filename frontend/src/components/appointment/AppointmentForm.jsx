@@ -1,6 +1,7 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 // Constantes
 import { ROUTES } from '@/constants/routes';
@@ -10,6 +11,14 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
+// Utils
+import { toastError } from '@/utils/notify';
+
+// APIs (NUEVO)
+import { getServicios } from '@/api/servicios.api';
+import { getEmpleadosPublicos } from '@/api/empleados.api';
+import { getDisponibilidad } from '@/api/citas.api';
+
 // ************** componentes propios :3 **************
 // |  common
 import Title from '@/components/common/Title';
@@ -17,41 +26,12 @@ import Calendar from '@/components/common/Calendar';
 import MainButton from '@/components/common/MainButton';
 import Text from '@/components/common/Text';
 import InfoDialog from '@/components/common/InfoDialog';
+import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 // | formulario
 import Combobox from '@/components/form/Combobox';
 import TextInput from '@/components/form/TextInput';
 import GenderSelect from '@/components/form/GenderSelect';
-
-// ************** media dummy **************
-// |  Imagenes
-import photo from '@/assets/dummy/perfil-1.jpg';
-import photo2 from '@/assets/dummy/perfil-2.jpg';
-import photo3 from '@/assets/dummy/perfil-3.jpg';
-// |  Datos
-const servicesDummy = [
-  'Servicio super hyper mega largo para pruebas :)',
-  'Servicio 1',
-  'Servicio 2',
-  'Servicio 3',
-  'Servicio 4',
-  'Servicio 5',
-];
-const employeesDummy = [
-  { name: 'Oliver Hansen', pfp: photo },
-  { name: 'Van Henry', pfp: photo2 },
-  {
-    name: 'Teodora Vicenta de la Purísima Concepción de la Inmaculada Trinidad Villavicencio',
-    pfp: photo3,
-  },
-];
-const hoursDummy = [
-  '09:00-10:00',
-  '10:30-11:30',
-  '12:00-13:00',
-  '13:00-14:00',
-  '15:00-16:00',
-];
-// ****************************
 
 function AppointmentForm() {
   // <--------------- CONTEXTO --------------->
@@ -60,9 +40,192 @@ function AppointmentForm() {
   const location = useLocation();
 
   // <--------------- ESTADOS --------------->
+  const [fecha, setFecha] = useState(dayjs());
+  const [servicioSeleccionado, setServicioSeleccionado] = useState('');
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState('');
+  const [horarioSeleccionado, setHorarioSeleccionado] = useState('');
+
+  const [listaServicios, setListaServicios] = useState([]);
+  const [listaEmpleados, setListaEmpleados] = useState([]);
+  const [listaHorarios, setListaHorarios] = useState([]);
+
+  const [rawServicios, setRawServicios] = useState([]);
+  const [rawEmpleados, setRawEmpleados] = useState([]);
+
+  const [costoMostrar, setCostoMostrar] = useState('$0.00');
   const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false);
 
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [serverError, setServerError] = useState(false);
+
+  // <--------------- DERIVADO --------------->
+  // Carga los servicios al iniciar
+  const fetchInitialServices = async () => {
+    setIsPageLoading(true);
+    setServerError(false);
+    try {
+      const res = await getServicios();
+      if (res.ok) {
+        setRawServicios(res.servicios);
+        setListaServicios(res.servicios.map((s) => s.nombre));
+
+        if (res.servicios.length === 0) {
+          toastError(
+            'No existen servicios registrados en el sistema.',
+            'empty-services',
+          );
+        }
+      }
+    } catch (error) {
+      setServerError(true);
+    } finally {
+      setIsPageLoading(false);
+    }
+  };
+
+  // Se valida si ya se seleccionaron todos los combobox para la confirmacion
+  const isReadyToConfirm =
+    fecha &&
+    servicioSeleccionado &&
+    empleadoSeleccionado &&
+    horarioSeleccionado;
+
+  // Se calcula la hora fin
+  let horarioTexto = '';
+  if (isReadyToConfirm) {
+    const servicioObj = rawServicios.find(
+      (s) => s.nombre === servicioSeleccionado,
+    );
+    if (servicioObj && servicioObj.duracion) {
+      const [hora, min] = horarioSeleccionado.split(':');
+      const endTime = dayjs()
+        .hour(hora)
+        .minute(min)
+        .add(servicioObj.duracion, 'minute')
+        .format('HH:mm');
+      horarioTexto = `${horarioSeleccionado} a ${endTime}`;
+    } else {
+      horarioTexto = horarioSeleccionado;
+    }
+  }
+
+  // <--------------- EFFECTS --------------->
+  useEffect(() => {
+    fetchInitialServices();
+  }, []);
+
+  // Carga los empleados al elegir un servicio
+  useEffect(() => {
+    const fetchEmpleados = async () => {
+      if (!servicioSeleccionado) {
+        setListaEmpleados([]);
+        setEmpleadoSeleccionado('');
+        setCostoMostrar('$0.00');
+        return;
+      }
+
+      try {
+        const servicioEncontrado = rawServicios.find(
+          (s) => s.nombre === servicioSeleccionado,
+        );
+        const servicioId = extraerId(servicioEncontrado);
+
+        setEmpleadoSeleccionado('');
+        setHorarioSeleccionado('');
+
+        if (servicioEncontrado) {
+          setCostoMostrar(`$${servicioEncontrado.precio || 0}`);
+        }
+
+        if (!servicioId) return;
+
+        const res = await getEmpleadosPublicos(servicioId);
+
+        if (res.ok) {
+          setRawEmpleados(res.empleados);
+
+          const empleadosFormato = res.empleados.map((emp) => ({
+            name: emp.nombre,
+            pfp: emp.foto?.url || null,
+          }));
+          setListaEmpleados(empleadosFormato);
+
+          if (res.empleados.length === 0) {
+            toastError(
+              'No hay empleados que realicen este servicio.',
+              'empty-employees',
+            );
+          }
+        }
+      } catch (error) {
+        toastError('Error al cargar empleados disponibles.');
+      }
+    };
+    fetchEmpleados();
+  }, [servicioSeleccionado, rawServicios]);
+
+  // Carga la disponibilidad de horarios
+  useEffect(() => {
+    const fetchDisponibilidad = async () => {
+      if (!fecha || !servicioSeleccionado || !empleadoSeleccionado) {
+        setListaHorarios([]);
+        setHorarioSeleccionado('');
+        return;
+      }
+
+      try {
+        const fechaFormat = dayjs(fecha).format('YYYY/MM/DD');
+
+        const servicioEncontrado = rawServicios.find(
+          (s) => s.nombre === servicioSeleccionado,
+        );
+        const empleadoEncontrado = rawEmpleados.find(
+          (e) => e.nombre === empleadoSeleccionado,
+        );
+
+        const servicioId = extraerId(servicioEncontrado);
+        const empleadoId = extraerId(empleadoEncontrado);
+
+        setHorarioSeleccionado('');
+
+        if (!servicioId || !empleadoId) return;
+
+        const res = await getDisponibilidad(
+          fechaFormat,
+          empleadoId,
+          servicioId,
+        );
+
+        if (res.ok) {
+          setListaHorarios(res.horarios);
+
+          if (res.horarios.length === 0) {
+            toastError(
+              'No hay horarios disponibles para esta fecha y empleado.',
+              'empty-schedules',
+            );
+          }
+        }
+      } catch (error) {
+        toastError('Error al cargar los horarios disponibles.');
+      }
+    };
+    fetchDisponibilidad();
+  }, [
+    fecha,
+    servicioSeleccionado,
+    empleadoSeleccionado,
+    rawServicios,
+    rawEmpleados,
+  ]);
+
   // <--------------- FUNCIONES --------------->
+
+  // Extraer ID
+  const extraerId = (obj) => {
+    if (!obj) return null;
+    return obj._id?.$oid || obj._id || obj.id || null;
+  };
 
   // Funcion boton agendar
   const handleSchedule = () => {
@@ -83,6 +246,51 @@ function AppointmentForm() {
   };
 
   // <--------------- RENDER --------------->
+
+  if (isPageLoading) {
+    if (location.pathname === ROUTES.ADMIN.BOOK) {
+      return <Loader height='100%' />;
+    } else {
+      return (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: 'background.default',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Loader height='auto' />
+        </Box>
+      );
+    }
+  }
+
+  if (serverError) {
+    if (location.pathname === ROUTES.ADMIN.BOOK) {
+      return (
+        <ErrorScreen
+          onRetry={fetchInitialServices}
+          offsetMobile='64px'
+          offsetDesktop='80px'
+        />
+      );
+    } else {
+      return (
+        <ErrorScreen
+          onRetry={fetchInitialServices}
+          offsetMobile='64px'
+          offsetDesktop='64px'
+        />
+      );
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -109,7 +317,7 @@ function AppointmentForm() {
             justifyContent: 'center',
           }}
         >
-          <Calendar />
+          <Calendar value={fecha} onChange={(newDate) => setFecha(newDate)} />
         </Grid>
 
         {/* Datos servicios */}
@@ -153,8 +361,11 @@ function AppointmentForm() {
                 }}
               >
                 <Combobox
-                  array={servicesDummy}
+                  array={listaServicios}
                   placeholder='Elige un servicio'
+                  disabled={listaServicios.length === 0}
+                  value={servicioSeleccionado}
+                  onValueChange={(val) => setServicioSeleccionado(val)}
                 />
               </Box>
             </Box>
@@ -186,7 +397,7 @@ function AppointmentForm() {
                   boxSizing: 'border-box',
                 }}
               >
-                $$$$
+                {costoMostrar}
               </Box>
             </Box>
           </Box>
@@ -208,9 +419,12 @@ function AppointmentForm() {
               }}
             >
               <Combobox
-                array={employeesDummy}
+                array={listaEmpleados}
                 hasImage={true}
                 placeholder='Elige un empleado'
+                disabled={!servicioSeleccionado || listaEmpleados.length === 0}
+                value={empleadoSeleccionado}
+                onValueChange={(val) => setEmpleadoSeleccionado(val)}
               />
             </Box>
           </Box>
@@ -235,7 +449,15 @@ function AppointmentForm() {
                 '& .MuiFormControl-root': { m: 0, width: '100%' },
               }}
             >
-              <Combobox array={hoursDummy} placeholder='Elige un horario' />
+              <Combobox
+                array={listaHorarios}
+                placeholder='Elige un horario'
+                disabled={
+                  !empleadoSeleccionado || !fecha || listaHorarios.length === 0
+                }
+                value={horarioSeleccionado}
+                onValueChange={(val) => setHorarioSeleccionado(val)}
+              />
             </Box>
           </Box>
         </Grid>
@@ -334,55 +556,91 @@ function AppointmentForm() {
 
       {/* Confirmacion */}
       <Box sx={{ px: 5 }}>
-        {/* Texto */}
-        <Title
-          children='Se agendará una cita con la siguiente fecha:'
-          size='16'
-          textTransform='capitalize'
-          align='center'
-        />
-        {/* Detalles de la cita */}
-        <Box
-          sx={{
-            p: { xs: 1, md: 3 },
-            my: 3,
-            background: (theme) => theme.customGradients.collapsableHeader,
-            borderRadius: '15px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-          }}
-        >
-          <Text children='Febrero 11, 2026' size='18' align='center' />
-          <Text children='Horario: 9:00 a 10:00' size='18' align='center' />
-          <Text children='Empleado 1' size='16' align='center' />
-        </Box>
+        {isReadyToConfirm ? (
+          <>
+            <Title
+              children='Se agendará una cita con los siguientes detalles:'
+              size='16'
+              textTransform='capitalize'
+              align='center'
+            />
+            {/* Detalles de la cita */}
+            <Box
+              sx={{
+                p: { xs: 1, md: 3 },
+                my: 3,
+                background: (theme) => theme.customGradients.collapsableHeader,
+                borderRadius: '15px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 1,
+              }}
+            >
+              {/* Fecha */}
+              <Text
+                children={`Fecha: ${dayjs(fecha).format('DD/MM/YYYY')}`}
+                size='18'
+                align='center'
+              />
+              {/* Servicio */}
+              <Text
+                children={`Servicio seleccionado: ${servicioSeleccionado}`}
+                size='18'
+                align='center'
+              />
+              {/* Empleado */}
+              <Text
+                children={`Empleado que lo atenderá: ${empleadoSeleccionado}`}
+                size='18'
+                align='center'
+              />
+              {/* Horario */}
+              <Text
+                children={`Horario: ${horarioTexto}`}
+                size='18'
+                align='center'
+              />
+            </Box>
 
-        {/* Linea separadora */}
-        <Box
-          component='hr'
-          sx={{
-            border: 'none',
-            height: '1px',
-            backgroundColor: 'divider',
-          }}
-        />
+            {/* Linea separadora */}
+            <Box
+              component='hr'
+              sx={{
+                border: 'none',
+                height: '1px',
+                backgroundColor: 'divider',
+              }}
+            />
 
-        {/* Precio */}
-        <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Title
-            children='Total a pagar: $$$$'
-            size='20'
-            textTransform='capitalize'
-            align='center'
-          />
-          <Text
-            children='*El pago de la cita se realiza en persona.'
-            size='16'
-            align='center'
-            color='text.secondary'
-          />
-        </Box>
+            {/* Precio */}
+            <Box
+              sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}
+            >
+              <Title
+                children={`Total a pagar: ${costoMostrar}`}
+                size='20'
+                textTransform='capitalize'
+                align='center'
+              />
+              <Text
+                children='*El pago de la cita se realiza en persona.'
+                size='16'
+                align='center'
+                color='text.secondary'
+              />
+            </Box>
+          </>
+        ) : (
+          /* Mensaje general cuando falten datos */
+          <Box sx={{ py: 4 }}>
+            <Text
+              children='Selecciona un servicio, fecha, empleado y horario para ver el resumen de tu cita.'
+              size='16'
+              align='center'
+              color='text.secondary'
+            />
+          </Box>
+        )}
       </Box>
 
       {/* Boton agendar */}

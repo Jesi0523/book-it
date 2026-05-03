@@ -28,6 +28,8 @@ const Combobox = ({
   placeholder,
   defaultValue = '',
   onValueChange,
+  disabled = false,
+  value,
 }) => {
   const theme = useTheme();
   const [labelName, setLabelName] = useState(defaultValue);
@@ -35,17 +37,20 @@ const Combobox = ({
   const handleChange = (event) => {
     setLabelName(event.target.value);
     if (onValueChange) {
-      onValueChange(event.target.value); 
+      onValueChange(event.target.value);
     }
   };
+
+  const currentValue = value !== undefined ? value : labelName;
 
   return (
     <FormControl sx={{ width: '100%' }}>
       <Select
         id='select'
-        value={labelName}
+        value={currentValue}
         onChange={handleChange}
         displayEmpty
+        disabled={disabled}
         renderValue={(selected) => {
           if (!selected) {
             return <span style={{ opacity: 0.6 }}>{placeholder || name}</span>;
@@ -131,6 +136,14 @@ const Combobox = ({
             fill: (theme) => theme.palette.primary.main + ' !important',
           },
           '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
+
+          '&.Mui-disabled': {
+            opacity: 0.5, 
+            '& .MuiSelect-select': {
+              color: 'text.primary',
+              WebkitTextFillColor: 'white',
+            },
+          },
         }}
       >
         <MenuItem value='' disabled sx={{ display: 'none' }}>

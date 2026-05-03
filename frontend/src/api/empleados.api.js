@@ -48,6 +48,25 @@ export const getEmpleadoStatus = async (id) => {
   }
 };
 
+// GET empleados por servicio
+export const getEmpleadosPublicos = async (servicioId) => {
+  try {
+    const url = servicioId
+      ? `/empleados?servicioId=${servicioId}`
+      : '/empleados';
+    const { data } = await apiClient.get(url);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al obtener los empleados.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al cargar los empleados.';
+    }
+  }
+};
+
 // POST crear empleado
 export const createEmpleado = async (payload) => {
   try {

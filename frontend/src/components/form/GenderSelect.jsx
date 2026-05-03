@@ -27,8 +27,17 @@ const GenderSelect = ({
     <Box id={id} sx={{ width: '100%' }}>
       <Box
         sx={{
-          border:
-            border || ((theme) => theme.palette.customBorders.genderSelect),
+          border: (theme) => {
+            if (disabled) return '2px solid rgba(255, 255, 255, 0.3)';
+
+            if (border) {
+              return typeof border === 'function'
+                ? border(theme)
+                : `2px solid ${theme.palette[border.split('.')[0]][border.split('.')[1]] || border}`;
+            }
+
+            return `2px solid ${theme.palette.secondary.main}`;
+          },
           borderRadius: '30px',
           padding: '4px 12px',
           position: 'relative',
@@ -40,10 +49,7 @@ const GenderSelect = ({
             ? 'background.default'
             : background || 'background.paper',
           boxSizing: 'border-box',
-          borderColor: disabled ? 'rgba(255, 255, 255, 0.3)' : 'secondary.main',
           opacity: disabled ? 0.7 : 1,
-          borderWidth: '2px',
-          borderStyle: 'solid',
           '&:hover': {
             borderColor: 'secondary.blueShade',
           },

@@ -23,7 +23,11 @@ export const updatePerfilSchema = z
       .string()
       .min(1, { message: 'El nombre no puede estar vacío.' })
       .min(3, 'El nombre debe tener al menos 3 caracteres')
-      .max(80, 'El nombre no puede exceder los 80 caracteres'),
+      .max(80, 'El nombre no puede exceder los 80 caracteres')
+      .regex(
+        /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+        'El nombre solo puede contener letras y espacios',
+      ),
     fechaNacimiento: z
       .string()
       .min(1, 'Ingresa tu fecha de nacimiento')

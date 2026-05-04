@@ -74,25 +74,56 @@ function AppointmentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // <--------------- DERIVADO --------------->
-  // Carga los servicios al iniciar
-  const fetchInitialServices = async () => {
+  // GET servicios y datos del perfil
+  const fetchInitialData = async () => {
     setIsPageLoading(true);
     setServerError(false);
-    try {
-      const res = await getServicios();
-      if (res.ok) {
-        setRawServicios(res.servicios);
-        setListaServicios(res.servicios.map((s) => s.nombre));
 
-        if (res.servicios.length === 0) {
+    try {
+      const peticionServicios = getServicios();
+
+      const peticionPerfil =
+        location.pathname !== ROUTES.ADMIN.BOOK
+          ? getPerfil()
+          : Promise.resolve(null);
+
+      const [resServicios, resPerfil] = await Promise.all([
+        peticionServicios,
+        peticionPerfil,
+      ]);
+
+      if (resServicios.ok) {
+        setRawServicios(resServicios.servicios);
+        setListaServicios(resServicios.servicios.map((s) => s.nombre));
+
+        if (resServicios.servicios.length === 0) {
           toastError(
             'No existen servicios registrados en el sistema.',
             'empty-services',
           );
         }
       }
+
+      if (resPerfil && resPerfil.ok) {
+        let sexoMapeado = '';
+        if (resPerfil.sexo) {
+          sexoMapeado =
+            resPerfil.sexo.toLowerCase() === 'masculino' ? 'M' : 'F';
+        }
+
+        setClientData({
+          nombre: resPerfil.nombre || '',
+          edad: resPerfil.fechaNacimiento
+            ? calcularEdad(resPerfil.fechaNacimiento)
+            : '',
+          telefono: resPerfil.telefono || '',
+          sexo: sexoMapeado,
+          correo: resPerfil.correo || '',
+        });
+      }
     } catch (error) {
       setServerError(true);
+      console.error('Error al cargar la información inicial:', error);
     } finally {
       setIsPageLoading(false);
     }
@@ -144,9 +175,10 @@ function AppointmentForm() {
   }
 
   // <--------------- EFFECTS --------------->
+  // Carga servicios y datos del usuario
   useEffect(() => {
-    fetchInitialServices();
-  }, []);
+    fetchInitialData();
+  }, [location.pathname]);
 
   // Carga los empleados al elegir un servicio
   useEffect(() => {
@@ -252,41 +284,6 @@ function AppointmentForm() {
     rawServicios,
     rawEmpleados,
   ]);
-
-  // Autocompleta el perfil si es cliente
-  useEffect(() => {
-    const fetchClientProfile = async () => {
-      if (location.pathname !== ROUTES.ADMIN.BOOK) {
-        try {
-          const res = await getPerfil();
-          if (res && res.ok) {
-            let sexoMapeado = '';
-            if (res.sexo) {
-              sexoMapeado = res.sexo.toLowerCase() === 'masculino' ? 'M' : 'F';
-            }
-
-            setClientData({
-              nombre: res.nombre || '',
-              edad: res.fechaNacimiento
-                ? calcularEdad(res.fechaNacimiento)
-                : '',
-              telefono: res.telefono || '',
-              sexo: sexoMapeado,
-              correo: res.correo || '',
-            });
-          }
-        } catch (error) {
-          toastError(
-            typeof error === 'string'
-              ? error
-              : 'Error al cargar los datos del usuario',
-            'get-profile-error',
-          );
-        }
-      }
-    };
-    fetchClientProfile();
-  }, [location.pathname]);
 
   // <--------------- FUNCIONES --------------->
 
@@ -426,7 +423,7 @@ function AppointmentForm() {
     if (location.pathname === ROUTES.ADMIN.BOOK) {
       return (
         <ErrorScreen
-          onRetry={fetchInitialServices}
+          onRetry={fetchInitialData}
           offsetMobile='64px'
           offsetDesktop='80px'
         />
@@ -434,7 +431,7 @@ function AppointmentForm() {
     } else {
       return (
         <ErrorScreen
-          onRetry={fetchInitialServices}
+          onRetry={fetchInitialData}
           offsetMobile='64px'
           offsetDesktop='64px'
         />

@@ -28,7 +28,7 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import BaseDialog from '@/components/common/BaseDialog';
 
 // <--------------- CONSTANTES --------------->
-const OPCIONES_ESTADO = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
+const OPCIONES_ESTADO = ['Pendiente', 'Confirmada', 'Realizada'];
 
 const AppointmentModal = ({ open, onClose, appointment }) => {
   // <--------------- CONTEXTO --------------->
@@ -97,7 +97,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       >
         {/* Titulo */}
         <Title
-          children={appointment.title || 'SERVICIO 1'}
+          children={appointment.servicioAgendado?.nombreSnapshot || 'Servicio'}
           color='white'
           size={{ xs: '24px', md: '32px' }}
         />
@@ -137,7 +137,15 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           }}
         >
           <Text
-            children={appointment.dateStr || 'Febrero 11, 2026 9:00 a 10:00.'}
+            children={
+              appointment.fecha
+                ? new Date(appointment.fecha).toLocaleDateString('es-ES', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }) + ` de ${appointment.horaInicio} a ${appointment.horaFin}`
+                : 'Fecha no disponible'
+            }
             color='primary.light'
             size='16px'
           />
@@ -232,7 +240,12 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         <Box>
           <SimpleInfoDisplay
             title='Costo: '
-            text={appointment.price || '$$$$'}
+            text={
+              appointment.servicioAgendado?.precioSnapshot !== undefined &&
+              appointment.servicioAgendado?.precioSnapshot !== null
+                ? `$${parseFloat(appointment.servicioAgendado.precioSnapshot).toFixed(2)} MXN`
+                : '$0.00 MXN'
+            }
             align='center'
             width='fit-content'
             textWeight='bold'
@@ -276,9 +289,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                 />
                 <SimpleInfoDisplay
                   title={
-                    appointment.clientData?.name ||
-                    appointment.client ||
-                    'John Doe'
+                    appointment.datosCliente?.nombre || 'Nombre no encontrado'
                   }
                 />
               </Box>
@@ -288,7 +299,9 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Edad' color='primary.main' size='14' />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.age || '25'}
+                  title={
+                    appointment.datosCliente?.edad || 'Edad no especificada'
+                  }
                 />
               </Box>
             </Grid>
@@ -300,7 +313,9 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Sexo' color='primary.main' size='14' />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.gender || 'Masculino'}
+                  title={
+                    appointment.datosCliente?.sexo || 'Sexo no especificado'
+                  }
                 />
               </Box>
             </Grid>
@@ -313,7 +328,9 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                   size='14'
                 />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.mail || 'jonD@gmail.com'}
+                  title={
+                    appointment.datosCliente?.correo || 'Correo no encontrado'
+                  }
                 />
               </Box>
             </Grid>
@@ -333,7 +350,10 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                   size='14'
                 />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.phoneNumber || '81 3161 9950'}
+                  title={
+                    appointment.datosCliente?.telefono ||
+                    'Teléfono no encontrado'
+                  }
                 />
               </Box>
             </Grid>

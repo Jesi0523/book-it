@@ -33,6 +33,23 @@ export const getMisCitas = async () => {
   }
 };
 
+// GET citas de todos los empleados por fecha
+export const getCitasAdmin = async (fecha) => {
+  try {
+    const url = fecha ? `/citas?fecha=${fecha}` : '/citas';
+    const { data } = await apiClient.get(url);
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al obtener las citas del calendario.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al cargar el calendario.';
+    }
+  }
+};
+
 // POST crear cita
 export const createCita = async (payload) => {
   try {

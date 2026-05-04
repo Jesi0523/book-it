@@ -161,10 +161,6 @@ function MyAppointments() {
         setDisplayedAppointments(sortedData);
       }
     } catch (error) {
-      toastError(
-        typeof error === 'string' ? error : 'Error al obtener las citas',
-        'get-appointments-error',
-      );
       setServerError(true);
     } finally {
       setIsLoading(false);

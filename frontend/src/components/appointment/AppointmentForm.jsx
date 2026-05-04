@@ -276,7 +276,12 @@ function AppointmentForm() {
             });
           }
         } catch (error) {
-          console.error('Error al cargar los datos del usuario');
+          toastError(
+            typeof error === 'string'
+              ? error
+              : 'Error al cargar los datos del usuario',
+            'get-profile-error',
+          );
         }
       }
     };
@@ -293,7 +298,6 @@ function AppointmentForm() {
 
   // Funcion boton agendar
   const handleSchedule = async () => {
-
     // Valida los campos
     const result = citaClientSchema.safeParse(clientData);
 

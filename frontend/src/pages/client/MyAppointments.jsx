@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid';
 import { toastNeutral, toastError } from '@/utils/notify';
 
 // APIs
-import { getMisCitas } from '@/api/citas.api';
+import { getMisCitas, updateCitaStatus } from '@/api/citas.api';
 import { getEmpleadosPublicos } from '@/api/empleados.api';
 import { getServicios } from '@/api/servicios.api';
 
@@ -187,45 +187,56 @@ function MyAppointments() {
   }, [currentFilter, allAppointments]);
   // <--------------- FUNCIONES --------------->
 
+  // PATCH actualizar cita
   // Funcion boton cancelar cita
-  const handleCancel = (appointmentId) => {
-    const updatedAllAppointments = allAppointments.map((app) => {
-      if (app._id === appointmentId) {
-        return {
-          ...app,
-          rawStatus: 'cancelada',
-          status: {
-            name: 'Cancelada',
-            icon: statusAppointment[3].icon,
-          },
-          isCanceled: true,
-        };
+  const handleCancel = async (appointmentId) => {
+    try {
+      await updateCitaStatus(appointmentId, 'cancelada');
+
+      const updatedAllAppointments = allAppointments.map((app) => {
+        if (app._id === appointmentId) {
+          return {
+            ...app,
+            rawStatus: 'cancelada',
+            status: {
+              name: 'Cancelada',
+              icon: statusAppointment[3].icon,
+            },
+            isCanceled: true,
+          };
+        }
+        return app;
+      });
+
+      setAllAppointments(updatedAllAppointments);
+
+      if (
+        currentFilter !== 'Mostrar todas las citas' &&
+        currentFilter !== 'Cancelada'
+      ) {
+        setDisplayedAppointments(
+          updatedAllAppointments.filter(
+            (app) =>
+              app.rawStatus.toLowerCase() === currentFilter.toLowerCase(),
+          ),
+        );
+      } else {
+        setDisplayedAppointments(
+          updatedAllAppointments.filter(
+            (app) =>
+              app.rawStatus.toLowerCase() === currentFilter.toLowerCase() ||
+              currentFilter === 'Mostrar todas las citas',
+          ),
+        );
       }
-      return app;
-    });
 
-    setAllAppointments(updatedAllAppointments);
-
-    if (
-      currentFilter !== 'Mostrar todas las citas' &&
-      currentFilter !== 'Cancelada'
-    ) {
-      setDisplayedAppointments(
-        updatedAllAppointments.filter(
-          (app) => app.rawStatus.toLowerCase() === currentFilter.toLowerCase(),
-        ),
-      );
-    } else {
-      setDisplayedAppointments(
-        updatedAllAppointments.filter(
-          (app) =>
-            app.rawStatus.toLowerCase() === currentFilter.toLowerCase() ||
-            currentFilter === 'Mostrar todas las citas',
-        ),
+      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+    } catch (error) {
+      toastError(
+        typeof error === 'string' ? error : 'No se pudo cancelar la cita.',
+        'cancel-error',
       );
     }
-
-    toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
   };
 
   // <--------------- RENDER --------------->

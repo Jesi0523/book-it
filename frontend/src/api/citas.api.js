@@ -51,3 +51,22 @@ export const createCita = async (payload) => {
     }
   }
 };
+
+// PATCH actualizar estatus de la cita
+export const updateCitaStatus = async (id, status) => {
+  try {
+    const { data } = await apiClient.patch(`/citas/${id}/status`, { status });
+    return data;
+  } catch (error) {
+    if (error.response) {
+      if (typeof error.response.data?.msg === 'object') {
+        throw error.response.data.msg; 
+      }
+      throw error.response.data?.msg || 'Error al actualizar la cita.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al actualizar la cita.';
+    }
+  }
+};

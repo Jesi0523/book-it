@@ -53,6 +53,7 @@ const AppointmentCalendar = () => {
           id: emp._id,
           name: emp.nombre,
           foto: emp.foto?.url || null,
+          horario: emp.horario || [],
         }));
 
         setDbEmpleados(mapeados);

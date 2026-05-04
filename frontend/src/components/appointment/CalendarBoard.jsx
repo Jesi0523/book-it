@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 // API
 import { getCitasAdmin } from '@/api/citas.api';
+import { getSuspensiones } from '@/api/suspensiones.api';
 
 // MUI
 import { useTheme } from '@mui/material/styles';
@@ -89,6 +90,7 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
   const [citaSeleccionada, setCitaSeleccionada] = useState(null); // Cita seleccionada para mostrar al modal
 
   const [dbCitas, setDbCitas] = useState([]);
+  const [dbSuspensiones, setDbSuspensiones] = useState([]);
   const [isCalendarLoading, setIsCalendarLoading] = useState(false);
   // <--------------- EFFECTS --------------->
 
@@ -105,22 +107,30 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
     }
   }, [empleadoSeleccionado]);
 
-  // Cargar las citas al cambiar la fecha
+  // Cargar las citas y suspensiones al cambiar la fecha
   useEffect(() => {
-    const fetchCitas = async () => {
+    const fetchDailyData = async () => {
       setIsCalendarLoading(true);
       try {
         const fechaFormat = getFormatedDateStr(fechaActual);
-        const res = await getCitasAdmin(fechaFormat);
 
-        if (res.ok) {
-          const citasFormateadas = res.citas.map((cita) => {
+        // Pido mes y año para la API de suspensiones
+        const mes = fechaActual.getMonth() + 1;
+        const anio = fechaActual.getFullYear();
+
+        const [citasRes, suspRes] = await Promise.all([
+          getCitasAdmin(fechaFormat),
+          getSuspensiones(mes, anio),
+        ]);
+
+        if (citasRes.ok) {
+          const citasFormateadas = citasRes.citas.map((cita) => {
             const idEmpleado =
               cita.empleadoId?._id || cita.empleadoId?.id || cita.empleadoId;
 
             return {
               id: cita._id,
-              empId: idEmpleado, 
+              empId: idEmpleado,
               start: cita.horaInicio,
               duracionEnBloques: Math.ceil(
                 cita.servicioAgendado.duracionSnapshot / 30,
@@ -134,15 +144,26 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
 
           setDbCitas(citasFormateadas);
         }
+
+        if (suspRes.ok) {
+          const suspensionesDelDia = suspRes.suspensiones.filter((susp) => {
+            return susp.fecha.split('T')[0] === fechaFormat;
+          });
+          setDbSuspensiones(suspensionesDelDia);
+        }
       } catch (error) {
-        toastError('Error al cargar las citas del día.');
+        toastError(
+          'Error al cargar la información del calendario.',
+          'get-citas-error',
+        );
         setDbCitas([]);
+        setDbSuspensiones([]);
       } finally {
         setIsCalendarLoading(false);
       }
     };
 
-    fetchCitas();
+    fetchDailyData();
   }, [fechaActual]);
 
   // <--------------- FUNCIONES --------------->
@@ -178,6 +199,12 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
     return d.toISOString().split('T')[0];
   };
 
+  // Se verifica si el empleado trabaja en el dia seleccionado
+  const obtenerTurnoEmpleadoHoy = (empleadoHorario) => {
+    const nombreDia = diasSemanas[fechaActual.getDay()];
+    return empleadoHorario.find((h) => h.dia === nombreDia) || null;
+  };
+
   // <--------------- DATOS DERIVADOS --------------->
 
   // Texto del mes y dia actual
@@ -208,6 +235,10 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
     currentHourFloat >= horaInicio && currentHourFloat <= horaFin;
 
   const topOffset = (currentHourFloat - horaInicio) * 160;
+
+  const isGlobalAllDaySuspension = dbSuspensiones.some(
+    (susp) => susp.todoElDia && !susp.empleadoId,
+  );
 
   // <--------------- RENDER --------------->
 
@@ -344,8 +375,20 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
           </Box>
         </Box>
 
-        {horariosDelDia.length === 0 ? (
-          // Dia de descanso
+        {isCalendarLoading ? (
+          <Box
+            sx={{
+              minHeight: '14vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              bgcolor: 'background.serviceChip',
+            }}
+          >
+            <Loader height='auto' bgcolor='background.serviceChip' />
+          </Box>
+        ) : horariosDelDia.length === 0 || isGlobalAllDaySuspension ? (
+          // Dia de descanso o suspensión todo el dia
           <Typography
             sx={{
               color: 'text.secondary',
@@ -494,6 +537,50 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
                         (a) =>
                           a.empId === emp.id && a.start === horaInicioCeldita,
                       );
+
+                      // Suspension por hora
+                      const estaSuspendido = dbSuspensiones.some((susp) => {
+                        const idSuspension =
+                          susp.empleadoId?._id ||
+                          susp.empleadoId?.id ||
+                          susp.empleadoId;
+
+                        // Aplica a todos o solo a este empleado
+                        const aplicaAEmpleado =
+                          !susp.empleadoId || idSuspension === emp.id;
+                        if (!aplicaAEmpleado) return false;
+
+                        // Si es de todo el dia
+                        if (susp.todoElDia) return true;
+
+                        // Si es por horas, se ve el rango de suspension
+                        const slotFloat = parseHora(horaInicioCeldita);
+                        const suspInicioFloat = parseHora(susp.horaInicio);
+                        const suspFinFloat = parseHora(susp.horaFin);
+
+                        return (
+                          slotFloat >= suspInicioFloat &&
+                          slotFloat < suspFinFloat
+                        );
+                      });
+
+                      let estaFueraDeTurno = true;
+                      const turnoDeHoy = obtenerTurnoEmpleadoHoy(emp.horario);
+
+                      const slotFloat = parseHora(horaInicioCeldita);
+
+                      if (turnoDeHoy) {
+                        const inicioTurno = parseHora(turnoDeHoy.horaInicio);
+                        const finTurno = parseHora(turnoDeHoy.horaFin);
+
+                        if (slotFloat >= inicioTurno && slotFloat < finTurno) {
+                          estaFueraDeTurno = false;
+                        }
+                      }
+
+                      const celdaDeshabilitada =
+                        estaSuspendido || estaFueraDeTurno;
+
                       return (
                         <Box
                           key={`${emp.id}-${horario}`}
@@ -506,7 +593,12 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
                               theme.palette.customBorders.inputDefault,
                             position: 'relative',
                             height: '80px',
-                            background: 'transparent',
+                            backgroundColor: celdaDeshabilitada
+                              ? 'rgba(0, 0, 0, 0.3)'
+                              : 'transparent',
+                            backgroundImage: celdaDeshabilitada
+                              ? 'repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 10px, transparent 10px, transparent 20px)'
+                              : 'none',
                           }}
                         >
                           {/* Bloque de cia si existe */}

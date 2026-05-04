@@ -4,7 +4,7 @@ import React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-const Loader = ({ height = '100vh' }) => {
+const Loader = ({ height = '100vh', bgcolor = 'background.default' }) => {
   return (
     <Box
       sx={{
@@ -12,7 +12,7 @@ const Loader = ({ height = '100vh' }) => {
         justifyContent: 'center',
         alignItems: 'center',
         height: height,
-        backgroundColor: 'background.default',
+        backgroundColor: bgcolor,
       }}
     >
       <CircularProgress color='primary' />

@@ -17,6 +17,22 @@ export const getDisponibilidad = async (fecha, empleadoId, servicioId) => {
   }
 };
 
+// GET citas del cliente
+export const getMisCitas = async () => {
+  try {
+    const { data } = await apiClient.get('/citas/mis-citas');
+    return data;
+  } catch (error) {
+    if (error.response) {
+      throw error.response.data?.msg || 'Error al obtener tus citas.';
+    } else if (error.request) {
+      throw 'No hay conexión con el servidor.';
+    } else {
+      throw 'Error inesperado al cargar las citas.';
+    }
+  }
+};
+
 // POST crear cita
 export const createCita = async (payload) => {
   try {

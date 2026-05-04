@@ -99,7 +99,9 @@ function MyAppointments() {
         );
 
         const formattedData = citas.map((cita) => {
-          const dateStr = dayjs(cita.fecha).locale('es').format('MMMM D, YYYY');
+          const dateStr = dayjs(cita.fecha.split('T')[0])
+            .locale('es')
+            .format('MMMM D, YYYY');
           const capitalizedDateStr =
             dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
 

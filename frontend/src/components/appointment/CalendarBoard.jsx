@@ -92,6 +92,8 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
   const [dbCitas, setDbCitas] = useState([]);
   const [dbSuspensiones, setDbSuspensiones] = useState([]);
   const [isCalendarLoading, setIsCalendarLoading] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [hasFetchError, setHasFetchError] = useState(false);
   // <--------------- EFFECTS --------------->
 
   // Efecto para actualizar la hora actual cada minuto para la linea de la hora actual
@@ -111,6 +113,7 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
   useEffect(() => {
     const fetchDailyData = async () => {
       setIsCalendarLoading(true);
+      setHasFetchError(false);
       try {
         const fechaFormat = getFormatedDateStr(fechaActual);
 
@@ -152,8 +155,9 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
           setDbSuspensiones(suspensionesDelDia);
         }
       } catch (error) {
+        setHasFetchError(true);
         toastError(
-          'Error al cargar la información del calendario.',
+          'No se pudo conectar con el servidor. Verifica tu conexión.',
           'get-citas-error',
         );
         setDbCitas([]);
@@ -164,7 +168,7 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
     };
 
     fetchDailyData();
-  }, [fechaActual]);
+  }, [fechaActual, refreshTrigger]);
 
   // <--------------- FUNCIONES --------------->
 
@@ -386,6 +390,22 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
             }}
           >
             <Loader height='auto' bgcolor='background.serviceChip' />
+          </Box>
+        ) : hasFetchError ? (
+          <Box sx={{ p: 5, textAlign: 'center' }}>
+            <Typography
+              sx={{
+                color: 'text.primary',
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+                mb: 2,
+              }}
+            >
+              No se pudo obtener la información del calendario.
+            </Typography>
+            <Typography sx={{ color: 'text.secondary', fontSize: '1rem' }}>
+              Por favor, revisa tu conexión a internet e intenta de nuevo.
+            </Typography>
           </Box>
         ) : horariosDelDia.length === 0 || isGlobalAllDaySuspension ? (
           // Dia de descanso o suspensión todo el dia
@@ -706,7 +726,12 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
       {/* Detalles de la cita */}
       <AppointmentModal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={(needsRefresh) => {
+          setIsModalOpen(false);
+          if (needsRefresh === true) {
+            setRefreshTrigger((prev) => prev + 1);
+          }
+        }}
         appointment={citaSeleccionada}
       />
     </Box>

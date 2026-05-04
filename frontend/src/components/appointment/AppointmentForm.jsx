@@ -263,9 +263,27 @@ function AppointmentForm() {
         );
 
         if (res.ok) {
-          setListaHorarios(res.horarios);
+          // Filtra los horarios que ya pasaron si la fecha es hoy
+          const horariosDisponibles = res.horarios.filter((horaSlot) => {
+            const esHoy = dayjs(fecha).isSame(dayjs(), 'day');
 
-          if (res.horarios.length === 0) {
+            if (!esHoy) return true;
+
+            const horaInicio = horaSlot.split('-')[0];
+            const [h, m] = horaInicio.split(':').map(Number);
+
+            const horaCitaFloat = h + m / 60;
+
+            const ahora = new Date();
+            const horaActualFloat = ahora.getHours() + ahora.getMinutes() / 60;
+
+            // Solo se permite agendar si la hora de la cita es en el futuro
+            return horaCitaFloat > horaActualFloat;
+          });
+
+          setListaHorarios(horariosDisponibles);
+
+          if (horariosDisponibles.length === 0) {
             toastError(
               'No hay horarios disponibles para esta fecha y empleado.',
               'empty-schedules',
@@ -329,7 +347,7 @@ function AppointmentForm() {
     const payload = {
       empleadoId: extraerId(empleadoEncontrado),
       servicioId: extraerId(servicioEncontrado),
-      fecha: dayjs(fecha).format('YYYY-MM-DD'),
+      fecha: dayjs(fecha).hour(12).toISOString(),
       horaInicio: horarioSeleccionado,
       nombre: clientData.nombre,
       correo: clientData.correo,
@@ -352,6 +370,8 @@ function AppointmentForm() {
         const errorMsg = error[fieldName].msg || error[fieldName];
 
         setFormErrors({ [fieldName]: errorMsg });
+
+        toastError(errorMsg || 'Error al agendar la cita', 'validation-error');
 
         setTimeout(() => {
           const element = document.getElementById(fieldName);
@@ -785,7 +805,7 @@ function AppointmentForm() {
               sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}
             >
               <Title
-                children={`Total a pagar: ${costoMostrar}`}
+                children={`Total a pagar: ${costoMostrar} MXN`}
                 size='20'
                 textTransform='capitalize'
                 align='center'

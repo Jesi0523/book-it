@@ -18,7 +18,19 @@ export const servicioSchema = z.object({
     (val) => Number(val),
     z
       .number({ invalid_type_error: 'El precio debe ser un número válido.' })
-      .positive({ message: 'El precio debe ser mayor a $0.' }),
+      .positive({ message: 'El precio debe ser mayor a $0.' })
+      .refine(
+        (val) => {
+          const str = val.toString();
+          if (str.includes('.')) {
+            return str.split('.')[1].length <= 2;
+          }
+          return true;
+        },
+        {
+          message: 'El precio solo puede tener hasta 2 decimales.',
+        },
+      ),
   ),
 
   tiempo: z

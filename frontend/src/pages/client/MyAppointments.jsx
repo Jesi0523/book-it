@@ -123,7 +123,7 @@ function MyAppointments() {
               ? servicioMatch.nombre
               : cita.servicioAgendado.nombreSnapshot,
             date: `${capitalizedDateStr} de ${cita.horaInicio} a ${cita.horaFin}.`,
-            price: `$${cita.servicioAgendado.precioSnapshot}`,
+            price: cita.servicioAgendado.precioSnapshot,
 
             rawStatus: cita.estado,
             status: {

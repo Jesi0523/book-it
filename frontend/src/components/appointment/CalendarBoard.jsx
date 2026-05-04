@@ -105,37 +105,6 @@ const CalendarBoard = ({ dbEmpresaHorarios, dbEmpleados }) => {
     }
   }, [empleadoSeleccionado]);
 
-  // Carga inicial de Empleados
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      setIsPageLoading(true);
-      try {
-        const [empresaRes, empleadosRes] = await Promise.all([
-          getEmpresa(),
-          getEmpleadosAdmin(),
-        ]);
-
-        if (empresaRes.ok) {
-          setDbEmpresaHorarios(empresaRes.empresa.horarioGlobal);
-        }
-
-        if (empleadosRes.ok) {
-          const mapeados = empleadosRes.empleados.map((emp) => ({
-            id: emp._id,
-            name: emp.nombre,
-            foto: emp.foto?.url || null,
-          }));
-          setDbEmpleados(mapeados);
-        }
-      } catch (error) {
-        toastError('Error al cargar la información inicial.');
-      } finally {
-        setIsPageLoading(false);
-      }
-    };
-    fetchInitialData();
-  }, []);
-
   // Cargar las citas al cambiar la fecha
   useEffect(() => {
     const fetchCitas = async () => {

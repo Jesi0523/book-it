@@ -314,7 +314,10 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                 <Text children='Sexo' color='primary.main' size='14' />
                 <SimpleInfoDisplay
                   title={
-                    appointment.datosCliente?.sexo || 'Sexo no especificado'
+                    appointment.datosCliente?.sexo
+                      ? appointment.datosCliente.sexo.charAt(0).toUpperCase() +
+                        appointment.datosCliente.sexo.slice(1)
+                      : 'Sexo no especificado'
                   }
                 />
               </Box>

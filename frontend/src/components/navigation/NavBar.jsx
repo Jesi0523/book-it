@@ -319,9 +319,9 @@ function NavBar() {
                   flexGrow: 0,
                   display: { xs: 'none', md: 'flex' },
                   flexDirection: 'column',
-                  width: '150px',
-                  maxWidth: '300px',
+                  width: '180px',
                   px: 2,
+                  overflow: 'hidden', 
                 }}
               >
                 <Typography
@@ -330,6 +330,9 @@ function NavBar() {
                     fontSize: '0.8rem',
                     color: 'primary.main',
                     textAlign: 'right',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
                   {userName}
@@ -340,6 +343,9 @@ function NavBar() {
                     fontSize: '0.6rem',
                     color: 'text.primary',
                     textAlign: 'right',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
                   {userEmail}

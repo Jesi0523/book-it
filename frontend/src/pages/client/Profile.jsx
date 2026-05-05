@@ -5,6 +5,9 @@ import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
 // Utils
 import { toastSuccess, toastError } from '@/utils/notify';
 
@@ -30,6 +33,9 @@ import PasswordInput from '@/components/form/PasswordInput';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 function Profile() {
+  // <--------------- CONTEXTO --------------->
+  const { updateUser } = useAuth();
+
   // <--------------- ESTADOS --------------->
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -191,6 +197,8 @@ function Profile() {
         response.msg || 'Perfil actualizado correctamente.',
         'profile-save-toast',
       );
+
+      updateUser(formData.nombre, formData.correo);
 
       setIsSaveDialogOpen(false);
       setIsEditing(false);

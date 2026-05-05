@@ -66,6 +66,15 @@ export const AuthProvider = ({ children }) => {
     setUser({ token, role, name, email });
   };
 
+  // Actualiza los datos del usuario en tiempo real
+  const updateUser = (newName, newEmail) => {
+    if (user) {
+      sessionStorage.setItem('userName', newName);
+      sessionStorage.setItem('userEmail', newEmail);
+      setUser((prevUser) => ({ ...prevUser, name: newName, email: newEmail }));
+    }
+  };
+
   // Logout
   const logout = async () => {
     setIsLoggingOut(true);
@@ -96,12 +105,13 @@ export const AuthProvider = ({ children }) => {
         loading,
         isLoggingOut,
         isAuthenticated: !!user,
+        updateUser,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
+};;
 
 // Hook
 export const useAuth = () => useContext(AuthContext);

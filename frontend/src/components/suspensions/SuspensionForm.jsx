@@ -40,7 +40,7 @@ const SuspensionForm = ({
   setHoraFin,
   empleadoSeleccionado,
   setEmpleadoSeleccionado,
-  dummyEmpleados,
+  empleados,
   handleAplicar,
   selectMenuProps,
   selectEstilos,
@@ -203,7 +203,7 @@ const SuspensionForm = ({
             MenuProps={selectMenuProps}
             sx={selectEstilos}
           >
-            {dummyEmpleados.map((emp) => (
+            {empleados.map((emp) => (
               <MenuItem key={emp.id} value={emp.id}>
                 {emp.nombre}
               </MenuItem>

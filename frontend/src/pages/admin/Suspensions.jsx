@@ -173,7 +173,7 @@ const Suspensions = () => {
   }, []);
 
   useEffect(() => {
-    if (!isPageLoading) {
+    if (!isPageLoading && !serverError) {
       fetchSuspensionesList();
     }
   }, [mesFiltro, anioFiltro, isPageLoading]);
@@ -279,7 +279,7 @@ const Suspensions = () => {
   if (serverError) {
     return (
       <ErrorScreen
-        onRetry={fetchData}
+        onRetry={fetchInitialData}
         offsetMobile='64px'
         offsetDesktop='80px'
       />
@@ -317,7 +317,7 @@ const Suspensions = () => {
         setHoraFin={setHoraFin}
         empleadoSeleccionado={empleadoSeleccionado}
         setEmpleadoSeleccionado={setEmpleadoSeleccionado}
-        dummyEmpleados={listaEmpleados}
+        empleados={listaEmpleados}
         handleAplicar={handleAplicar}
         selectMenuProps={selectMenuProps}
         selectEstilos={selectEstilos}

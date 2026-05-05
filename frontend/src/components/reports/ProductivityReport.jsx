@@ -54,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const ProductivityReport = ({ mes, anio }) => {
+const ProductivityReport = ({ apiData }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -63,42 +63,15 @@ const ProductivityReport = ({ mes, anio }) => {
 
   // Genera los datos de la grafica segun el mes y año
   const dataDinamica = useMemo(() => {
-    if (mes === 'Enero' && anio === '2026') {
-      return [
-        {
-          empleado: 'Empleado 1',
-          citas: 5,
-          color: theme.customCharts.barMixed[0],
-        },
-        {
-          empleado: 'Empleado 2',
-          citas: 15,
-          color: theme.customCharts.barMixed[1],
-        },
-        {
-          empleado: 'Empleado 3',
-          citas: 23,
-          color: theme.customCharts.barMixed[2],
-        },
-        {
-          empleado: 'Empleado 4',
-          citas: 16,
-          color: theme.customCharts.barMixed[3],
-        },
-        {
-          empleado: 'Empleado 5',
-          citas: 27,
-          color: theme.customCharts.barMixed[4],
-        },
-      ];
-    }
-    return Array.from({ length: 12 }).map((_, index) => ({
-      empleado: `Empleado ${index + 1}`,
-      citas: Math.floor(Math.random() * 40) + 5,
+    if (!apiData || !apiData.etiquetas) return [];
+
+    return apiData.etiquetas.map((etiqueta, index) => ({
+      empleado: etiqueta,
+      citas: apiData.valores[index] || 0,
       color:
         theme.customCharts.barMixed[index % theme.customCharts.barMixed.length],
     }));
-  }, [mes, anio]);
+  }, [apiData, theme]);
 
   // Genera los numeros de la izq blanco
   const dynamicTicks = useMemo(() => {

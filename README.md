@@ -1,5 +1,10 @@
 # BookIT!
 
+## Link de la aplicación web
+
+**URL**: [https://book-it-sable.vercel.app/](https://book-it-sable.vercel.app/)
+
+
 ## Integrantes
 
 - Luz Paola García Rodríguez

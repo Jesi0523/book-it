@@ -28,13 +28,15 @@ Book IT! es una plataforma digital diseñada para optimizar la gestión de citas
 ### Frontend
 
 - **src**: Código fuente
-    - **assets**: Contenido multimedia
     - **api**: Conecta el frontend con la carpeta de backend
+    - **assets**: Contenido multimedia
     - **components**: Componentes reutilizables de React que forman parte de la interfaz gráfica
+    - **constants**: Define variables fijos y reutilizables
     - **context**: Guarda el estado del usuario, es decir, si esta logueado o no
     - **layouts**: Plantillas que se pueden usar en varias páginas
     - **pages**: Páginas principales de la aplicación
     - **routes**: Ruta de navegación de cada página
+    - **schemas**: Define las validaciones de los formularios
     - **styles**: Estilos globales para la estructura base y tipografías del proyecto
     - **theme**: Configuración de estilos para MUI (paleta de colores, gradientes y bordes)
     - **utils**: Funciones reutilizables sin interfaz que facilitan las tareas dentro del proyecto.

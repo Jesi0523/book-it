@@ -9,12 +9,24 @@ import Typography from '@mui/material/Typography';
 // Icono
 import CheckCircleIcon from '@mui/icons-material/CheckCircleRounded';
 
-function InfoDialog({ open, onClose, title, icon, content }) {
-
+function InfoDialog({
+  open,
+  onClose,
+  title,
+  icon,
+  content,
+  onTransitionExited,
+}) {
   return (
     <Dialog
       open={open}
       onClose={onClose}
+      disableRestoreFocus
+      disableEnforceFocus
+      TransitionProps={{
+        onExited: onTransitionExited,
+      }}
+      aria-labelledby='info-dialog-title'
       sx={{
         '& .MuiDialog-paper': {
           width: '85%',
@@ -26,6 +38,7 @@ function InfoDialog({ open, onClose, title, icon, content }) {
       }}
     >
       <DialogTitle
+        id='info-dialog-title'
         sx={{
           display: 'flex',
           flexDirection: 'column',

@@ -10,9 +10,21 @@ import Text from '@/components/common/Text';
 const ServiceHeader = ({ service }) => {
   // <--------------- RENDER --------------->
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', px: 1 }}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        px: 1,
+      }}
+    >
       <Text children={service.nombre} color='white' size='22px' />
-      <Text children={service.precio} color='primary.main' size='14px' fontWeight='bold' />
+      <Text
+        children={`$${Number(service.precio).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`}
+        color='primary.main'
+        size='14px'
+        fontWeight='bold'
+      />
     </Box>
   );
 };

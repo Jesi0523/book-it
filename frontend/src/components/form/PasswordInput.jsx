@@ -22,24 +22,30 @@ const PasswordInput = ({ label = "Contraseña", ...props }) => {
   return (
     <TextField
       label={label}
-      type={showPassword ? "text" : "password"} 
-      placeholder="*********"
-      variant="outlined"
+      type={showPassword ? 'text' : 'password'}
+      placeholder='*********'
+      variant='outlined'
       fullWidth
       InputLabelProps={{ shrink: true }}
       InputProps={{
         notched: false,
         endAdornment: (
-          <InputAdornment position="end" sx={{ pr: 1.5 }}>
+          <InputAdornment position='end' sx={{ pr: 1.5 }}>
             <IconButton
               onClick={handleClickShowPassword}
-              edge="end"
-              sx={{ color: 'secondary.main' }} 
+              edge='end'
+              sx={{ color: 'secondary.main' }}
             >
               {showPassword ? <Visibility /> : <VisibilityOff />}
             </IconButton>
           </InputAdornment>
         ),
+      }}
+      FormHelperTextProps={{
+        sx: {
+          color: 'error.main',
+          fontSize: { xs: '12px', md: '14px' },
+        },
       }}
       {...props}
       sx={{
@@ -48,7 +54,7 @@ const PasswordInput = ({ label = "Contraseña", ...props }) => {
           color: 'white',
           fontFamily: "'Montserrat', sans-serif",
           backgroundColor: 'rgba(255, 255, 255, 0.03)',
-          
+
           '& fieldset': {
             borderColor: 'secondary.main',
             borderWidth: '1.5px',
@@ -60,18 +66,18 @@ const PasswordInput = ({ label = "Contraseña", ...props }) => {
             borderColor: 'secondary.main',
             borderWidth: '2px',
           },
-          
+
           '& input::placeholder': {
             color: 'rgba(255, 255, 255, 0.4)',
             opacity: 1,
           },
         },
-        
+
         '& .MuiInputLabel-root': {
           color: 'primary.main',
           fontSize: '18px',
           fontWeight: '600',
-          transform: 'translate(24px, 8px) scale(0.75)', 
+          transform: 'translate(24px, 8px) scale(0.75)',
           transformOrigin: 'top left',
           '&.Mui-focused': {
             color: 'primary.main',
@@ -80,8 +86,8 @@ const PasswordInput = ({ label = "Contraseña", ...props }) => {
 
         '& .MuiInputBase-input': {
           fontSize: '16px',
-          padding: '28px 24px 10px 24px', 
-        }
+          padding: '28px 24px 10px 24px',
+        },
       }}
     />
   );

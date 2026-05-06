@@ -1,18 +1,27 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
 
 // MUI
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 // Utils
-import { toastNeutral } from '@/utils/notify';
+import { toastNeutral, toastError } from '@/utils/notify';
+
+// APIs
+import { getMisCitas, updateCitaStatus } from '@/api/citas.api';
+import { getEmpleadosPublicos } from '@/api/empleados.api';
+import { getServicios } from '@/api/servicios.api';
 
 // ************** componentes propios :3 **************
 // |  common
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
 import Collapsable from '@/components/common/Collapsable';
+import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 // |  formulario
 import Combobox from '@/components/form/Combobox';
 // |  collapsable
@@ -23,95 +32,243 @@ import AppointmentBody from '@/components/collapsable/Body/AppointmentBody';
 import ClockIcon from '@mui/icons-material/QueryBuilder';
 import CloseIcon from '@mui/icons-material/CloseRounded';
 import CheckIcon from '@mui/icons-material/CheckRounded';
+import ThumbUpIcon from '@mui/icons-material/ThumbUpOutlined';
 
-// NOTA: Aquí se actualizaran los estatus de una cita, o se sacan de la BD, no m acuerdo xd
+// Estatus de una cita
 const statusAppointment = [
   { name: 'Pendiente', icon: <ClockIcon /> },
-  { name: 'Completada', icon: <CheckIcon /> },
+  { name: 'Confirmada', icon: <ThumbUpIcon /> },
+  { name: 'Realizada', icon: <CheckIcon /> },
   { name: 'Cancelada', icon: <CloseIcon /> },
 ];
 
-// ************** media dummy **************
-// |  Imagenes
-import photo from '@/assets/dummy/perfil-1.jpg';
-import photo2 from '@/assets/dummy/perfil-2.jpg';
-import photo3 from '@/assets/dummy/perfil-3.jpg';
-import { isCancel } from 'axios';
-// |  Datos
-const orderByDummy = [
-  'Ordenar por antiguedad',
-  'Ordenar alfabeticamente',
-];
-const employeesDummy = [
-  { name: 'Oliver Hansen', pfp: photo },
-  { name: 'Van Henry', pfp: photo2 },
-  { name: 'April Tucker', pfp: photo3 },
-];
-const clientDummy = [
-  {
-    name: 'John Doe',
-    age: '25',
-    gender: 'Masculino',
-    mail: 'jonD@gmail.com',
-    phoneNumber: '81 3161 9950',
-  },
-  {
-    name: 'Richard Roe',
-    age: '62',
-    gender: 'Masculino',
-    mail: 'rr@gmail.com',
-    phoneNumber: '81 3161 9951',
-  },
-  {
-    name: 'Jane Doe',
-    age: '25',
-    gender: 'Femenino',
-    mail: 'janeD@gmail.com',
-    phoneNumber: '81 3161 9952',
-  },
-];
-const appointmentsInfo = [
-  {
-    index: 1,
-    service: 'Servicio 1',
-    date: 'Febrero 11, 2026 9:00 a 10:00.',
-    price: '$4000',
-    status: statusAppointment[0],
-    employee: employeesDummy[1],
-    client: clientDummy[0],
-    isCanceled: false,
-  },
-  {
-    index: 2,
-    service: 'Servicio 2',
-    date: 'Marzo 1, 2026 13:00 a 14:00.',
-    price: '$500',
-    status: statusAppointment[1],
-    employee: employeesDummy[2],
-    client: clientDummy[1],
-    isCanceled: false,
-  },
+const filterOptions = [
+  'Mostrar todas las citas',
+  'Pendiente',
+  'Confirmada',
+  'Realizada',
+  'Cancelada',
 ];
 // ****************************
 
 function MyAppointments() {
   // <--------------- ESTADOS --------------->
-  const [appointments, setAppointments] = useState(appointmentsInfo);
-  
+  const [allAppointments, setAllAppointments] = useState([]);
+  const [displayedAppointments, setDisplayedAppointments] = useState([]);
+  const [currentFilter, setCurrentFilter] = useState(filterOptions[0]);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [serverError, setServerError] = useState(false);
+
+  // <--------------- DERIVADOS --------------->
+
+  // GET citas, empleados y servicios
+  const fetchAppointments = async () => {
+    setIsLoading(true);
+    setServerError(false);
+    try {
+      const [citasRes, serviciosRes] = await Promise.all([
+        getMisCitas(),
+        getServicios(),
+      ]);
+
+      if (citasRes.ok && serviciosRes.ok) {
+        const citas = citasRes.citas;
+        const serviciosLista = serviciosRes.servicios;
+
+        const serviciosUnicosIds = [
+          ...new Set(citas.map((cita) => cita.servicioAgendado.servicioId)),
+        ];
+
+        const empleadosPromises = serviciosUnicosIds.map((id) =>
+          getEmpleadosPublicos(id),
+        );
+        const empleadosRespuestas = await Promise.all(empleadosPromises);
+
+        let empleadosLista = [];
+        empleadosRespuestas.forEach((res) => {
+          if (res.ok && res.empleados) {
+            empleadosLista = [...empleadosLista, ...res.empleados];
+          }
+        });
+
+        // Se quita empleado duplicado
+        empleadosLista = empleadosLista.filter(
+          (emp, index, self) =>
+            index === self.findIndex((t) => t._id === emp._id),
+        );
+
+        const formattedData = citas.map((cita) => {
+          const dateStr = dayjs(cita.fecha.split('T')[0])
+            .locale('es')
+            .format('MMMM D, YYYY');
+          const capitalizedDateStr =
+            dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+
+          let statusIndex = 0;
+          if (cita.estado === 'confirmada') statusIndex = 1;
+          if (cita.estado === 'realizada') statusIndex = 2;
+          if (cita.estado === 'cancelada') statusIndex = 3;
+
+          const empleadoMatch = empleadosLista.find(
+            (emp) => emp._id === cita.empleadoId,
+          );
+          const servicioMatch = serviciosLista.find(
+            (srv) => srv._id === cita.servicioAgendado.servicioId,
+          );
+
+          return {
+            _id: cita._id,
+            service: servicioMatch
+              ? servicioMatch.nombre
+              : cita.servicioAgendado.nombreSnapshot,
+            date: `${capitalizedDateStr} de ${cita.horaInicio} a ${cita.horaFin}.`,
+            price: cita.servicioAgendado.precioSnapshot,
+
+            rawStatus: cita.estado,
+            status: {
+              name: cita.estado.charAt(0).toUpperCase() + cita.estado.slice(1),
+              icon: statusAppointment[statusIndex]?.icon,
+            },
+
+            originalDate: new Date(
+              `${cita.fecha.split('T')[0]}T${cita.horaInicio}:00`,
+            ),
+
+            employee: {
+              name: empleadoMatch ? empleadoMatch.nombre : 'Empleado Asignado',
+              pfp: empleadoMatch?.foto?.url || null,
+            },
+
+            client: {
+              name: cita.datosCliente.nombre,
+              age: cita.datosCliente.edad,
+              gender:
+                cita.datosCliente.sexo.charAt(0).toUpperCase() +
+                cita.datosCliente.sexo.slice(1),
+              mail: cita.datosCliente.correo,
+              phoneNumber: cita.datosCliente.telefono,
+            },
+            isCanceled: cita.estado === 'cancelada',
+          };
+        });
+
+        const sortedData = formattedData.sort(
+          (a, b) => b.originalDate - a.originalDate,
+        );
+
+        setAllAppointments(sortedData);
+        setDisplayedAppointments(sortedData);
+      }
+    } catch (error) {
+      setServerError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // <--------------- EFFECTS --------------->
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  // Aplicacion del filtro
+  useEffect(() => {
+    if (currentFilter === 'Mostrar todas las citas') {
+      setDisplayedAppointments(allAppointments);
+    } else {
+      const filtered = allAppointments.filter(
+        (app) => app.rawStatus.toLowerCase() === currentFilter.toLowerCase(),
+      );
+      setDisplayedAppointments(filtered);
+    }
+  }, [currentFilter, allAppointments]);
   // <--------------- FUNCIONES --------------->
 
+  // PATCH actualizar cita
   // Funcion boton cancelar cita
-  const handleCancel = (index) => {
-    const newAppointments = [...appointments];
-    newAppointments[index].status = statusAppointment[2];
+  const handleCancel = async (appointmentId) => {
+    try {
+      await updateCitaStatus(appointmentId, 'cancelada');
 
-    setAppointments(newAppointments);
+      const updatedAllAppointments = allAppointments.map((app) => {
+        if (app._id === appointmentId) {
+          return {
+            ...app,
+            rawStatus: 'cancelada',
+            status: {
+              name: 'Cancelada',
+              icon: statusAppointment[3].icon,
+            },
+            isCanceled: true,
+          };
+        }
+        return app;
+      });
 
-    toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+      setAllAppointments(updatedAllAppointments);
 
+      if (
+        currentFilter !== 'Mostrar todas las citas' &&
+        currentFilter !== 'Cancelada'
+      ) {
+        setDisplayedAppointments(
+          updatedAllAppointments.filter(
+            (app) =>
+              app.rawStatus.toLowerCase() === currentFilter.toLowerCase(),
+          ),
+        );
+      } else {
+        setDisplayedAppointments(
+          updatedAllAppointments.filter(
+            (app) =>
+              app.rawStatus.toLowerCase() === currentFilter.toLowerCase() ||
+              currentFilter === 'Mostrar todas las citas',
+          ),
+        );
+      }
+
+      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+    } catch (error) {
+      toastError(
+        typeof error === 'string' ? error : 'No se pudo cancelar la cita.',
+        'cancel-error',
+      );
+    }
   };
 
   // <--------------- RENDER --------------->
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'background.default',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Loader height='auto' />
+      </Box>
+    );
+  }
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchAppointments}
+        offsetMobile='64px'
+        offsetDesktop='64px'
+      />
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -140,27 +297,28 @@ function MyAppointments() {
         {/* Combobox */}
         <Grid size={{ xs: 12, md: 5 }}>
           <Combobox
-            name='Ordenar por:'
-            array={orderByDummy}
+            name='Filtrar por estado:'
+            array={filterOptions}
             size='14px'
-            defaultValue={orderByDummy[0]}
+            value={currentFilter}
+            onValueChange={(value) => setCurrentFilter(value)}
           />
         </Grid>
       </Grid>
 
       {/* Linea separadora */}
       <Box
-        component="hr"
+        component='hr'
         sx={{
           border: 'none',
           height: '1px',
           backgroundColor: 'divider',
         }}
-      />  
+      />
 
       {/* Citas */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 5 }}>
-        {appointments.length === 0 ? (
+        {displayedAppointments.length === 0 ? (
           // No hay citas
           <Box
             sx={{
@@ -174,15 +332,15 @@ function MyAppointments() {
           >
             <CloseIcon fontSize='large' />
             <Text size={18} color='secondary.blueShade' align='center'>
-              No cuenta con citas agendadas actualmente
+              No se encontraron citas
             </Text>
           </Box>
         ) : (
           // Se muestran citas
-          appointments.map((appointment, index) => {
+          displayedAppointments.map((appointment, index) => {
             return (
               <Collapsable
-                key={index}
+                key={appointment._id}
                 headerContent={
                   <AppointmentHeader
                     title={appointment.service}
@@ -193,7 +351,7 @@ function MyAppointments() {
               >
                 <AppointmentBody
                   appointment={appointment}
-                  onConfirmCancel={() => handleCancel(index)}
+                  onConfirmCancel={() => handleCancel(appointment._id)}
                 />
               </Collapsable>
             );

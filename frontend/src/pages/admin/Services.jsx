@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+// API
+import { getServicios, getServicio, deleteServicio } from '@/api/servicios.api';
+
 // Utils
-import { toastNeutral } from '@/utils/notify';
+import { toastNeutral, toastError } from '@/utils/notify';
 
 // MUI
 import Box from '@mui/material/Box';
@@ -22,50 +25,34 @@ import Collapsable from '@/components/common/Collapsable';
 import ServiceHeader from '@/components/collapsable/Header/ServiceHeader';
 import ServiceBody from '@/components/collapsable/Body/ServiceBody';
 import ServiceForm from '@/components/services/ServiceForm';
-
-// Fotos prueba
-import img1 from '@/assets/dummy/servicio-1.webp';
-import img2 from '@/assets/dummy/servicio-2.webp';
-import img3 from '@/assets/dummy/servicio-3.webp';
-
-// <----------- DUMMY DATA ----------->
-
-// Servicios
-const dummyServicios = [
-  {
-    id: 1,
-    nombre: 'Corte de dama',
-    precio: '$350.00 MXN',
-    descripcion:
-      'Corte de cabello personalizado según las facciones del cliente. Incluye lavado, secado y estilizado básico.',
-    tiempo: '30 minutos',
-    imagen: img1,
-  },
-  {
-    id: 2,
-    nombre: 'Tinte y luces',
-    precio: '$1,200.00 MXN',
-    descripcion:
-      'Aplicación de tinte base y luces para iluminar el rostro. Se utilizan productos de alta calidad para proteger el cabello.',
-    tiempo: '60 minutos',
-    imagen: img2,
-  },
-  {
-    id: 3,
-    nombre: 'Manicura Spa',
-    precio: '$250.00 MXN',
-    descripcion:
-      'Limpieza profunda, exfoliación, masaje relajante en manos y esmaltado tradicional.',
-    tiempo: '30 minutos',
-    imagen: img3,
-  },
-];
+import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 
 const Services = () => {
   // <--------------- ESTADOS --------------->
+  const [servicios, setServicios] = useState([]);
   const [busqueda, setBusqueda] = useState('');
   const [servicioEditando, setServicioEditando] = useState(null);
-  const [services, setServices] = useState(dummyServicios);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [serverError, setServerError] = useState(false);
+
+  // <--------------- DATOS DERIVADOS --------------->
+  const fetchServicios = async () => {
+    try {
+      setIsLoadingData(true);
+      setServerError(false);
+      setBusqueda('');
+      const data = await getServicios();
+      if (data.ok) {
+        setServicios(data.servicios);
+      }
+    } catch (error) {
+      setServerError(true);
+      setServicios([]);
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
 
   // <--------------- EFFECTS --------------->
 
@@ -76,29 +63,92 @@ const Services = () => {
     });
   }, [servicioEditando]);
 
+  // GET servicios
+  useEffect(() => {
+    fetchServicios();
+  }, []);
+
   // <--------------- DERIVADO --------------->
   // Buscar servicio
-  const serviciosFiltrados = services.filter((serv) =>
-    serv.nombre.toLowerCase().includes(busqueda.toLowerCase()),
+  const serviciosFiltrados = servicios.filter((servicio) =>
+    servicio.nombre.toLowerCase().includes(busqueda.toLowerCase()),
   );
 
   // <--------------- FUNCIONES --------------->
 
-  // Funcion eliminar servicio
-  const handleDelete = (index) => {
-    const updatedServices = services.filter((service) => service.id !== index);
-    setServices(updatedServices);
+  // GET servicio
+  // Funcion para editar un servicio
+  const handleEdit = async (servicioSeleccionado) => {
+    try {
+      setIsLoadingData(true);
 
-    toastNeutral('Servicio eliminado del catálogo.', 'service-delete-toast');
+      // Se llama a la api
+      const data = await getServicio(servicioSeleccionado._id);
+
+      if (data.ok) {
+        setServicioEditando(data.servicio);
+      }
+    } catch (error) {
+      toastError(
+        typeof error === 'string'
+          ? error
+          : 'Error al cargar los datos del servicio.',
+        'get-servicio-id',
+      );
+    } finally {
+      setIsLoadingData(false);
+    }
   };
 
-  // Funcion guardar servicio
-  const handleSaveService = (serviceData) => {
-    console.log('Guardando servicio:', serviceData);
+  // Funcion para regresar a ver servicios y que carguen
+  const handleCloseForm = (shouldRefresh = false) => {
     setServicioEditando(null);
+    if (shouldRefresh) {
+      fetchServicios(); // Se vuelven a pedir los datos al servidor
+    }
+  };
+
+  // DELETE servicio
+  // Funcion eliminar servicio
+  const handleDelete = async (id) => {
+    try {
+      setIsLoadingData(true);
+
+      // Se llama a la api
+      const response = await deleteServicio(id);
+
+      toastNeutral(
+        response.msg || 'Servicio eliminado del catálogo.',
+        'service-delete-toast',
+      );
+
+      // Se piden de nuevo los servicios
+      await fetchServicios();
+    } catch (error) {
+      toastError(
+        typeof error === 'string'
+          ? error
+          : 'Error al intentar eliminar el servicio.',
+        'delete-service-error',
+      );
+    } finally {
+      setIsLoadingData(false);
+    }
   };
 
   // <--------------- RENDER --------------->
+  if (isLoadingData) return <Loader height='100%' />;
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchServicios}
+        offsetMobile='64px'
+        offsetDesktop='80px'
+      />
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -125,7 +175,7 @@ const Services = () => {
           >
             {/* Boton regreso */}
             <IconButton
-              onClick={() => setServicioEditando(null)}
+              onClick={() => handleCloseForm(true)}
               sx={{
                 color: 'white',
                 backgroundColor: 'background.hoverLighter',
@@ -160,9 +210,9 @@ const Services = () => {
           <Box sx={{ mt: 5 }}>
             <ServiceForm
               service={servicioEditando}
-              onCancel={() => setServicioEditando(null)}
-              onSave={handleSaveService}
-              isEditing={servicioEditando.id === 'nuevo' ? true : false}
+              isEditing={servicioEditando._id !== undefined}
+              onCancel={() => handleCloseForm(true)}
+              onSave={() => handleCloseForm(true)}
             />
           </Box>
         </Box>
@@ -192,20 +242,22 @@ const Services = () => {
             </Box>
 
             {/* Agregar servicio */}
-            <MainButton
-              size={{ xs: '14px', md: '16px' }}
-              onClick={() => setServicioEditando({ id: 'nuevo' })}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <AddIcon fontSize='small' /> Agregar servicio
-              </Box>
-            </MainButton>
+            {!serverError && (
+              <MainButton
+                size={{ xs: '14px', md: '16px' }}
+                onClick={() => setServicioEditando({ id: 'nuevo' })}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <AddIcon fontSize='small' /> Agregar servicio
+                </Box>
+              </MainButton>
+            )}
           </Box>
 
           {/* Buscar servicio */}
           <TextField
             fullWidth
-            placeholder='Buscar servicio por nombre...'
+            placeholder='Busca un servicio por su nombre'
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             sx={{
@@ -229,20 +281,29 @@ const Services = () => {
 
           {/* Lista de servicios */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {serviciosFiltrados.length > 0 ? (
+            {servicios.length === 0 ? (
+              // No existen servicios en la base de datos
+              <Text
+                children='No tienes servicios registrados.'
+                color='text.disabled'
+                align='center'
+              />
+            ) : serviciosFiltrados.length > 0 ? (
+              // Hay servicios y coinciden con la busqueda
               serviciosFiltrados.map((servicio) => (
                 <Collapsable
-                  key={servicio.id}
+                  key={servicio._id}
                   headerContent={<ServiceHeader service={servicio} />}
                 >
                   <ServiceBody
                     service={servicio}
-                    onEdit={setServicioEditando}
-                    onDeleteConfirm={() => handleDelete(servicio.id)}
+                    onEdit={handleEdit}
+                    onDeleteConfirm={() => handleDelete(servicio._id)}
                   />
                 </Collapsable>
               ))
             ) : (
+              //Hay servicios pero ninguno coincide con la busqueda
               <Text
                 children='No se encontraron servicios con ese nombre.'
                 color='text.disabled'

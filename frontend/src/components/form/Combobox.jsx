@@ -27,21 +27,30 @@ const Combobox = ({
   hasImage = false,
   placeholder,
   defaultValue = '',
+  onValueChange,
+  disabled = false,
+  value,
 }) => {
   const theme = useTheme();
   const [labelName, setLabelName] = useState(defaultValue);
 
   const handleChange = (event) => {
     setLabelName(event.target.value);
+    if (onValueChange) {
+      onValueChange(event.target.value);
+    }
   };
+
+  const currentValue = value !== undefined ? value : labelName;
 
   return (
     <FormControl sx={{ width: '100%' }}>
       <Select
         id='select'
-        value={labelName}
+        value={currentValue}
         onChange={handleChange}
         displayEmpty
+        disabled={disabled}
         renderValue={(selected) => {
           if (!selected) {
             return <span style={{ opacity: 0.6 }}>{placeholder || name}</span>;
@@ -100,10 +109,12 @@ const Combobox = ({
                 py: 1.5,
               },
               '& .MuiMenuItem-root:hover': {
-                backgroundColor: (theme) => `${theme.palette.background.menuHover} !important`,
+                backgroundColor: (theme) =>
+                  `${theme.palette.background.menuHover} !important`,
               },
               '& .MuiMenuItem-root.Mui-selected': {
-                backgroundColor: (theme) => `${theme.palette.background.menuSelected} !important`,
+                backgroundColor: (theme) =>
+                  `${theme.palette.background.menuSelected} !important`,
                 color: 'text.primary',
               },
             },
@@ -121,8 +132,18 @@ const Combobox = ({
             paddingRight: '40px !important',
             boxSizing: 'border-box',
           },
-          '.MuiSvgIcon-root': { fill: (theme) => theme.palette.primary.main + ' !important' },
+          '.MuiSvgIcon-root': {
+            fill: (theme) => theme.palette.primary.main + ' !important',
+          },
           '.MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
+
+          '&.Mui-disabled': {
+            opacity: 0.5, 
+            '& .MuiSelect-select': {
+              color: 'text.primary',
+              WebkitTextFillColor: 'white',
+            },
+          },
         }}
       >
         <MenuItem value='' disabled sx={{ display: 'none' }}>

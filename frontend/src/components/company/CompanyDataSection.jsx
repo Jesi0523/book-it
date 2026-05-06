@@ -12,11 +12,13 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 // Componentes propios
 import MainButton from '@/components/common/MainButton';
 import TextInput from '@/components/form/TextInput';
+import Text from '@/components/common/Text';
 
 const CompanyDataSection = ({
   formData,
   handleInputChange,
   handleLogoChange,
+  formErrors = {},
 }) => {
   // <--------------- RENDER --------------->
   return (
@@ -79,11 +81,21 @@ const CompanyDataSection = ({
               <UploadFileIcon fontSize='small' /> Subir logo
               <input
                 type='file'
-                accept='image/*'
+                accept='.png, .jpeg, .jpg, .webp'
                 onChange={handleLogoChange}
                 style={{ display: 'none' }}
               />
             </MainButton>
+
+            {/* Error */}
+            {formErrors.logo && (
+              <Text
+                children={formErrors.logo[0]}
+                color='error.main'
+                size='14px'
+                align='center'
+              />
+            )}
           </Box>
         </Grid>
 
@@ -105,6 +117,7 @@ const CompanyDataSection = ({
               value={formData.nombre}
               onChange={handleInputChange}
               placeholder='Ejemplo'
+              helperText={formErrors.nombre ? formErrors.nombre[0] : ''}
             />
 
             {/* Correo */}
@@ -114,16 +127,19 @@ const CompanyDataSection = ({
               type='email'
               value={formData.correo}
               onChange={handleInputChange}
-              placeholder='Ejemplo'
+              placeholder='ejemplo@gmail.com'
+              helperText={formErrors.correo ? formErrors.correo[0] : ''}
             />
 
             {/* Telefono */}
             <TextInput
               label='Número telefónico'
               name='telefono'
+              type='number'
               value={formData.telefono}
               onChange={handleInputChange}
-              placeholder='Ejemplo'
+              placeholder='Ej: 8123456789'
+              helperText={formErrors.telefono ? formErrors.telefono[0] : ''}
             />
           </Box>
         </Grid>
@@ -138,6 +154,7 @@ const CompanyDataSection = ({
             multiline
             rows={5}
             placeholder='Ejemplo'
+            helperText={formErrors.descripcion ? formErrors.descripcion[0] : ''}
             sx={{
               '& .MuiOutlinedInput-root': {
                 borderRadius: '24px',
@@ -155,6 +172,7 @@ const CompanyDataSection = ({
             value={formData.slogan}
             onChange={handleInputChange}
             placeholder='Ejemplo'
+            helperText={formErrors.slogan ? formErrors.slogan[0] : ''}
           />
         </Grid>
 
@@ -166,6 +184,7 @@ const CompanyDataSection = ({
             value={formData.direccion}
             onChange={handleInputChange}
             placeholder='Ejemplo'
+            helperText={formErrors.direccion ? formErrors.direccion[0] : ''}
           />
         </Grid>
       </Grid>

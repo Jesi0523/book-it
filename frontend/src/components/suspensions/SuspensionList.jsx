@@ -13,6 +13,7 @@ import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 // Componentes propios
 import Text from '@/components/common/Text';
 import BaseDialog from '@/components/common/BaseDialog';
+import Loader from '@/components/common/Loader'; 
 
 // <--------------- CONSTANTES --------------->
 const meses = [
@@ -30,7 +31,7 @@ const meses = [
   'Diciembre',
 ];
 
-const anios = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+const anios = Array.from({ length: 100 }, (_, i) => 2000 + i);
 
 const SuspensionList = ({
   mesFiltro,
@@ -38,6 +39,7 @@ const SuspensionList = ({
   anioFiltro,
   setAnioFiltro,
   listaSuspensiones,
+  isListLoading,
   handleEliminarSuspension,
   selectMenuProps,
   selectEstilos,
@@ -140,7 +142,11 @@ const SuspensionList = ({
 
       {/* Lista de suspensiones */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {listaSuspensiones.length === 0 ? (
+        {isListLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+            <Loader height='auto' />
+          </Box>
+        ) : listaSuspensiones.length === 0 ? (
           <Text
             children='No hay suspensiones registradas en este periodo.'
             color='text.disabled'

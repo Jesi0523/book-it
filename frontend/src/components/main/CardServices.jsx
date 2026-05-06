@@ -28,7 +28,7 @@ const CardServices = ({image, name, description}) =>
           <Title children={name} align='center' color='text.primary' size='20'/>
         </Box>
         
-        <Text children={description} align='justify' color='primary.main' size='14'/>
+        <Text children={description} align='center' color='primary.main' size='14'/>
       </CardContent>
     </Card>
   );

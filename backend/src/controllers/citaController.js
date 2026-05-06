@@ -43,9 +43,18 @@ const getCitas = async (req, res) => {
             });
         }
 
-        const citas = await Cita.find({ fecha, estado: { $ne: "cancelada" } })
-            .populate("usuarioId", "nombre apellido telefono")
-            .populate("empleadoId", "nombre");
+        const inicioDia = new Date(fecha);
+        inicioDia.setUTCHours(0, 0, 0, 0);
+
+        const finDia = new Date(fecha);
+        finDia.setUTCHours(23, 59, 59, 999);
+
+        const citas = await Cita.find({
+          fecha: { $gte: inicioDia, $lte: finDia },
+          estado: { $ne: 'cancelada' },
+        })
+          .populate('usuarioId', 'nombre apellido telefono')
+          .populate('empleadoId', 'nombre');
 
         res.status(200).json({
             ok: true,

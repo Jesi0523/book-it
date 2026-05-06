@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 // MUI
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -5,15 +7,54 @@ import Grid from '@mui/material/Grid';
 
 // Icono
 import EditIcon from '@mui/icons-material/Edit';
+import SyncIcon from '@mui/icons-material/Sync';
+import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
 
 // Componentes propios
 import Text from '@/components/common/Text';
 import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import MainButton from '@/components/common/MainButton';
+import BaseDialog from '@/components/common/BaseDialog';
 
-const EmployeeBody = ({ employee, onEdit }) => {
+const EmployeeBody = ({ employee, onEdit, onToggleEstado, listaServicios }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
+
+  // <--------------- ESTADOS --------------->
+  const [isToggling, setIsToggling] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // <--------------- DERIVADO --------------->
+  const nombresServicios = employee.servicios
+    ?.map((id) => listaServicios.find((s) => s._id === id)?.nombre)
+    .filter((nombre) => nombre);
+
+  // <--------------- FUNCIONES --------------->
+  // Abre el dialogo
+  const handleToggleEstado = () => {
+    if (isToggling) return;
+
+    if (employee.activo) {
+      setIsDialogOpen(true);
+    } else {
+      executeToggle();
+    }
+  };
+
+  // Cerrar dialogo
+  const handleCloseDialog = (hasAccepted) => {
+    setIsDialogOpen(false);
+    if (hasAccepted) {
+      executeToggle();
+    }
+  };
+
+  // Funcion que llama a la API
+  const executeToggle = async () => {
+    setIsToggling(true);
+    await onToggleEstado(employee._id, employee.activo);
+    setIsToggling(false);
+  };
 
   // <--------------- RENDER --------------->
   return (
@@ -38,7 +79,14 @@ const EmployeeBody = ({ employee, onEdit }) => {
               align='center'
             />
             <SimpleInfoDisplay
-              title={employee.birthdate}
+              title={
+                employee.fechaNacimiento
+                  ? new Date(employee.fechaNacimiento).toLocaleDateString(
+                      'es-MX',
+                      { timeZone: 'UTC' },
+                    )
+                  : 'No especificada'
+              }
               titleColor='white'
               titleSize={{ xs: '16px', md: '16px' }}
               align='center'
@@ -62,7 +110,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
               align='center'
             />
             <SimpleInfoDisplay
-              title={employee.phone}
+              title={employee.telefono || 'No especificado'}
               titleColor='white'
               titleSize={{ xs: '16px', md: '16px' }}
               align='center'
@@ -104,7 +152,7 @@ const EmployeeBody = ({ employee, onEdit }) => {
               }}
             >
               <Text
-                children={employee.info}
+                children={employee.informacion || 'Sin información adicional.'}
                 color='white'
                 size='14px'
                 align='center'
@@ -142,15 +190,27 @@ const EmployeeBody = ({ employee, onEdit }) => {
                 justifyContent: 'center',
               }}
             >
-              {employee.schedule.split('\n').map((linea, index) => (
+              {employee.horario && employee.horario.length > 0 ? (
+                employee.horario.map((turno) => {
+                  const diaCapitalizado =
+                    turno.dia.charAt(0).toUpperCase() + turno.dia.slice(1);
+                  return (
+                    <Text
+                      key={turno._id}
+                      children={`${diaCapitalizado}: ${turno.horaInicio} - ${turno.horaFin}`}
+                      color='white'
+                      size='14px'
+                      align='center'
+                    />
+                  );
+                })
+              ) : (
                 <Text
-                  key={index}
-                  children={linea}
-                  color='white'
+                  children='No tiene horario registrado'
                   size='14px'
                   align='center'
                 />
-              ))}
+              )}
             </Box>
           </Box>
         </Grid>
@@ -184,7 +244,11 @@ const EmployeeBody = ({ employee, onEdit }) => {
           }}
         >
           <Text
-            children={employee.services.join(' • ')}
+            children={
+              nombresServicios?.length > 0
+                ? nombresServicios.join(' • ')
+                : 'Ningún servicio asignado'
+            }
             color='white'
             size='14px'
             align='center'
@@ -192,21 +256,79 @@ const EmployeeBody = ({ employee, onEdit }) => {
         </Box>
       </Box>
 
-      {/* Boton editar */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      {/* Botones */}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'center',
+          gap: 4,
+          mt: 2,
+        }}
+      >
+        {/* Boton editar */}
+        {employee.activo && (
+          <MainButton
+            size={{ xs: '14px', md: '16px' }}
+            onClick={() => onEdit(employee)}
+            sx={{
+              backgroundColor: 'primary.light',
+              display: 'flex',
+              gap: 1,
+              alignItems: 'center',
+            }}
+          >
+            <EditIcon fontSize='small' /> Editar información
+          </MainButton>
+        )}
+
+        {/* Boton estado */}
         <MainButton
           size={{ xs: '14px', md: '16px' }}
-          onClick={() => onEdit(employee)}
+          onClick={handleToggleEstado}
+          disabled={isToggling}
           sx={{
-            backgroundColor: 'primary.light',
+            backgroundColor: isToggling
+              ? 'action.disabledBackground'
+              : 'primary.light',
+            color: isToggling ? 'action.disabled' : 'primary.contrastText',
             display: 'flex',
             gap: 1,
             alignItems: 'center',
+            cursor: isToggling ? 'not-allowed' : 'pointer',
+            transition: 'all 0.3s ease',
           }}
         >
-          <EditIcon fontSize='small' /> Editar información
+          <SyncIcon
+            fontSize='small'
+            sx={{
+              animation: isToggling ? 'spin 2s linear infinite' : 'none',
+              '@keyframes spin': { '100%': { transform: 'rotate(360deg)' } },
+            }}
+          />
+          {isToggling ? 'Cambiando' : 'Cambiar estado'}
         </MainButton>
       </Box>
+
+      {/* Dialogo */}
+      <BaseDialog
+        id='toggle-employee-dialog'
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        title={'Advertencia'}
+        fontSizeContent={18}
+        icon={<AdvertismentIcon />}
+        content={
+          <>
+            Al desactivar a este empleado, su horario será eliminado, se le
+            desasignarán los servicios y{' '}
+            <b>todas sus citas pendientes serán canceladas.</b>
+            <br />
+            <br />
+            ¿Desea continuar?
+          </>
+        }
+      />
     </Box>
   );
 };

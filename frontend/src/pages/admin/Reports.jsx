@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // MUI
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+
+// API
+import {
+  getReporteCitas,
+  getReporteIngresos,
+  getReporteServicios,
+  getReporteProductividad,
+} from '@/api/reportes.api';
+
+// Utils
+import { toastError } from '@/utils/notify';
 
 // DAYJS
 import dayjs from 'dayjs';
@@ -11,6 +22,8 @@ import dayjs from 'dayjs';
 // Componentes propios
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
+import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 
 // REPORTES
 import AppointmentsReport from '@/components/reports/AppointmentsReport';
@@ -53,14 +66,84 @@ const Reports = () => {
   const anioActualNum = dayjs().year();
 
   // <--------------- DERIVADO --------------->
-  const aniosList = Array.from({ length: 10 }, (_, i) =>
-    (anioActualNum - 1 + i).toString(),
+  const aniosList = Array.from({ length: 100 }, (_, i) =>
+    (2000 + i).toString(),
   );
 
   // <--------------- ESTADOS --------------->
   const [activeTab, setActiveTab] = useState(0);
   const [mesFiltro, setMesFiltro] = useState(mesesNombres[mesActualIndex]);
   const [anioFiltro, setAnioFiltro] = useState(anioActualNum.toString());
+
+  const [apiData, setApiData] = useState({ etiquetas: [], valores: [] });
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+  const [isReportLoading, setIsReportLoading] = useState(false);
+  const [serverError, setServerError] = useState(false);
+
+  // <--------------- EFFECTS --------------->
+  useEffect(() => {
+    const fetchReportData = async () => {
+      if (isFirstLoad) {
+        setIsPageLoading(true);
+        setServerError(false);
+      } else {
+        setIsReportLoading(true);
+      }
+
+      try {
+        const mesInt = mesesNombres.indexOf(mesFiltro) + 1;
+        let res;
+
+        if (activeTab === 0) res = await getReporteCitas(mesInt, anioFiltro);
+        else if (activeTab === 1)
+          res = await getReporteIngresos(mesInt, anioFiltro);
+        else if (activeTab === 2)
+          res = await getReporteServicios(mesInt, anioFiltro);
+        else if (activeTab === 3)
+          res = await getReporteProductividad(mesInt, anioFiltro);
+
+        if (res && res.ok) {
+          setApiData({
+            etiquetas: res.etiquetas || [],
+            valores: res.valores || [],
+          });
+        } else {
+          setApiData({ etiquetas: [], valores: [] });
+        }
+      } catch (error) {
+        setApiData({ etiquetas: [], valores: [] });
+        const msg =
+          typeof error === 'string'
+            ? error
+            : 'Ocurrió un error al obtener el reporte.';
+
+        if (msg === 'No hay conexión con el servidor.') {
+          if (isFirstLoad) {
+            setServerError(true);
+          } else {
+            toastError(
+              'Se perdió la conexión con el servidor.',
+              'report-conn-error',
+            );
+          }
+        } else {
+          toastError(msg, 'report-fetch-error');
+        }
+      } finally {
+        if (isFirstLoad) {
+          setIsPageLoading(false);
+          setIsFirstLoad(false);
+        } else {
+          setIsReportLoading(false);
+        }
+      }
+    };
+
+    fetchReportData();
+  }, [activeTab, mesFiltro, anioFiltro, refreshTrigger]);
 
   // <--------------- CONFIG DE UI --------------->
   const tabs = [
@@ -96,6 +179,23 @@ const Reports = () => {
   };
 
   // <--------------- RENDER --------------->
+  if (isPageLoading) return <Loader height='100%' />;
+
+  if (serverError) {
+    return (
+      <ErrorScreen
+        onRetry={() => {
+          setIsFirstLoad(true);
+          setIsPageLoading(true);
+          setServerError(false);
+          setRefreshTrigger((prev) => prev + 1);
+        }}
+        offsetMobile='64px'
+        offsetDesktop='80px'
+      />
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -194,16 +294,58 @@ const Reports = () => {
       </Box>
 
       {/* Reportes */}
-      <Box sx={{ mt: 2 }}>
-        {activeTab === 0 && (
-          <AppointmentsReport mes={mesFiltro} anio={anioFiltro} />
-        )}
-        {activeTab === 1 && <IncomeReport mes={mesFiltro} anio={anioFiltro} />}
-        {activeTab === 2 && (
-          <ServicesReport mes={mesFiltro} anio={anioFiltro} />
-        )}
-        {activeTab === 3 && (
-          <ProductivityReport mes={mesFiltro} anio={anioFiltro} />
+      <Box
+        sx={{
+          mt: 2,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {isReportLoading ? (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexGrow: 1,
+            }}
+          >
+            <Loader height='20vh' />
+          </Box>
+        ) : apiData.etiquetas.length === 0 ||
+          apiData.valores.reduce((a, b) => a + b, 0) === 0 ? (
+          <Box
+            sx={{
+              p: 5,
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
+          >
+            <Text
+              children='No hay datos para mostrar en este período.'
+              color='text.primary'
+              align='center'
+              size={{ xs: 18, md: 20 }}
+              fontWeight='bold'
+            />
+            <Box sx={{ mt: 1 }}>
+              <Text
+                children='Intenta seleccionando un mes o año diferente.'
+                color='text.secondary'
+                align='center'
+                size={{ xs: 14, md: 16 }}
+              />
+            </Box>
+          </Box>
+        ) : (
+          <>
+            {activeTab === 0 && <AppointmentsReport apiData={apiData} />}
+            {activeTab === 1 && <IncomeReport apiData={apiData} />}
+            {activeTab === 2 && <ServicesReport apiData={apiData} />}
+            {activeTab === 3 && <ProductivityReport apiData={apiData} />}
+          </>
         )}
       </Box>
     </Box>

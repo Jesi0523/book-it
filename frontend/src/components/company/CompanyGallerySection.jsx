@@ -21,6 +21,7 @@ const CompanyGallerySection = ({
   galleryImages,
   onGalleryImagesChange,
   onRemoveGalleryImage,
+  errors = {},
 }) => {
   // <--------------- RENDER --------------->
   return (
@@ -33,7 +34,10 @@ const CompanyGallerySection = ({
       {/* Imagen principal */}
       <Grid container spacing={4}>
         <Grid size={{ xs: 12, md: 4 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box
+            id='field-imagenPrincipal'
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+          >
             {/* Texto */}
             <Text
               children='Imagen principal'
@@ -88,17 +92,28 @@ const CompanyGallerySection = ({
               <UploadFileIcon fontSize='small' /> Subir principal
               <input
                 type='file'
-                accept='image/*'
+                accept='.png, .jpeg, .jpg, .webp'
                 onChange={onMainImageChange}
                 style={{ display: 'none' }}
               />
             </MainButton>
+
+            {/* Error */}
+            {errors.imagenPrincipal && (
+              <Text
+                children={errors.imagenPrincipal[0]}
+                color='error.main'
+                size='14px'
+                align='center'
+              />
+            )}
           </Box>
         </Grid>
 
         {/* Galeria */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Box
+            id='field-galeria'
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -143,7 +158,7 @@ const CompanyGallerySection = ({
                 + Añadir más
                 <input
                   type='file'
-                  accept='image/*'
+                  accept='.png, .jpeg, .jpg, .webp'
                   multiple
                   onChange={onGalleryImagesChange}
                   style={{ display: 'none' }}
@@ -227,6 +242,15 @@ const CompanyGallerySection = ({
                 ))
               )}
             </Box>
+
+            {/* Error */}
+            {errors.galeria && (
+              <Text
+                children={errors.galeria[0]}
+                color='error.main'
+                size='14px'
+              />
+            )}
           </Box>
         </Grid>
       </Grid>

@@ -2,7 +2,10 @@
 import React, { useState, useEffect } from 'react';
 
 // Utils
-import { toastNeutral } from '@/utils/notify';
+import { toastNeutral, toastError, toastSuccess } from '@/utils/notify';
+
+// API
+import { updateCitaStatus } from '@/api/citas.api';
 
 // MUI
 import { useTheme } from '@mui/material/styles';
@@ -28,7 +31,7 @@ import SimpleInfoDisplay from '@/components/common/SimpleInfoDisplay';
 import BaseDialog from '@/components/common/BaseDialog';
 
 // <--------------- CONSTANTES --------------->
-const OPCIONES_ESTADO = ['Pendiente', 'Completada', 'Cancelada', 'No asistió'];
+const OPCIONES_ESTADO = ['Pendiente', 'Confirmada', 'Realizada'];
 
 const AppointmentModal = ({ open, onClose, appointment }) => {
   // <--------------- CONTEXTO --------------->
@@ -43,30 +46,83 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
   // Sincroniza el estado local con la cita recibida
   useEffect(() => {
     if (appointment) {
-      setEstadoCita(
-        appointment.status?.name || appointment.status || 'Pendiente',
-      );
+      const rawStatus =
+        appointment.estado ||
+        appointment.status?.name ||
+        appointment.status ||
+        'pendiente';
+
+      const capitalizedStatus =
+        rawStatus.charAt(0).toUpperCase() + rawStatus.slice(1);
+
+      setEstadoCita(capitalizedStatus);
     }
   }, [appointment]);
 
   // <--------------- FUNCIONES --------------->
 
+  // Función para extraer el texto exacto del error del backend
+  const extractErrorMessage = (error, defaultMsg) => {
+    if (typeof error === 'string') return error;
+    if (typeof error === 'object' && error !== null) {
+      const primerError = Object.values(error)[0];
+      return primerError?.msg || defaultMsg;
+    }
+    return defaultMsg;
+  };
+
   // Abre el dialogo de cancelacion
   const handleOpenCancelDialog = () => setIsCancelDialogOpen(true);
 
-  // Funcion que cierra el dialogo de cancelar cita
-  const handleCloseCancelDialog = (hasAccepted) => {
+  // Confirma y procesa la cancelacion
+  const handleCloseCancelDialog = async (hasAccepted) => {
     setIsCancelDialogOpen(false);
 
     if (hasAccepted) {
-      toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
+      try {
+        await updateCitaStatus(appointment._id, 'cancelada');
+        toastNeutral('La cita ha sido cancelada.', 'cancel-appointment-toast');
 
-      onClose();
+        onClose(true); // Se recarga el calendario
+      } catch (error) {
+        toastError(
+          extractErrorMessage(error, 'Error al cancelar la cita'),
+          'error-change-status',
+        );
+      }
+    }
+  };
+
+  // PATCH status cita
+  const handleStatusChange = async (event) => {
+    const nuevoEstado = event.target.value;
+
+    try {
+      await updateCitaStatus(appointment._id, nuevoEstado.toLowerCase());
+
+      setEstadoCita(nuevoEstado);
+
+      if (nuevoEstado === 'Cancelada') {
+        toastNeutral(`La cita ahora está: ${nuevoEstado}`, 'status-update');
+      } else {
+        toastSuccess(
+          `La cita ha sido marcada como ${nuevoEstado}`,
+          'status-update',
+        );
+      }
+    } catch (error) {
+      toastError(
+        extractErrorMessage(error, 'Error al actualizar el estado de la cita'),
+        'error-status-update',
+      );
     }
   };
 
   // <--------------- EARLY RETURN --------------->
   if (!appointment) return null;
+
+  const showCancelButton =
+    estadoCita !== 'Realizada' && estadoCita !== 'Cancelada';
 
   // <--------------- RENDER --------------->
   return (
@@ -97,7 +153,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
       >
         {/* Titulo */}
         <Title
-          children={appointment.title || 'SERVICIO 1'}
+          children={appointment.servicioAgendado?.nombreSnapshot || 'Servicio'}
           color='white'
           size={{ xs: '24px', md: '32px' }}
         />
@@ -137,7 +193,15 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
           }}
         >
           <Text
-            children={appointment.dateStr || 'Febrero 11, 2026 9:00 a 10:00.'}
+            children={
+              appointment.fecha
+                ? new Date(appointment.fecha).toLocaleDateString('es-ES', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }) + ` de ${appointment.horaInicio} a ${appointment.horaFin}`
+                : 'Fecha no disponible'
+            }
             color='primary.light'
             size='16px'
           />
@@ -146,7 +210,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         {/* Estado de la cita */}
         <Select
           value={estadoCita}
-          onChange={(e) => setEstadoCita(e.target.value)}
+          onChange={handleStatusChange}
           IconComponent={() => (
             <ArrowDropDownIcon
               sx={{ color: 'primary.light', mr: 1, pointerEvents: 'none' }}
@@ -232,7 +296,12 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
         <Box>
           <SimpleInfoDisplay
             title='Costo: '
-            text={appointment.price || '$$$$'}
+            text={
+              appointment.servicioAgendado?.precioSnapshot !== undefined &&
+              appointment.servicioAgendado?.precioSnapshot !== null
+                ? `$${parseFloat(appointment.servicioAgendado.precioSnapshot).toFixed(2)} MXN`
+                : '$0.00 MXN'
+            }
             align='center'
             width='fit-content'
             textWeight='bold'
@@ -276,9 +345,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                 />
                 <SimpleInfoDisplay
                   title={
-                    appointment.clientData?.name ||
-                    appointment.client ||
-                    'John Doe'
+                    appointment.datosCliente?.nombre || 'Nombre no encontrado'
                   }
                 />
               </Box>
@@ -288,7 +355,9 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Edad' color='primary.main' size='14' />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.age || '25'}
+                  title={
+                    appointment.datosCliente?.edad || 'Edad no especificada'
+                  }
                 />
               </Box>
             </Grid>
@@ -300,7 +369,12 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text children='Sexo' color='primary.main' size='14' />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.gender || 'Masculino'}
+                  title={
+                    appointment.datosCliente?.sexo
+                      ? appointment.datosCliente.sexo.charAt(0).toUpperCase() +
+                        appointment.datosCliente.sexo.slice(1)
+                      : 'Sexo no especificado'
+                  }
                 />
               </Box>
             </Grid>
@@ -313,7 +387,9 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                   size='14'
                 />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.mail || 'jonD@gmail.com'}
+                  title={
+                    appointment.datosCliente?.correo || 'Correo no encontrado'
+                  }
                 />
               </Box>
             </Grid>
@@ -324,7 +400,7 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
             spacing={{ xs: 2, md: 5 }}
             sx={{ display: 'flex', alignItems: 'flex-end' }}
           >
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: showCancelButton ? 6 : 12 }}>
               {/* Numero */}
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Text
@@ -333,34 +409,40 @@ const AppointmentModal = ({ open, onClose, appointment }) => {
                   size='14'
                 />
                 <SimpleInfoDisplay
-                  title={appointment.clientData?.phoneNumber || '81 3161 9950'}
+                  title={
+                    appointment.datosCliente?.telefono ||
+                    'Teléfono no encontrado'
+                  }
                 />
               </Box>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              {/* Boton cancelar cita */}
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: { xs: 'center', md: 'flex-end' },
-                }}
-              >
-                <MainButton
-                  onClick={handleOpenCancelDialog}
-                  size={{ xs: '14px', md: '16px' }}
+
+            {showCancelButton && (
+              <Grid size={{ xs: 12, md: 6 }}>
+                {/* Boton cancelar cita */}
+                <Box
                   sx={{
-                    mt: 1,
                     display: 'flex',
-                    gap: 1,
-                    alignItems: 'center',
-                    backgroundColor: 'primary.light',
-                    color: 'primary.contrastText',
+                    justifyContent: { xs: 'center', md: 'flex-end' },
                   }}
                 >
-                  <CloseIcon /> Cancelar cita
-                </MainButton>
-              </Box>
-            </Grid>
+                  <MainButton
+                    onClick={handleOpenCancelDialog}
+                    size={{ xs: '14px', md: '16px' }}
+                    sx={{
+                      mt: 1,
+                      display: 'flex',
+                      gap: 1,
+                      alignItems: 'center',
+                      backgroundColor: 'primary.light',
+                      color: 'primary.contrastText',
+                    }}
+                  >
+                    <CloseIcon /> Cancelar cita
+                  </MainButton>
+                </Box>
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Box>

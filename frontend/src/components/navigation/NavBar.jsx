@@ -1,6 +1,15 @@
 // React
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
+
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
+// API
+import { getEmpresa } from '@/api/empresa.api';
+
+// Constantes
+import { ROUTES } from '@/constants/routes';
 
 // MUI
 import AppBar from '@mui/material/AppBar';
@@ -20,7 +29,7 @@ import NavOptions from '@/components/navigation/options/NavOptions';
 import BaseDialog from '@/components/common/BaseDialog';
 
 // ************** imagenes **************
-import logo from '@/assets/logo/Logo1.webp';
+import defaultLogo from '@/assets/logo/Logo1.webp';
 
 // ************** iconos **************
 import MenuIcon from '@mui/icons-material/Menu';
@@ -40,11 +49,36 @@ function NavBar() {
 
   // <--------------- DERIVADO --------------->
   const currentPath = location.pathname;
-  const isLanding = currentPath === '/';
+
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const userName = user?.name || 'Usuario';
+  const userEmail = user?.email || 'Correo';
+  const isLogged = isAuthenticated;
 
   // <--------------- ESTADOS --------------->
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [openSessionDialog, setOpenSessionDialog] = useState(false);
+  const [logoEmpresa, setLogoEmpresa] = useState(null);
+
+  // <--------------- EFFECTS --------------->
+  // Obtener el logo de la empresa
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const data = await getEmpresa();
+        if (data.empresa?.logo?.url) {
+          setLogoEmpresa(data.empresa.logo.url);
+        } else {
+          setLogoEmpresa(defaultLogo);
+        }
+      } catch (error) {
+        setLogoEmpresa(defaultLogo);
+      }
+    };
+
+    fetchLogo();
+  }, []);
 
   // <--------------- FUNCIONES --------------->
   // Funcion abre menu en cel
@@ -66,11 +100,11 @@ function NavBar() {
   const handleCloseSessionDialog = (hasAccepted) => {
     setOpenSessionDialog(false);
     if (hasAccepted) {
-      navigate('/login');
+      logout();
     }
   };
 
-  // <--------------- RENDER --------------->  
+  // <--------------- RENDER --------------->
   return (
     <AppBar
       position='fixed'
@@ -78,26 +112,30 @@ function NavBar() {
     >
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
-          {isLanding ? (
+          {!isLogged ? (
             // Landing Page
             <>
-              <Link component={RouterLink} to='/'>
-                <img
-                  src={logo}
-                  alt='Logo'
-                  style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
-                />
+              <Link component={RouterLink} to={ROUTES.PUBLIC.ROOT}>
+                {logoEmpresa && (
+                  <img
+                    src={logoEmpresa}
+                    alt='Logo'
+                    style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
+                  />
+                )}
               </Link>
             </>
           ) : (
             // Main Page
             <>
-              <Link component={RouterLink} to='/main'>
-                <img
-                  src={logo}
-                  alt='Logo'
-                  style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
-                />
+              <Link component={RouterLink} to={ROUTES.CLIENT.MAIN}>
+                {logoEmpresa && (
+                  <img
+                    src={logoEmpresa}
+                    alt='Logo'
+                    style={{ margin: '5px', width: '35px', cursor: 'pointer' }}
+                  />
+                )}
               </Link>
             </>
           )}
@@ -138,12 +176,12 @@ function NavBar() {
                 },
               }}
             >
-              {isLanding
+              {!isLogged
                 ? [
                     <MenuItem
                       key='login'
                       component={RouterLink}
-                      to='/login'
+                      to={ROUTES.PUBLIC.LOGIN}
                       onClick={handleCloseNavMenu}
                     >
                       <HowToRegIcon />
@@ -152,7 +190,7 @@ function NavBar() {
                     <MenuItem
                       key='signup'
                       component={RouterLink}
-                      to='/signup'
+                      to={ROUTES.PUBLIC.SIGNUP}
                       onClick={handleCloseNavMenu}
                     >
                       <PersonAddIcon />
@@ -163,11 +201,11 @@ function NavBar() {
                     <MenuItem
                       key='main'
                       component={RouterLink}
-                      to='/main'
+                      to={ROUTES.CLIENT.MAIN}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/main'
+                          currentPath === ROUTES.CLIENT.MAIN
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -177,11 +215,11 @@ function NavBar() {
                     <MenuItem
                       key='book'
                       component={RouterLink}
-                      to='/book-appointment'
+                      to={ROUTES.CLIENT.BOOK}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/book-appointment'
+                          currentPath === ROUTES.CLIENT.BOOK
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -191,11 +229,11 @@ function NavBar() {
                     <MenuItem
                       key='schedule'
                       component={RouterLink}
-                      to='/my-appointments'
+                      to={ROUTES.CLIENT.APPOINTMENTS}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/my-appointments'
+                          currentPath === ROUTES.CLIENT.APPOINTMENTS
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -205,11 +243,11 @@ function NavBar() {
                     <MenuItem
                       key='profile'
                       component={RouterLink}
-                      to='/profile'
+                      to={ROUTES.CLIENT.PROFILE}
                       onClick={handleCloseNavMenu}
                       sx={{
                         color:
-                          currentPath === '/profile'
+                          currentPath === ROUTES.CLIENT.PROFILE
                             ? 'secondary.blueShade'
                             : 'inherit',
                       }}
@@ -228,17 +266,17 @@ function NavBar() {
               justifyContent: 'end',
             }}
           >
-            {isLanding ? (
+            {!isLogged ? (
               // Landing Page
               <>
                 <NavOptions
                   icon={<HowToRegIcon />}
-                  link='/login'
+                  link={ROUTES.PUBLIC.LOGIN}
                   text='Inicia sesión'
                 />
                 <NavOptions
                   icon={<PersonAddIcon />}
-                  link='/signup'
+                  link={ROUTES.PUBLIC.SIGNUP}
                   text='Regístrate'
                 />
               </>
@@ -247,43 +285,43 @@ function NavBar() {
               <>
                 <NavOptions
                   icon={<HomeIcon />}
-                  link='/main'
+                  link={ROUTES.CLIENT.MAIN}
                   text='Inicio'
-                  isActive={currentPath === '/main'}
+                  isActive={currentPath === ROUTES.CLIENT.MAIN}
                 />
                 <NavOptions
                   icon={<EditCalendarIcon />}
-                  link='/book-appointment'
+                  link={ROUTES.CLIENT.BOOK}
                   text='Agendar cita'
-                  isActive={currentPath === '/book-appointment'}
+                  isActive={currentPath === ROUTES.CLIENT.BOOK}
                 />
                 <NavOptions
                   icon={<CalendarIcon />}
-                  link='/my-appointments'
+                  link={ROUTES.CLIENT.APPOINTMENTS}
                   text='Mis citas'
-                  isActive={currentPath === '/my-appointments'}
+                  isActive={currentPath === ROUTES.CLIENT.APPOINTMENTS}
                 />
                 <NavOptions
                   icon={<UserIcon />}
-                  link='/profile'
+                  link={ROUTES.CLIENT.PROFILE}
                   text='Ver perfil'
-                  isActive={currentPath === '/profile'}
+                  isActive={currentPath === ROUTES.CLIENT.PROFILE}
                 />
               </>
             )}
           </Box>
 
           {/* Nombre y cerrar sesion */}
-          {!isLanding && (
+          {isLogged && (
             <>
               <Box
                 sx={{
                   flexGrow: 0,
                   display: { xs: 'none', md: 'flex' },
                   flexDirection: 'column',
-                  width: '150px',
-                  maxWidth: '300px',
+                  width: '180px',
                   px: 2,
+                  overflow: 'hidden', 
                 }}
               >
                 <Typography
@@ -292,9 +330,12 @@ function NavBar() {
                     fontSize: '0.8rem',
                     color: 'primary.main',
                     textAlign: 'right',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
-                  Nombre(s)
+                  {userName}
                 </Typography>
                 <Typography
                   sx={{
@@ -302,9 +343,12 @@ function NavBar() {
                     fontSize: '0.6rem',
                     color: 'text.primary',
                     textAlign: 'right',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
-                  Correo
+                  {userEmail}
                 </Typography>
               </Box>
 

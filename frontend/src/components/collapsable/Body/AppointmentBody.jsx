@@ -28,7 +28,7 @@ const AppointmentBody = ({ appointment, onConfirmCancel }) => {
   // <--------------- DERIVADO --------------->
   const showCancelButton =
     appointment.status.name !== 'Cancelada' &&
-    appointment.status.name !== 'Completada';
+    appointment.status.name !== 'Realizada';
 
   // <--------------- FUNCIONES --------------->
 

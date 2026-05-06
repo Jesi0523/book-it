@@ -18,9 +18,6 @@ import {
   LabelList,
 } from 'recharts';
 
-// DAYJS
-import dayjs from 'dayjs';
-
 // Componentes propios
 import Text from '@/components/common/Text';
 
@@ -59,23 +56,8 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-// <--------------- CONSTANTES --------------->
-const mesesNombres = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre',
-];
 
-const AppointmentsReport = ({ mes, anio }) => {
+const AppointmentsReport = ({ apiData }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -84,52 +66,18 @@ const AppointmentsReport = ({ mes, anio }) => {
 
   // Genera los datos de la grafica segun el mes y año
   const dataDinamica = useMemo(() => {
-    const mesIndex = mesesNombres.indexOf(mes);
+    if (!apiData || !apiData.etiquetas) return [];
 
-    if (mesIndex === -1) return [];
-
-    let fechaActual = dayjs(new Date(parseInt(anio), mesIndex, 1));
-    const diasEnMes = fechaActual.daysInMonth();
-
-    const semanas = [];
-    let diaInicio = 1;
-    let indexColor = 0;
-    let numeroSemana = 1;
-
-    while (diaInicio <= diasEnMes) {
-      let diaFin = diaInicio;
-      let iteradorFecha = fechaActual.date(diaInicio);
-
-      while (iteradorFecha.day() !== 0 && diaFin < diasEnMes) {
-        diaFin++;
-        iteradorFecha = iteradorFecha.add(1, 'day');
-      }
-
-      const inicioStr = diaInicio.toString().padStart(2, '0');
-      const finStr = diaFin.toString().padStart(2, '0');
-      const etiqueta =
-        diaInicio === diaFin ? inicioStr : `${inicioStr}-${finStr}`;
-
-      semanas.push({
-        semana: etiqueta,
-        numeroSemana: numeroSemana,
-        citas:
-          mes === 'Enero' && anio === '2026'
-            ? [15, 49, 70, 123, 80][indexColor] || 0
-            : Math.floor(Math.random() * 150) + 10,
-        color:
-          theme.customCharts.barGradient[
-            indexColor % theme.customCharts.barGradient.length
-          ],
-      });
-
-      diaInicio = diaFin + 1;
-      indexColor++;
-      numeroSemana++;
-    }
-
-    return semanas;
-  }, [mes, anio]);
+    return apiData.etiquetas.map((etiqueta, index) => ({
+      semana: etiqueta,
+      numeroSemana: index + 1,
+      citas: apiData.valores[index] || 0,
+      color:
+        theme.customCharts.barGradient[
+          index % theme.customCharts.barGradient.length
+        ],
+    }));
+  }, [apiData, theme]);
 
   // Genera los numeros de la izq blanco
   const dynamicTicks = useMemo(() => {

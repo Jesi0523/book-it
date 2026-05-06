@@ -54,7 +54,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const ServicesReport = ({ mes, anio }) => {
+const ServicesReport = ({ apiData }) => {
   // <--------------- CONTEXTO --------------->
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -63,15 +63,18 @@ const ServicesReport = ({ mes, anio }) => {
 
   // Genera los datos de la grafica segun el mes y año
   const dataDinamica = useMemo(() => {
-    const datos = Array.from({ length: 12 }).map((_, index) => ({
-      servicio: `Servicio ${index + 1}`,
-      solicitudes: Math.floor(Math.random() * 90) + 10,
+    if (!apiData || !apiData.etiquetas) return [];
+
+    const datos = apiData.etiquetas.map((etiqueta, index) => ({
+      servicio: etiqueta,
+      solicitudes: apiData.valores[index] || 0,
       color:
         theme.customCharts.barMixed[index % theme.customCharts.barMixed.length],
     }));
 
+    // Se ordena de mayor a menor
     return datos.sort((a, b) => b.solicitudes - a.solicitudes);
-  }, [mes, anio]);
+  }, [apiData, theme]);
 
   // Genera los numeros de la izq blanco
   const dynamicTicks = useMemo(() => {

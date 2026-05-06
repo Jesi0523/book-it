@@ -1,5 +1,15 @@
 // React
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+// Contexto
+import { useAuth } from '@/context/AuthContext';
+
+// API
+import { getEmpresa } from '@/api/empresa.api';
+import { getServicios } from '@/api/servicios.api';
+
+// Constantes
+import { ROUTES } from '@/constants/routes';
 
 // MUI
 import Grid from '@mui/material/Grid';
@@ -19,67 +29,98 @@ import MainButton from '@/components/common/MainButton';
 import TextWIcon from '@/components/common/TextWIcon';
 import Title from '@/components/common/Title';
 import Text from '@/components/common/Text';
+import Loader from '@/components/common/Loader';
+import ErrorScreen from '@/components/common/ErrorScreen';
 // |  main
 import CardServices from '@/components/main/CardServices';
-// ************** media dummy **************
-// |  Imagenes
-import mainPhoto from '@/assets/dummy/main-1.webp';
-import photoExample1 from '@/assets/dummy/main-2.webp';
-import photoExample2 from '@/assets/dummy/main-3.webp';
-import photoExample3 from '@/assets/dummy/main-4.webp';
-
 // ************** iconos **************
 import CalendarIcon from '@mui/icons-material/CalendarMonth';
 import LocationIcon from '@mui/icons-material/LocationOnRounded';
 import PhoneIcon from '@mui/icons-material/PhoneRounded';
 import EmailIcon from '@mui/icons-material/EmailRounded';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+// ************** media dummy **************
+// |  Imagenes
+import carruselPhoto from '@/assets/dummy/main-2.webp';
+import mainPhoto from '@/assets/dummy/main-1.webp';
+import servicePhoto from '@/assets/dummy/service.webp';
 
-//NOTA: Datos de ejemplo, eliminar despues
-const serviciesInfoDummy = [
-  {
-    id: 1,
-    image: photoExample1,
-    name: 'Servicio 1',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna.',
-  },
-  {
-    id: 2,
-    image: photoExample2,
-    name: 'Servicio 2',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna.',
-  },
-  {
-    id: 3,
-    image: photoExample3,
-    name: 'Servicio 3',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna.',
-  },
-
-  {
-    id: 4,
-    image: mainPhoto,
-    name: 'Servicio 4',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla mollis, risus at pellentesque efficitur, quam nisl tristique enim, et malesuada ex sapien et urna.',
-  },
-];
-const imageDummy = [
-  { id: '1', image: photoExample1 },
-  { id: '2', image: photoExample2 },
-  { id: '3', image: photoExample3 },
-];
-
-// ***********************************
 
 function MainPage() {
   // <--------------- CONTEXTO --------------->
-  const location = useLocation();
-  const isLanding = location.pathname === '/';
+  const { isAuthenticated } = useAuth();
+
+  // <--------------- ESTADOS --------------->
+  const [empresa, setEmpresa] = useState(null);
+  const [servicios, setServicios] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  // <--------------- EFFECTS --------------->
+  const fetchLandingData = async () => {
+    try {
+      setIsLoading(true);
+      setHasError(false);
+
+      // Se hacen ambas peticiones al mismo tiempo
+      const [empresaData, serviciosData] = await Promise.all([
+        getEmpresa(),
+        getServicios(),
+      ]);
+
+      setEmpresa(empresaData.empresa);
+
+      // Filtramos para mostrar solo los servicios activos
+      const serviciosActivos = serviciosData.servicios.filter(
+        (s) => s.activo !== false,
+      );
+      setServicios(serviciosActivos);
+    } catch (error) {
+      // Si falla CUALQUIERA de las dos (ej. no hay internet o servidor caído), cae aquí
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLandingData();
+  }, []);
 
   // <--------------- RENDER --------------->
+
+  // La pantalla de carga
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'background.default',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Loader height='auto' />
+      </Box>
+    );
+  }
+
+  // Si no hay conexion
+  if (hasError) {
+    return (
+      <ErrorScreen
+        onRetry={fetchLandingData}
+        offsetMobile='64px'
+        offsetDesktop='64px'
+      />
+    );
+  }
+
   return (
     <>
       {/* Slider principal de las imagenes -> está en modo automatico 🦭 */}
@@ -109,11 +150,15 @@ function MainPage() {
           }}
         >
           {/* Empresa */}
-          <Title children='Empresa' align='center' color='text.primary' />
-          
+          <Title
+            children={empresa?.nombre || 'Bienvenido'}
+            align='center'
+            color='text.primary'
+          />
+
           {/* Slogan */}
           <Text
-            children='Slogan'
+            children={empresa?.slogan || ''}
             align='center'
             color='primary.main'
             size='20'
@@ -129,12 +174,30 @@ function MainPage() {
           effect='fade'
           loop={true}
         >
-          {imageDummy.map((item) => (
-            <SwiperSlide key={item.id}>
+          {empresa?.galeria && empresa.galeria.length > 0 ? (
+            empresa.galeria.map((foto) => (
+              // Pone las img del carrusel
+              <SwiperSlide key={foto._id}>
+                <Box
+                  component='img'
+                  src={foto.url}
+                  alt={`Imagen de la empresa`}
+                  sx={{
+                    height: '400px',
+                    width: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                  }}
+                />
+              </SwiperSlide>
+            ))
+          ) : (
+            // Si no se encuentra, se pone una foto default
+            <SwiperSlide>
               <Box
                 component='img'
-                src={item.image}
-                alt={`Slide ${item.id}`}
+                src={carruselPhoto}
+                alt='Imagen de respaldo del carrusel'
                 sx={{
                   height: '400px',
                   width: '100%',
@@ -143,7 +206,7 @@ function MainPage() {
                 }}
               />
             </SwiperSlide>
-          ))}
+          )}
         </Swiper>
       </Box>
 
@@ -177,7 +240,7 @@ function MainPage() {
           >
             <Box
               component='img'
-              src={mainPhoto}
+              src={empresa?.imagenPrincipal?.url || mainPhoto}
               sx={{
                 width: '100%',
                 maxWidth: { xs: '250px', md: '100%' },
@@ -192,13 +255,17 @@ function MainPage() {
             sx={{
               display: 'flex',
               alignItems: 'center',
+              whiteSpace: 'pre-line',
             }}
           >
             <Text
               align='justify'
               color='text.primary'
               size='16'
-              children="Somos una empresa que se dedica a ofrecer servicios de administración. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+              children={
+                empresa?.descripcion ||
+                'No hay descripción disponible en este momento.'
+              }
             />
           </Grid>
         </Grid>
@@ -219,9 +286,9 @@ function MainPage() {
             width: '100%',
             maxWidth: '1300px',
             px: { xs: 6, md: 8, lg: 12 },
-            position: 'relative', 
+            position: 'relative',
             '.swiper': {
-              position: 'static', 
+              position: 'static',
             },
             '.swiper-button-next, .swiper-button-prev': {
               color: 'text.secondary',
@@ -229,10 +296,10 @@ function MainPage() {
               '&:hover': { color: 'text.primary', transform: 'scale(1.1)' },
             },
             '.swiper-button-prev': {
-              left: { xs: '5px', md: '10px', lg: '20px' }, 
+              left: { xs: '5px', md: '10px', lg: '20px' },
             },
             '.swiper-button-next': {
-              right: { xs: '5px', md: '10px', lg: '20px' }, 
+              right: { xs: '5px', md: '10px', lg: '20px' },
             },
           }}
         >
@@ -246,13 +313,13 @@ function MainPage() {
               900: { slidesPerView: 3 },
             }}
           >
-            {serviciesInfoDummy.map((item) => (
-              <SwiperSlide key={item.id}>
+            {servicios.map((item) => (
+              <SwiperSlide key={item._id}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
                   <CardServices
-                    image={item.image}
-                    name={item.name}
-                    description={item.description}
+                    image={item.foto?.url || servicePhoto}
+                    name={item.nombre}
+                    description={item.descripcion}
                   />
                 </Box>
               </SwiperSlide>
@@ -271,17 +338,17 @@ function MainPage() {
           width: '100%',
         }}
       >
-        {isLanding ? (
+        {!isAuthenticated ? (
           // Landing Page
           <>
-            <MainButton to='/login'>
+            <MainButton to={ROUTES.PUBLIC.LOGIN}>
               Agenda tu cita <CalendarIcon />
             </MainButton>
           </>
         ) : (
           // Main Page
           <>
-            <MainButton to='/book-appointment'>
+            <MainButton to={ROUTES.CLIENT.BOOK}>
               Agenda tu cita <CalendarIcon />
             </MainButton>
           </>
@@ -300,37 +367,65 @@ function MainPage() {
         <Box sx={{ ml: 1, mb: 1.2 }}>
           <Title children='Contáctanos' color='text.primary' size='18' />
         </Box>
-        <Grid container sx={{ justifyContent: 'center' }}>
+        <Grid
+          container
+          spacing={{ xs: 0, md: 10 }}
+          sx={{ justifyContent: 'center' }}
+        >
           <Grid size={{ xs: 12, md: 6 }}>
             {/* Direccion */}
             <TextWIcon
               icon={<LocationIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
-              text='Dirección de la empresa'
+              text={
+                `Dirección: ${empresa?.direccion}` || 'Dirección no disponible'
+              }
             />
             {/* Telefono */}
             <TextWIcon
               icon={<PhoneIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
-              text='Teléfono de la empresa'
+              text={
+                `Teléfono: +${empresa?.telefono}` || 'Teléfono no disponible'
+              }
             />
             {/* Correo */}
             <TextWIcon
               icon={<EmailIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
-              text='Correo electrónico'
+              text={
+                `Correo electrónico: ${empresa?.correo}` ||
+                'Correo electrónico no disponible'
+              }
             />
           </Grid>
           {/* Horario */}
           <Grid size={{ xs: 12, md: 6 }}>
             <TextWIcon
               icon={<CalendarIcon sx={{ color: 'secondary.main', p: 0.3 }} />}
-              text='Horario de atención'
+              text='Horario de atención:'
             />
-            <Box sx={{ px: 4 }}>
-              <Text
-                align='justify'
-                color='text.secondary'
-                size='14'
-                children='Lunes a Viernes : 10:00 am a 4:00 pm'
-              />
+            <Box sx={{ px: 4, pl: 5 }}>
+              {empresa?.horarioGlobal?.length > 0 ? (
+                empresa.horarioGlobal.map((horario, index) => {
+                  const diaCapitalizado =
+                    horario.dia.charAt(0).toUpperCase() + horario.dia.slice(1);
+
+                  return (
+                    <Text
+                      key={index}
+                      align='justify'
+                      color='text.secondary'
+                      size='14'
+                      children={`${diaCapitalizado}: ${horario.horaInicio} a ${horario.horaFin}`}
+                    />
+                  );
+                })
+              ) : (
+                <Text
+                  align='justify'
+                  color='text.secondary'
+                  size='14'
+                  children='Horario no disponible'
+                />
+              )}
             </Box>
           </Grid>
         </Grid>

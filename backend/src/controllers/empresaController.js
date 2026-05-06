@@ -1,6 +1,7 @@
 const logger = require("../config/logger");
 const Empresa = require("../models/empresaModel");
 const Empleado = require("../models/empleadoModel");
+const Cita = require ("../models/citaModel");
 const { matchedData } = require("express-validator");
 const { subirImagen, borrarImagen } = require("../helpers/cloudinaryHelper");
 

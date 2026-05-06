@@ -9,6 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import MainButton from '@/components/common/MainButton';
 import TextInput from '@/components/form/TextInput';
 import DateInput from '@/components/form/DateInput';
+import Text from '@/components/common/Text';
 
 // Icono
 import UploadFileIcon from '@mui/icons-material/UploadFile';
@@ -18,6 +19,7 @@ const EmployeeDataSection = ({
   handleInputChange,
   handleDateChange,
   handlePhotoChange,
+  formErrors,
 }) => {
   return (
     <Grid container spacing={4}>
@@ -26,6 +28,7 @@ const EmployeeDataSection = ({
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {/* Foto */}
           <Box
+            id='field-foto'
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -57,20 +60,33 @@ const EmployeeDataSection = ({
               <UploadFileIcon fontSize='small' /> Subir foto
               <input
                 type='file'
-                accept='image/*'
+                accept='.png, .jpeg, .jpg, .webp'
                 onChange={handlePhotoChange}
                 style={{ display: 'none' }}
               />
             </MainButton>
+
+            {/* Error */}
+            {formErrors.foto && (
+              <Text
+                children={formErrors.foto[0]}
+                color='error.main'
+                size='12px'
+                align='center'
+                sx={{ mt: 1 }}
+              />
+            )}
           </Box>
 
           {/* Nombre */}
           <TextInput
+            id='field-nombre'
             label='Nombre'
             name='name'
             value={formData.name}
             onChange={handleInputChange}
             placeholder='Nombre completo'
+            helperText={formErrors.nombre ? formErrors.nombre[0] : ''}
           />
         </Box>
       </Grid>
@@ -88,29 +104,38 @@ const EmployeeDataSection = ({
         >
           {/* Correo */}
           <TextInput
+            id='field-correo'
             label='Correo electrónico'
             name='email'
             value={formData.email}
             onChange={handleInputChange}
             type='email'
             placeholder='ejemplo@gmail.com'
+            helperText={formErrors.correo ? formErrors.correo[0] : ''}
           />
 
           {/* Fecha */}
           <DateInput
+            id='field-fechaNacimiento'
             label='Fecha de nacimiento'
             name='birthdate'
             value={formData.birthdate}
             onChange={handleDateChange}
+            helperText={
+              formErrors.fechaNacimiento ? formErrors.fechaNacimiento[0] : ''
+            }
           />
 
           {/* Telefono */}
           <TextInput
+            id='field-telefono'
             label='Número telefónico'
             name='phone'
+            type='number'
             value={formData.phone}
             onChange={handleInputChange}
             placeholder='81 1111 1111'
+            helperText={formErrors.telefono ? formErrors.telefono[0] : ''}
           />
         </Box>
       </Grid>
@@ -119,6 +144,7 @@ const EmployeeDataSection = ({
       <Grid size={12}>
         <Box sx={{ mt: 1 }}>
           <TextInput
+            id='field-informacion'
             label='Información'
             name='info'
             value={formData.info}
@@ -126,6 +152,7 @@ const EmployeeDataSection = ({
             multiline
             rows={5}
             placeholder='Escriba la información del empleado'
+            helperText={formErrors.informacion ? formErrors.informacion[0] : ''}
             sx={{
               '& .MuiOutlinedInput-root': { borderRadius: '16px' },
             }}

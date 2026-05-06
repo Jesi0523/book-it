@@ -17,6 +17,7 @@ const ServicesSection = ({
   availableServices,
   selectedServices,
   onServiceToggle,
+  error,
 }) => {
   // <--------------- ESTADOS --------------->
   const [selectedValue, setSelectedValue] = useState(
@@ -34,7 +35,10 @@ const ServicesSection = ({
 
   // <--------------- RENDER --------------->
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box
+      id='field-servicios'
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+    >
       {/* Seccion superior */}
       <Box
         sx={{
@@ -167,6 +171,17 @@ const ServicesSection = ({
           </Box>
         ))}
       </Box>
+
+      {/* Mensaje de Error */}
+      {error && (
+        <Text
+          children={error}
+          color='error.main'
+          size='14px'
+          sx={{ mt: 1 }}
+          align='center'
+        />
+      )}
     </Box>
   );
 };

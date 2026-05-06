@@ -18,16 +18,18 @@ global.logger = logger;
 app.use(cookieParser());
 app.use(
     cors({
-        origin: "http://localhost:5173", // debe de ser el puerto de React
+        origin: process.env.CLIENT_URL || "http://localhost:5173", // debe de ser el puerto de React
         credentials: true, // Permite que las cookies pasen
     }),
 );
 
 // middleware de logs
 app.use(logTransacciones);
+app.use(cookieParser()); // se me olvidó ponerlo lol
 
 // Rutas
-const usuarioRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/authRoutes");
+const usuarioRoutes = require("./routes/usuarioRoutes");
 const servicioRoutes = require("./routes/servicioRoutes");
 const empresaRoutes = require("./routes/empresaRoutes");
 const empleadoRoutes = require("./routes/empleadoRoutes");
@@ -36,7 +38,8 @@ const citasRoutes = require("./routes/citaRoutes");
 const reporteRoutes = require("./routes/reporteRoutes");
 
 // importar rutas
-app.use("/api/auth", usuarioRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/servicios", servicioRoutes);
 app.use("/api/empresa", empresaRoutes);
 app.use("/api/empleados", empleadoRoutes);
@@ -44,17 +47,12 @@ app.use("/api/suspensiones", suspensionRoutes);
 app.use("/api/citas", citasRoutes);
 app.use("/api/reportes", reporteRoutes);
 
-// PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
-if (process.env.NODE_ENV === "production") {
-    // archivos de React
-    app.use(express.static(path.join(__dirname, "../dist")));
-    app.get(/(.*)/, (req, res) => {
-        if (!req.url.startsWith("/api")) {
-            res.sendFile(path.join(__dirname, "../dist", "index.html"));
-        }
+// PARA SERVIR REACT Y BACK
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
-} else {
-    logger.info("Modo desarrollo: React se sirve desde Vite.");
 }
 
 const PORT = process.env.PORT || 5001;

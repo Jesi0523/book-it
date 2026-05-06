@@ -1,13 +1,39 @@
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
+
+// API
+import { getEmpresa } from '@/api/empresa.api';
 
 // MUI
 import Box from '@mui/material/Box';
 
 // Assets
 import img from '@/assets/auth/bg_auth.webp';
-import logo from '@/assets/logo/Logo1.webp';
+import defaultLogo from '@/assets/logo/Logo1.webp';
 
 const AuthLayout = () => {
+  // <--------------- ESTADOS --------------->
+  const [logoEmpresa, setLogoEmpresa] = useState(null);
+
+  // <--------------- EFFECTS --------------->
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const data = await getEmpresa();
+        if (data.empresa?.logo?.url) {
+          setLogoEmpresa(data.empresa.logo.url);
+        } else {
+          setLogoEmpresa(defaultLogo);
+        }
+      } catch (error) {
+        setLogoEmpresa(defaultLogo);
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
+  // <--------------- RENDER --------------->
   return (
     <Box
       sx={{
@@ -27,20 +53,22 @@ const AuthLayout = () => {
       }}
     >
       {/* Logo */}
-      <Box
-        component='img'
-        src={logo}
-        alt='Book IT! Logo'
-        sx={{
-          position: 'absolute',
-          top: { xs: 20, md: 40 },
-          right: { xs: 20, md: 60 },
-          width: { xs: '80px', md: '120px' },
-          height: 'auto',
-          zIndex: 10,
-          display: { xs: 'none', md: 'block' },
-        }}
-      />
+      {logoEmpresa && (
+        <Box
+          component='img'
+          src={logoEmpresa}
+          alt='Logo de la empresa'
+          sx={{
+            position: 'absolute',
+            top: { xs: 20, md: 40 },
+            right: { xs: 20, md: 60 },
+            width: { xs: '80px', md: '120px' },
+            height: 'auto',
+            zIndex: 10,
+            display: { xs: 'none', md: 'block' },
+          }}
+        />
+      )}
 
       {/* Contenido */}
       <Box

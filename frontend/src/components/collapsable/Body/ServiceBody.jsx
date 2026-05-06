@@ -57,9 +57,9 @@ const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
               boxShadow: 'inset 0px 0px 10px rgba(0,0,0,0.1)',
             }}
           >
-            {service.imagen ? (
+            {service.foto?.url ? (
               <img
-                src={service.imagen}
+                src={service.foto.url}
                 alt={service.nombre}
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
@@ -94,12 +94,14 @@ const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
               <Text
                 children='Descripción'
                 color='white'
+                align='center'
                 size='14px'
                 sx={{ mb: 1, display: 'block' }}
               />
               <Text
                 children={service.descripcion}
                 color='primary.main'
+                align='center'
                 size='14px'
               />
             </Box>
@@ -121,7 +123,7 @@ const ServiceBody = ({ service, onEdit, onDeleteConfirm }) => {
                 sx={{ mb: 1, display: 'block' }}
               />
               <Text
-                children={service.tiempo}
+                children={`${service.duracion} minutos`}
                 color='primary.main'
                 size='14px'
                 align='center'

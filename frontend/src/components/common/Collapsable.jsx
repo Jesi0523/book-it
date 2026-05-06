@@ -30,10 +30,18 @@ const Collapsable = ({
         color: 'white',
         mb: 2,
         p: 0,
+        width: '100%',
+        minWidth: 0,
       }}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon sx={{ color: 'primary.main' }} />}
+        sx={{
+          '& .MuiAccordionSummary-content': {
+            minWidth: 0,
+            width: '100%',
+          },
+        }}
       >
         {headerContent}
       </AccordionSummary>

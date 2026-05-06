@@ -5,6 +5,9 @@ import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
+// Utils
+import { toastError } from '@/utils/notify';
+
 // Iconos
 import CheckIcon from '@mui/icons-material/Check';
 import AdvertismentIcon from '@mui/icons-material/ReportProblemOutlined';
@@ -37,7 +40,7 @@ const SuspensionForm = ({
   setHoraFin,
   empleadoSeleccionado,
   setEmpleadoSeleccionado,
-  dummyEmpleados,
+  empleados,
   handleAplicar,
   selectMenuProps,
   selectEstilos,
@@ -49,6 +52,16 @@ const SuspensionForm = ({
 
   // Abrir dialogo
   const handleOpenSaveDialog = () => {
+    if (tipoSuspension === 'horario') {
+      if (horaInicio >= horaFin) {
+        toastError(
+          'La hora de inicio debe ser anterior a la hora de fin.',
+          'error-horas',
+        );
+        return;
+      }
+    }
+
     setIsSaveDialogOpen(true);
   };
 
@@ -190,7 +203,7 @@ const SuspensionForm = ({
             MenuProps={selectMenuProps}
             sx={selectEstilos}
           >
-            {dummyEmpleados.map((emp) => (
+            {empleados.map((emp) => (
               <MenuItem key={emp.id} value={emp.id}>
                 {emp.nombre}
               </MenuItem>

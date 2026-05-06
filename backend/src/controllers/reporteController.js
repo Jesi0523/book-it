@@ -155,14 +155,7 @@ const getReporteServicios = async (req, res) => {
         });
 
         const etiquetas = Object.keys(conteoServicios);
-
-        // convertir el conteo a porcentajes
-        const valores = Object.values(conteoServicios).map((cantidad) => {
-            if (totalServiciosAgendados === 0) return 0;
-            return parseFloat(
-                ((cantidad / totalServiciosAgendados) * 100).toFixed(1),
-            );
-        });
+        const valores = Object.values(conteoServicios);
 
         res.status(200).json({
             ok: true,

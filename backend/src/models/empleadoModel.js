@@ -66,6 +66,10 @@ const empleadoSchema = new mongoose.Schema(
                 },
             },
         ],
+        activo: {
+            type: Boolean,
+            default: true,
+        },
     },
     { timestamps: true }, // Crea 'createdAt' y 'updatedAt' solitos
 );

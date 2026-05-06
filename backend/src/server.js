@@ -18,13 +18,14 @@ global.logger = logger;
 app.use(cookieParser());
 app.use(
     cors({
-        origin: "http://localhost:5173", // debe de ser el puerto de React
+        origin: process.env.CLIENT_URL || "http://localhost:5173", // debe de ser el puerto de React
         credentials: true, // Permite que las cookies pasen
     }),
 );
 
 // middleware de logs
 app.use(logTransacciones);
+app.use(cookieParser()); // se me olvidó ponerlo lol
 
 // Rutas
 const authRoutes = require("./routes/authRoutes");
@@ -46,17 +47,12 @@ app.use("/api/suspensiones", suspensionRoutes);
 app.use("/api/citas", citasRoutes);
 app.use("/api/reportes", reporteRoutes);
 
-// PARA SERVIR REACT Y BACK EN PRODUCCIÓN JUNTOS
-if (process.env.NODE_ENV === "production") {
-    // archivos de React
-    app.use(express.static(path.join(__dirname, "../dist")));
-    app.get(/(.*)/, (req, res) => {
-        if (!req.url.startsWith("/api")) {
-            res.sendFile(path.join(__dirname, "../dist", "index.html"));
-        }
+// PARA SERVIR REACT Y BACK
+if (process.env.NODE_ENV !== "production") {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
-} else {
-    logger.info("Modo desarrollo: React se sirve desde Vite.");
 }
 
 const PORT = process.env.PORT || 5001;

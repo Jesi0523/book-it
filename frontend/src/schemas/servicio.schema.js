@@ -5,19 +5,31 @@ export const servicioSchema = z.object({
   nombre: z
     .string()
     .min(1, { message: 'El nombre es requerido.' })
-    .max(100, { message: 'El nombre no puede exceder los 100 caracteres.' }),
+    .max(100, { message: 'El nombre no puede exceder los 100 caracteres.' })
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'El nombre no puede iniciar ni terminar con espacios.',
+    }),
 
   descripcion: z
     .string()
     .min(1, { message: 'La descripción es requerida.' })
     .max(500, {
       message: 'La descripción no puede exceder los 500 caracteres.',
+    })
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'La descripción no puede iniciar ni terminar con espacios.',
     }),
 
   precio: z.preprocess(
-    (val) => Number(val),
+    (val) => {
+      if (val === '' || val === null || val === undefined) return undefined;
+      return Number(val);
+    },
     z
-      .number({ invalid_type_error: 'El precio debe ser un número válido.' })
+      .number({ 
+        required_error: 'El precio es requerido.',
+        invalid_type_error: 'El precio debe ser un número válido.' 
+      })
       .positive({ message: 'El precio debe ser mayor a $0.' })
       .refine(
         (val) => {

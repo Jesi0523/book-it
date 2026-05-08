@@ -7,8 +7,8 @@ export const citaClientSchema = z.object({
     .min(3, 'El nombre debe tener al menos 3 caracteres')
     .max(80, 'El nombre no puede exceder los 80 caracteres')
     .regex(
-      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      'El nombre solo puede contener letras y espacios',
+      /^(?! )[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+(?<! )$/,
+      'El nombre no puede iniciar ni terminar con espacios. Tampoco puede tener caracteres especiales.',
     ),
   edad: z.coerce
     .number({

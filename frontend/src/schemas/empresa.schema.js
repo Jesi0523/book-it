@@ -44,7 +44,10 @@ export const empresaSchema = z.object({
   nombre: z
     .string()
     .min(1, 'El nombre es obligatorio')
-    .max(100, 'Máximo 100 caracteres'),
+    .max(100, 'Máximo 100 caracteres')
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'El nombre no puede iniciar ni terminar con espacios.',
+    }),
   correo: z.string().email('Correo electrónico inválido'),
   telefono: z
     .string()
@@ -59,12 +62,23 @@ export const empresaSchema = z.object({
     .refine(
       (val) => val.length === 0 || val.length >= 10,
       'La descripción es muy corta',
-    ),
+    )
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'La descripción no puede iniciar ni terminar con espacios.',
+    }),
   slogan: z
     .string()
     .min(1, 'El slogan es obligatorio')
-    .max(500, 'Máximo 500 caracteres'),
-  direccion: z.string().min(1, 'La dirección es obligatoria'),
+    .max(500, 'Máximo 500 caracteres')
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'El slogan no puede iniciar ni terminar con espacios.',
+    }),
+  direccion: z
+    .string()
+    .min(1, 'La dirección es obligatoria')
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'La dirección no puede iniciar ni terminar con espacios.',
+    }),
 
   horario: z
     .any()

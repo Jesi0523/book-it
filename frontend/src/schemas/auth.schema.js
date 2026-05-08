@@ -31,8 +31,8 @@ export const signupSchema = z
       .min(3, 'El nombre debe tener al menos 3 caracteres')
       .max(80, 'El nombre no puede exceder los 80 caracteres')
       .regex(
-        /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-        'El nombre solo puede contener letras y espacios',
+        /^(?! )[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+(?<! )$/,
+        'El nombre no puede iniciar ni terminar con espacios. Tampoco puede tener caracteres especiales.',
       ),
     sexo: z
       .string({
@@ -43,7 +43,10 @@ export const signupSchema = z
     telefono: z
       .string()
       .regex(/^\d{10}$/, 'Ingresa un número de celular válido de 10 dígitos'),
-    correo: z.string().email('Ingresa un correo electrónico válido'),
+    correo: z
+      .string({ required_error: 'El correo es obligatorio' })
+      .min(1, 'El correo es obligatorio')
+      .email('Ingresa un correo electrónico válido'),
     fechaNacimiento: z
       .string()
       .min(1, 'Ingresa tu fecha de nacimiento')
@@ -59,6 +62,7 @@ export const signupSchema = z
       .string()
       .min(8, 'Mínimo 8 caracteres')
       .max(20, 'Máximo 20 caracteres')
+      .regex(/^\S+$/, 'La contraseña no puede contener espacios')
       .regex(/[a-z]/, 'Debe contener al menos una minúscula')
       .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
       .regex(/[0-9]/, 'Debe contener al menos un número')

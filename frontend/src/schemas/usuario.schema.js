@@ -25,8 +25,8 @@ export const updatePerfilSchema = z
       .min(3, 'El nombre debe tener al menos 3 caracteres')
       .max(80, 'El nombre no puede exceder los 80 caracteres')
       .regex(
-        /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-        'El nombre solo puede contener letras y espacios',
+        /^(?! )[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+(?<! )$/,
+        'El nombre no puede iniciar ni terminar con espacios. Tampoco puede tener caracteres especiales.',
       ),
     fechaNacimiento: z
       .string()
@@ -45,7 +45,10 @@ export const updatePerfilSchema = z
         required_error: 'Selecciona tu sexo',
       })
       .regex(/^[MF]$/, 'Selecciona tu sexo'),
-    correo: z.string().email('Ingresa un correo electrónico válido'),
+    correo: z
+      .string({ required_error: 'El correo es obligatorio' })
+      .min(1, 'El correo es obligatorio')
+      .email('Ingresa un correo electrónico válido'),
     telefono: z
       .string()
       .min(1, 'El teléfono es requerido')
@@ -58,6 +61,13 @@ export const updatePerfilSchema = z
   .superRefine((data, ctx) => {
     // Si el usuario escribio una contraseña, aplicamos todas las reglas
     if (data.password && data.password.length > 0) {
+      if (/\s/.test(data.password)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'La contraseña no puede contener espacios',
+          path: ['password'],
+        });
+      }
       if (data.password.length < 8) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,

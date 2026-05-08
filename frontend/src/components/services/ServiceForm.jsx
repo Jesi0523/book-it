@@ -326,6 +326,8 @@ const ServiceForm = ({ service, onCancel, onSave, isEditing }) => {
           <TextInput
             label='Precio'
             name='precio'
+            type='number'
+            inputProps={{ step: 'any' }}
             value={formData.precio}
             onChange={handleInputChange}
             placeholder='$0.00'

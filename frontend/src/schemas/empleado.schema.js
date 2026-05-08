@@ -46,8 +46,8 @@ export const empleadoSchema = z.object({
     .min(3, { message: 'El nombre debe tener al menos 3 caracteres.' })
     .max(80, { message: 'El nombre no puede exceder los 80 caracteres.' })
     .regex(
-      /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-      'El nombre solo puede contener letras y espacios',
+      /^(?! )[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+(?<! )$/,
+      'El nombre no puede iniciar ni terminar con espacios. Tampoco puede tener caracteres especiales.',
     ),
 
   correo: z
@@ -64,6 +64,9 @@ export const empleadoSchema = z.object({
     .min(1, { message: 'La información del empleado es requerida.' })
     .max(500, {
       message: 'La información no puede exceder los 500 caracteres.',
+    })
+    .refine((val) => !val.startsWith(' ') && !val.endsWith(' '), {
+      message: 'La información no puede iniciar ni terminar con espacios.',
     }),
 
   // Se valida que sea una fecha y que el empleado sea mayor de 18 años

@@ -76,28 +76,6 @@ function MyAppointments() {
         const citas = citasRes.citas;
         const serviciosLista = serviciosRes.servicios;
 
-        const serviciosUnicosIds = [
-          ...new Set(citas.map((cita) => cita.servicioAgendado.servicioId)),
-        ];
-
-        const empleadosPromises = serviciosUnicosIds.map((id) =>
-          getEmpleadosPublicos(id),
-        );
-        const empleadosRespuestas = await Promise.all(empleadosPromises);
-
-        let empleadosLista = [];
-        empleadosRespuestas.forEach((res) => {
-          if (res.ok && res.empleados) {
-            empleadosLista = [...empleadosLista, ...res.empleados];
-          }
-        });
-
-        // Se quita empleado duplicado
-        empleadosLista = empleadosLista.filter(
-          (emp, index, self) =>
-            index === self.findIndex((t) => t._id === emp._id),
-        );
-
         const formattedData = citas.map((cita) => {
           const dateStr = dayjs(cita.fecha.split('T')[0])
             .locale('es')
@@ -110,9 +88,6 @@ function MyAppointments() {
           if (cita.estado === 'realizada') statusIndex = 2;
           if (cita.estado === 'cancelada') statusIndex = 3;
 
-          const empleadoMatch = empleadosLista.find(
-            (emp) => emp._id === cita.empleadoId,
-          );
           const servicioMatch = serviciosLista.find(
             (srv) => srv._id === cita.servicioAgendado.servicioId,
           );
@@ -136,8 +111,8 @@ function MyAppointments() {
             ),
 
             employee: {
-              name: empleadoMatch ? empleadoMatch.nombre : 'Empleado Asignado',
-              pfp: empleadoMatch?.foto?.url || null,
+              name: cita.empleadoId?.nombre || 'Empleado no disponible',
+              pfp: cita.empleadoId?.foto?.url || null,
             },
 
             client: {

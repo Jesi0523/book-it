@@ -347,7 +347,7 @@ function AppointmentForm() {
     const payload = {
       empleadoId: extraerId(empleadoEncontrado),
       servicioId: extraerId(servicioEncontrado),
-      fecha: dayjs(fecha).hour(12).toISOString(),
+      fecha: dayjs(fecha).hour(12).minute(0).second(0).format('YYYY-MM-DDTHH:mm:ss'),
       horaInicio: horarioSeleccionado,
       nombre: clientData.nombre,
       correo: clientData.correo,
